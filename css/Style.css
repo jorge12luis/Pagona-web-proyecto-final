@@ -7,21 +7,24 @@
 
 
     body {
-    background: linear-gradient(to bottom, #ffe600, #ffffff);
+    background: #f5f5f5; 
     font-family: Arial;
-    }
+    position: relative;
+}
+.cuerpo{
+        background: linear-gradient(to bottom, #ffe600, #ffffff);
 
+}
     .navegacion {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background-color: rgb(0, 0, 0);
+    background-color: #000000;
         padding: 30px 20px;
         color: white;
     }
 
-    /* Lado izquierdo */
-    .navegacionIzquierda{
+      .navegacionIzquierda{
         display: flex;
         align-items: center;
         gap: 15px;
@@ -37,12 +40,10 @@
         color: #ffe600;
     }
 
-    /* Logo */
     .logo {
         font-weight: bold;
     }
 
-    /* Centro (buscador) */
     .navegacionCenter {
         display: flex;
         align-items: center;
@@ -77,15 +78,17 @@
         cursor: pointer;
     }
 
-    .products {
+    .productos {
         cursor: pointer;
     }   
 
     .contenedorProductos {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
     margin-top: 50px;   
+    
     }
 
     .cartasContenedor {
@@ -329,7 +332,7 @@
     gap: 20px;  
 }
 
-.card {
+.card{
    display: flex;
     align-items: flex-start;
     gap: 15px;
@@ -338,14 +341,16 @@
     color: black;
 
     border: 1px solid #ddd;
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 20px;
     width: 250px;
     height: 200px;
 
     background-color: white;
     transition: 0.3s;
-}   
+}  
+
+
 .icono {
     font-size: 25px;
 }
@@ -377,13 +382,11 @@
     cursor: pointer;
 }
 
-/* CONTENEDOR GENERAL (los tres juntos) */
 .carrito, .favoritos, .micompra {
     display: flex;
     align-items: center;
 }
 
-/* LINKS */
 .carrito a,
 .favoritos a,
 .micompra a {
@@ -410,4 +413,81 @@
 .favoritos,
 .micompra {
     margin-left: 10px;
+}
+.carritoContenedor {
+    text-align: center;
+    margin-top: 100px;
+}
+
+.botonAtras {
+    background-color: black;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.botonAtras:hover {
+    background-color: gray;
+}
+body.pagCarrito {
+    background:white    ;
+    font-family: Arial;
+}
+.contenedor {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.cards {
+    width: 250px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    background: white;
+}
+
+.cards img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+button {
+    margin-top: 5px;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.comprar {
+    background-color: red;
+    color: white;
+}
+.cards:hover {
+    border: 1px solid #bbb;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    transform: translateY(-5px);
+}
+.resumenCompra {
+    width: 250px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    background: white;
+
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.resumenCompra:hover {
+    border: 1px solid #bbb;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    transform: translateY(-5px);
 }
