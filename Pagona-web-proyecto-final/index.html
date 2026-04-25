@@ -1,0 +1,154 @@
+  <!DOCTYPE html>
+  <html lang="es">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Tienda bolsos</title>
+
+      <!-- Bootstrap -->
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+      <!-- Tu CSS -->
+    <link rel="stylesheet" href="css/Style.css"> 
+ </head>
+
+  <body class="cuerpo">
+
+  <!-- NAVBAR -->
+  <nav class="navegacion">  
+      <div class="navegacionIzquierda">
+          <div class="menuArriba">
+    <span class="logo">Tienda bolsos ▼</span>
+    <div class="menuArribamenu">
+        <a href="page/todosLosBolsos.html">Todos los bolsos</a>
+        <a href="page/nuevosProductos.html">Nuevos productos</a>
+        <a href="page/masVendidos.html">Más vendidos</a>
+        <a href="page/ofertas.html">Ofertas</a>
+        <a href="page/edicionesEspeciales.html">Ediciones especiales</a>
+
+    </div>
+</div>
+          <a href="page/ofertasDelDia.html">Ofertas del día</a>
+          <a href="page/ayuda.html">Ayuda</a>
+      </div> 
+
+      <div class="navegacionCenter">
+          <div class="menuArriba">
+    <button class="categorias">Categorías ▼</button>
+    <div class="menuArribamenu">
+        <a href="page/bolsosElegantes.html">Bolsos elegantes</a>
+        <a href="page/bolsosDeMano.html">Bolsos de mano</a>
+        <a href="page/carterasPequeñas.html">Carteras pequeñas</a>
+        <a href="page/accesorios.html">Accesorios</a>
+    </div>
+</div>
+          <input type="text" placeholder="Buscar...">
+      </div>
+      <div class="carrito">
+          <a href="page/carrito.html">Carrito 🛒</a>
+      </div>
+      <div class="favoritos">
+          <a href="page/favoritos.html">Favoritos ❤️</a>
+      </div>
+      <div class="micompra">
+          <a href="page/micompra.html">Mis compras 🛍️</a>
+      </div>
+
+      <div class="navegacionUsuario">
+          <div class="menuUsuario">
+    <span class="user">Jorge Pinto ▼</span>
+        <div class="navegacionUsuariomenu">
+        <a href="perfil.html">Mi perfil</a>
+        <a href="page/mispedidos.html">Mis pedidos</a>
+        <a href="page/configuracion.html">Configuración</a>
+        <a href="page/cerrarsesion.html">Cerrar sesión</a>
+    </div>
+</div>
+      </div>
+  </nav>
+
+  <!-- CARRUSEL -->
+  <div class="carrusel">
+    <div class="carruselFoto" id="carruselFoto">
+
+      <div class="carruselItem">
+        <img src="img/banner1.jpg">
+        <div class="textoNavegacion">
+          <h1>Envío gratis</h1>
+          <p>en tu primera compra</p>
+        </div>
+      </div>
+
+      <div class="carruselItem">
+        <img src="img/banner2.jpg">
+        <div class="textoNavegacion">
+          <h1>Descuentos brutales</h1>
+          <p>solo por hoy</p>
+        </div>
+      </div>
+
+      <div class="carruselItem">
+        <img src="img/banner3.jpg">
+        <div class="textoNavegacion">
+          <h1>Compra fácil</h1>
+          <p>y rápido</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BOTONES -->
+    <button class="carrusel-btn anterior" onclick="mover(-1)">❮</button>
+    <button class="carrusel-btn siguiente" onclick="mover(1)">❯</button>
+  </div>
+
+  <!-- PRODUCTOS -->
+  <div class="contenedorProductos">
+
+    <!-- CARD 1 -->
+    <a href="page/masVendido.html" class="card">
+        <div class="icono">🔥</div>
+        <div class="texto">
+            <h6>Producto más vendido</h6>
+            <p>Descripción del producto</p>
+            <button>Mostrar producto</button>
+        </div>
+    </a>
+
+    <!-- CARD 2 -->
+    <a href="page/nuevosProductos.html" class="card">
+        <div class="icono">🆕</div>
+        <div class="texto">
+            <h6>Producto nuevo</h6>
+            <p>Descubre lo más reciente</p>
+            <button>Ver más</button>
+        </div>
+    </a>
+
+    <!-- CARD 3 -->
+    <a href="page/nuevasOfertas.html" class="card">
+        <div class="icono">💰</div>
+        <div class="texto">
+            <h6>Nuevas ofertas</h6>
+            <p>Aprovecha los descuentos</p>
+            <button>Ver ofertas</button>
+        </div>
+    </a>
+
+    <!-- CARD 4 -->
+    <a href="page/recomendados.html" class="card">
+        <div class="icono">⭐</div>
+        <div class="texto">
+            <h6>Recomendados</h6>
+            <p>Productos destacados</p>
+            <button>Ver productos</button>
+        </div>
+    </a>
+        
+</div> <br> 
+<h2 class="titulo">Productos</h2>
+<div id="productos" class="contenedorProductos"></div>
+<!-- JS -->
+<script src="js/scrit.js"></script>
+  </body>
+  </html>
