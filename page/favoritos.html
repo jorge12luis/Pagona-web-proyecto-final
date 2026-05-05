@@ -12,13 +12,29 @@
 
     <title>Favoritos</title>
 </head>
-<body class="pagCarrito">
-    <div class="carritoContenedor">
-        <h1>Productos favoritos</h1>
-        <p>Aquí se mostrarán los productos que has agregado a tu lista de favoritos.</p>
-        <p>¡No tienes productos favoritos por ahora!</p>
+<body>
 
-        <button class="botonAtras" onclick="history.back()">⬅ Volver</button>
+<h2 class="tituloCarrito">Tus favoritos ❤️</h2>
+
+<div class="contenedorCarrito">
+
+    <!-- LISTA -->
+    <div id="listaFavoritos" class="listaCarrito"></div>
+
+    <!-- RESUMEN -->
+    <div class="resumenCompra">
+        <h3>Resumen</h3>
+        <p>Total de productos: <span id="totalFavoritos">0</span></p>
+
+        <button class="btnVaciar" onclick="vaciarFavoritos()">Vaciar favoritos</button>
     </div>
+
+</div>
+
+<button class="btnVolver" onclick="history.back()">⬅ Volver</button>
+
+<script src="../js/favoritos.js"></script>
+
 </body>
+</html>
 </html>

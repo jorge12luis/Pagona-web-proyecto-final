@@ -568,3 +568,104 @@ a{
 
     color:white;
 }
+
+/* CONTENEDOR GENERAL */
+.menuPerfil {
+    display: flex;
+    height: 100vh;
+    font-family: Arial;
+}
+
+/* MENÚ IZQUIERDO */
+.menuLateral {
+    width: 220px;
+    background-color: #f5f5f5;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.menuLateral a {
+    text-decoration: none;
+    color: #333;
+}
+
+.menuLateral a:hover {
+    color: black;
+    font-weight: bold;
+}
+
+/* CONTENIDO */
+.contenidoPerfil {
+    flex: 1;
+    padding: 30px;
+}
+
+/* PERFIL */
+.perfil {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.avatar {
+    width: 60px;
+    height: 60px;
+    background-color: #ddd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* CARTAS */
+.cartas {
+    display: flex;
+    gap: 20px;
+}
+
+/* CARD */
+.card {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+
+    text-decoration: none;
+    color: black;
+
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+
+    width: 260px;   /* puedes subirlo un poquito */
+    min-height: 120px; /* opcional */
+
+    background-color: white;
+    transition: 0.3s;
+}
+
+/* ICONO */
+.icono {
+    font-size: 25px;
+}
+
+/* TEXTO */
+.texto h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.texto p {
+    margin: 5px 0 0;
+    font-size: 14px;
+    color: gray;
+}
+
+/* HOVER */
+.card:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transform: translateY(-3px);
+}
