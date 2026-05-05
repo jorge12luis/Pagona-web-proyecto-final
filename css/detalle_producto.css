@@ -1,0 +1,109 @@
+
+
+/* CONTENEDOR */
+.producto-container{
+    width:85%;
+    margin:120px auto;
+    display:flex;
+    gap:80px;
+    align-items:center;
+}
+
+/* IMAGEN */
+.producto-img img{
+    width:500px;
+    border-radius:20px;
+    box-shadow:0 15px 40px rgba(0,0,0,.08);
+}
+
+/* INFO */
+.producto-info{
+    max-width:500px;
+}
+
+/* ESTADO */
+.estado{
+    font-size:13px;
+    color:#999;
+}
+
+/* TITULO */
+.producto-info h1{
+    font-family:'Cormorant Garamond', serif;
+    font-size:48px;
+    margin:10px 0;
+}
+
+/* DESCRIPCIÓN */
+.descripcion{
+    color:#666;
+    line-height:1.6;
+    margin-bottom:20px;
+}
+
+/* PRECIO */
+.precio h2{
+    font-size:40px;
+    margin:10px 0;
+}
+
+.precio span{
+    color:#777;
+    font-size:14px;
+}
+
+/* STOCK */
+.stock{
+    margin:15px 0;
+    font-size:14px;
+    color:green;
+}
+
+/* BOTONES */
+.acciones{
+    margin-top:25px;
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.btn-comprar{
+    padding:15px;
+    background:black;
+    color:white;
+    border:none;
+    letter-spacing:2px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.btn-comprar:hover{
+    opacity:.8;
+}
+
+.btn-carrito{
+    padding:15px;
+    background:white;
+    border:1px solid black;
+    letter-spacing:2px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.btn-carrito:hover{
+    background:black;
+    color:white;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+
+    .producto-container{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .producto-img img{
+        width:100%;
+    }
+}
