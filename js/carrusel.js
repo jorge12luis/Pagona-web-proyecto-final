@@ -1,14 +1,53 @@
-// CARRUSEL
+const slides = document.querySelectorAll(".slide");
+const indicators = document.querySelector(".indicators");
+
 let index = 0;
 
-function mover(direccion){
-    const slides = document.getElementById("carruselFoto");
-    const total = slides.children.length;
+slides.forEach((_, i)=>{
 
-    index += direccion;
+    const dot = document.createElement("div");
+    dot.classList.add("dot");
 
-    if(index < 0) index = total - 1;
-    if(index >= total) index = 0;
+    if(i===0){
+        dot.classList.add("active");
+    }
 
-    slides.style.transform = `translateX(-${index * 100}%)`;
+    dot.addEventListener("click", ()=>{
+
+        index = i;
+        showSlide();
+
+    });
+
+    indicators.appendChild(dot);
+
+});
+
+function showSlide(){
+
+    const dots = document.querySelectorAll(".dot");
+
+    slides.forEach(slide=>{
+        slide.classList.remove("active");
+    });
+
+    dots.forEach(dot=>{
+        dot.classList.remove("active");
+    });
+
+    slides[index].classList.add("active");
+    dots[index].classList.add("active");
+
 }
+
+setInterval(()=>{
+
+    index++;
+
+    if(index >= slides.length){
+        index = 0;
+    }
+
+    showSlide();
+
+},5000);

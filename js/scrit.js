@@ -53,3 +53,8 @@ function actualizarContador() {
 }
 
 actualizarContador();
+
+const video = document.getElementById("videoDunaka");
+
+// más lento
+video.playbackRate = 1.10;

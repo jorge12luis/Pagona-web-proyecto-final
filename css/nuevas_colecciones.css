@@ -1,0 +1,133 @@
+
+.titulo-coleccion{
+    text-align:center;
+    font-family:'Cormorant Garamond', serif;
+    font-size:65px;
+    margin-top:160px;
+    letter-spacing:3px;
+}
+
+.subtitulo-coleccion{
+    text-align:center;
+    color:#777;
+    margin-top:10px;
+    margin-bottom:60px;
+    font-size:16px;
+}
+
+
+.grid-nuevos{
+    width:88%;
+    margin:auto;
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(250px,1fr));
+    gap:35px;
+}
+
+.producto-card{
+    background:white;
+    border-radius:18px;
+    padding:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,.06);
+    transition:.4s;
+    text-align:center;
+}
+
+.producto-card:hover{
+    transform:translateY(-10px);
+}
+
+.img-box{
+    width:100%;
+    height:280px;
+    overflow:hidden;
+    border-radius:15px;
+    margin-bottom:15px;
+}
+
+.img-box img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transition:.5s;
+}
+
+.producto-card:hover img{
+    transform:scale(1.05);
+}
+
+.producto-card h3{
+    font-family:'Cormorant Garamond', serif;
+    font-size:26px;
+    margin:10px 0;
+}
+
+.producto-card p{
+    color:#777;
+    font-size:14px;
+}
+
+.producto-card span{
+    display:block;
+    margin-top:10px;
+    font-weight:500;
+    letter-spacing:1px;
+}
+
+.banner-nuevo{
+    margin-top:120px;
+    width:88%;
+    margin-left:auto;
+    margin-right:auto;
+    height:350px;
+
+    background:url("../img/banner1.jpg") center/cover no-repeat;
+
+    border-radius:20px;
+
+    display:flex;
+    align-items:center;
+    padding:50px;
+    position:relative;
+}
+
+.banner-nuevo::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.35);
+    border-radius:20px;
+}
+
+.banner-texto{
+    position:relative;
+    color:white;
+    max-width:500px;
+}
+
+.banner-texto h2{
+    font-family:'Cormorant Garamond', serif;
+    font-size:42px;
+    margin-bottom:10px;
+}
+
+.banner-texto p{
+    font-size:15px;
+    margin-bottom:20px;
+}
+
+.btn-banner{
+    display:inline-block;
+    padding:12px 28px;
+    border:1px solid white;
+    color:white;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    font-size:12px;
+    transition:.3s;
+}
+
+.btn-banner:hover{
+    background:white;
+    color:black;
+}
