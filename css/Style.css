@@ -669,3 +669,24 @@ a{
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     transform: translateY(-3px);
 }
+
+.login-container {
+    max-width: 400px;
+    margin: 150px auto;
+    padding: 30px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    text-align: center;
+}   
+
+.boton {
+    padding: 12px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
