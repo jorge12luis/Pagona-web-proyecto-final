@@ -68,29 +68,35 @@
 
 <section class="contenedor-categorias">
 
-    <div class="categoria-card">
+   <div class="categoria-card">
 
-        <img src="../img/bolso1.webp">
+    <div class="favorito"
+    onclick="agregarFavorito('bolso-manhattan')">
+        ❤️
+    </div>
 
-        <div class="categoria-info">
+    <img src="../img/bolso1.webp">
 
-            <h2>Bolsos</h2>
+    <div class="categoria-info">
 
-            <p>24 productos</p>
+        <h2>Bolsos</h2>
 
-            <a href="../page/bolsos.html">
+        <p>24 productos</p>
 
-                Ver colección
-
-                <i class="fa-solid fa-arrow-right"></i>
-
-            </a>
-
-        </div>
+        <a href="../page/detalle_producto.html?producto=bolso-manhattan">
+            Ver colección
+        </a>
 
     </div>
 
+</div>
+
     <div class="categoria-card">
+    
+    <div class="favorito"
+    onclick="agregarFavorito('mochila-urban')">
+        ❤️
+    </div>
 
         <img src="../img/bolso4.webp">
 
@@ -100,8 +106,8 @@
 
             <p>18 productos</p>
 
-            <a href="../page/mochila.html">
-
+<a href="../page/detalle_producto.html?producto=mochila-urban">
+    
                 Ver colección
 
                 <i class="fa-solid fa-arrow-right"></i>
@@ -113,6 +119,11 @@
     </div>
 
     <div class="categoria-card">
+        
+    <div class="favorito"
+    onclick="agregarFavorito('cartera-noche')">
+        ❤️
+    </div>
 
         <img src="../img/bolso2.webp">
 
@@ -122,7 +133,7 @@
 
             <p>15 productos</p>
 
-            <a href="../page/carteras.html">
+            <a href="../page/detalle_producto.html?producto=cartera-noche">
 
                 Ver colección
 
@@ -135,6 +146,11 @@
     </div>
 
     <div class="categoria-card">
+        
+    <div class="favorito"
+    onclick="agregarFavorito('edicion-limitada')">
+        ❤️
+    </div>
 
         <img src="../img/bolso9.jpg">
 
@@ -144,7 +160,7 @@
 
             <p>8 productos</p>
 
-            <a href="edicionesEspeciales.html">
+            <a href="../pages_nav/ediciones_limitadas.html">
 
                 Ver colección
 
@@ -198,9 +214,8 @@
     </div>
 
 </footer>
-
+<script src="../js/categorias.js"></script>
 
 </body>
-</html>
-</body>
+
 </html>
