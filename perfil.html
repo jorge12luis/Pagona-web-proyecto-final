@@ -12,19 +12,12 @@
 </head>
 <body>
     
-
-
-
-
 <div class="menuPerfil">
 
     <!-- MENÚ IZQUIERDO -->
     <div class="menuLateral">
         <h3>Mi cuenta</h3>
         <a href="../compras.html">Compras</a>
-        <a href="#">Ventas</a>
-        <a href="#">Marketing</a>
-        <a href="#">Suscripciones</a>
         <a href="#">Facturación</a>
         <a href="../perfil.html">Mi perfil</a>
         <a href="../configuracion.html">Configuración</a>
@@ -33,10 +26,10 @@
     <!-- Menu DERECHO -->
     <div class="contenidoPerfil">
         <div class="perfil">
-            <div class="avatar">JP</div>
+            <div class="avatar" id="avatarInicial">--</div>
             <div>
-                <h2>Jorge Luis Pinto</h2>
-                <p>correo@gmail.com</p>
+                <h2 id="nombreUsuario">Cargando...</h2>
+                <p id="correoUsuario">Cargando...</p>
             </div>
         </div>
 
@@ -99,3 +92,40 @@
 </div>
 </body>
 </html>
+
+<script>
+    // Cargar datos del usuario al abrir el perfil
+    document.addEventListener('DOMContentLoaded', function() {
+        const usuarioData = localStorage.getItem('usuarioData');
+        const correoUsuario = localStorage.getItem('correoUsuario');
+        
+        if (!usuarioData || !correoUsuario) {
+            alert('Por favor inicia sesión primero');
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        try {
+            const usuario = JSON.parse(usuarioData);
+            
+            // Actualizar nombre
+            document.getElementById('nombreUsuario').textContent = usuario.nombre || 'Sin nombre';
+            
+            // Actualizar correo
+            document.getElementById('correoUsuario').textContent = usuario.correo || correoUsuario;
+            
+            // Actualizar avatar con iniciales
+            const iniciales = usuario.nombre
+                .split(' ')
+                .map(palabra => palabra[0])
+                .join('')
+                .toUpperCase();
+            document.getElementById('avatarInicial').textContent = iniciales;
+            
+        } catch (error) {
+            console.error('Error al parsear datos del usuario:', error);
+            document.getElementById('nombreUsuario').textContent = 'Error al cargar datos';
+            document.getElementById('correoUsuario').textContent = correoUsuario;
+        }
+    });
+</script>

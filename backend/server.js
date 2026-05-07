@@ -59,6 +59,60 @@ app.post("/registro", (req, res) => {
     );
 
 });
+app.post("/login", (req, res) => {
+
+    const { correo, contrasena } = req.body;
+
+    const sql = `
+    SELECT * FROM usuarios
+    WHERE correo = ? AND contrasena = ?
+    `;
+
+    conexion.query(
+        sql,
+        [correo, contrasena],
+        (error, resultado) => {
+
+            if(error){
+                console.log(error);
+                return res.status(500).json({ success: false, message: "Error interno del servidor" });
+            }
+
+            if(resultado.length > 0){
+                return res.json({ success: true, message: "Login correcto", usuario: resultado[0] });
+            }
+
+            res.status(401).json({ success: false, message: "Correo o contraseña incorrectos" });
+        }
+    );
+
+});
+
+app.get("/usuario/:correo", (req, res) => {
+    const correo = req.params.correo;
+
+    const sql = `
+    SELECT * FROM usuarios
+    WHERE correo = ?
+    `;
+
+    conexion.query(
+        sql,
+        [correo],
+        (error, resultado) => {
+            if(error){
+                console.log(error);
+                return res.status(500).json({ success: false, message: "Error al obtener datos" });
+            }
+
+            if(resultado.length > 0){
+                return res.json({ success: true, usuario: resultado[0] });
+            }
+
+            res.status(404).json({ success: false, message: "Usuario no encontrado" });
+        }
+    );
+});
 
 app.listen(3000, () => {
     console.log("Servidor corriendo en puerto 3000");
