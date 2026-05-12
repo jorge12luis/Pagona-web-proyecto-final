@@ -2,10 +2,12 @@ const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
+const path = require("path");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, '..')));
 
 const conexion = mysql.createConnection({
     host: "localhost",
@@ -225,18 +227,23 @@ app.post("/registro", (req, res) => {
         fechaNacimiento
     } = req.body;
 
+    if (!correo || !correo.toLowerCase().endsWith("@gmail.com")) {
+        return res.status(400).send("El correo debe terminar en @gmail.com");
+    }
+
     const sql = `
 
         INSERT INTO usuarios
         (
             nombre,
+            apellido,
             correo,
             contrasena,
             numero_telefono,
             fecha_nacimiento
         )
 
-        VALUES (?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?)
 
     `;
 
