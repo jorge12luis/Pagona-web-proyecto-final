@@ -51,9 +51,11 @@
             <div id="productoStock" class="stock">Stock disponible</div>
             <div class="acciones">
 
-<a href="../informacionCliente.html" class="btn-comprar">
+<button class="btn-comprar" onclick="comprarAhora()">
     Comprar ahora
-</a>                <button class="btn-carrito" id="carrito">Agregar al carrito</button>
+</button>            
+
+<button class="btn-carrito" id="carrito">Agregar al carrito</button>
             </div>
         </div>
     </section>
@@ -71,4 +73,25 @@
     <script src="../js/detalle_producto.js"></script>
     <script src="../js/carrito.js"></script>
 </body>
+<script>
+
+function comprarAhora(){
+
+    // Revisar si el usuario inició sesión
+    const usuario = localStorage.getItem("usuarioData");
+
+    if(!usuario){
+
+        alert("Debes iniciar sesión para continuar");
+
+        window.location.href = "../login.html";
+
+        return;
+    }
+
+    // Si ya inició sesión
+    window.location.href = "../checkout.html";
+}
+
+</script>
 </html>
