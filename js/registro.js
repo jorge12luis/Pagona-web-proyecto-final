@@ -1,35 +1,64 @@
-console.log("JS CONECTADO");
+const formulario =
+document.getElementById("formRegistro");
 
-
-const formulario = document.getElementById("formRegistro");
-
-formulario.addEventListener("submit", async (e) => {
+formulario.addEventListener(
+"submit",
+async (e)=>{
 
     e.preventDefault();
 
-    const nombre = document.getElementById("nombre").value;
-    const correo = document.getElementById("correo").value;
-    const contrasena = document.getElementById("contrasena").value;
+    const nombre =
+    document.getElementById("nombre").value;
 
-    console.log(nombre, correo, contrasena);
+    const apellido =
+    document.getElementById("apellido").value;
 
-    const respuesta = await fetch("http://localhost:3000/registro", {
+    const correo =
+    document.getElementById("correo").value;
 
-        method: "POST",
+    const contrasena =
+    document.getElementById("contrasena").value;
 
-        headers: {
-            "Content-Type": "application/json"
+    const confirmarContrasena =
+    document.getElementById("confirmarContrasena").value;
+
+    const telefono =
+    document.getElementById("numero").value;
+
+    const fechaNacimiento =
+    document.getElementById(
+    "diaNacimiento"
+    ).value;
+
+    if (contrasena !== confirmarContrasena) {
+        alert("Las contraseñas no coinciden.");
+        return;
+    }
+
+    const respuesta = await fetch(
+    "http://localhost:3000/registro",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
         },
 
         body: JSON.stringify({
+
             nombre,
+            apellido,
             correo,
-            contrasena
+            contrasena,
+            telefono,
+            fechaNacimiento
+
         })
 
     });
 
-    const data = await respuesta.text();
+    const data =
+    await respuesta.text();
 
     alert(data);
 

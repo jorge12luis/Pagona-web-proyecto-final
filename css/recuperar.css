@@ -1,0 +1,168 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+
+    height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: #f3f3f3;
+
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.contenedor{
+
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card{
+
+    width: 600px;
+
+    background: white;
+
+    border-radius: 30px;
+
+    padding: 60px;
+
+    box-shadow:
+    0px 10px 30px rgba(0,0,0,0.08);
+
+    text-align: center;
+}
+
+.titulo{
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 15px;
+
+    margin-bottom: 15px;
+}
+
+.titulo i{
+
+    font-size: 55px;
+    color: #222;
+}
+
+.titulo h1{
+
+    font-size: 55px;
+    color: #333;
+}
+
+.subtitulo{
+
+    color: gray;
+
+    font-size: 24px;
+
+    margin-bottom: 50px;
+}
+
+.input-box{
+
+    display: flex;
+    align-items: center;
+
+    border-bottom:
+    2px solid #ddd;
+
+    margin-bottom: 40px;
+
+    padding: 15px 0;
+}
+
+.input-box i{
+
+    font-size: 25px;
+
+    color: #222;
+
+    margin-right: 15px;
+}
+
+.input-box input{
+
+    width: 100%;
+
+    border: none;
+    outline: none;
+
+    font-size: 22px;
+
+    background: transparent;
+}
+
+button{
+
+    width: 100%;
+
+    padding: 18px;
+
+    border: none;
+
+    border-radius: 50px;
+
+    background:
+    linear-gradient(
+    90deg,
+    #6174f3,
+    #7a4db8
+    );
+
+    color: white;
+
+    font-size: 24px;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+button:hover{
+
+    transform: scale(1.03);
+}
+
+.hidden {
+    display: none;
+}
+
+#mensaje{
+
+    margin-top: 30px;
+
+    font-size: 20px;
+
+    font-weight: bold;
+}
+
+.volver{
+
+    margin-top: 35px;
+}
+
+.volver a{
+
+    text-decoration: none;
+
+    color: #6174f3;
+
+    font-size: 20px;
+
+    font-weight: bold;
+}
