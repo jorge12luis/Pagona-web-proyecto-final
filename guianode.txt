@@ -1,0 +1,4 @@
+1-verificar que node este instalado (node -v)
+2- encender node(npm init -y)
+3- instalar dependencias (npm install express mysql2 cors)
+4- crear archivo llamado server(server.js)

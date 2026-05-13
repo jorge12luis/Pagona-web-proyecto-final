@@ -1,124 +1,101 @@
-/* CONTENEDOR GENERAL */
-.login-wrapper{
-    display:flex;
-    height:100vh;
-}
-
-/* LADO IZQUIERDO (MARCA) */
-.login-brand{
-    width:50%;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    padding:40px;
-}
-
-.h2{
-    color: white;
-}
-
-.login-brand img{
-    width:400px;
-    margin-bottom:20px;
-}
-
-.login-brand h1{
-    font-family:'Cormorant Garamond', serif;
-    font-size:50px;
-    letter-spacing:4px;
-}
-
-.login-brand p{
-    color:#777;
-    margin-top:10px;
-}
-
-/* LADO DERECHO */
-.login-container{
-    width:40%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    transform: translateX(-40px);
-}
-
-/* CARD LOGIN */
-.login-card{
-    width:600px;
-    background:rgb(20, 65, 3);
-    padding:100px;
-    border-radius:20px;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
-    text-align:center;
-}
-
-.login-card h2{
-    font-family:'Cormorant Garamond', serif;
-    font-size:40px;
-    margin-bottom:10px;
-}
-
-.subtexto{
-    color:#faf6f6;
-    margin-bottom:30px;
-}
-
-/* INPUTS */
-.input-group{
-    text-align:left;
-    margin-bottom:20px;
-}
-
-.input-group label{
-    font-size:13px;
-    color:rgb(248, 246, 246);
-    display:block;
-    margin-bottom:5px;
-}
-
-.input-group input{
-    width:100%;
-    padding:12px;
-    border:none;
-    border-bottom:1px solid #ccc;
-    outline:none;
-    background:transparent;
-}
-
-.input-group input:focus{
-    border-bottom:1px solid rgb(238, 231, 231);
-}
-
-.btn-dunaka{
-    color: rgba(11, 80, 2, 0.911);
-} 
-
-/* EXTRA */
-.extra{
-    margin-top:20px;
-    font-size:14px;
-}
-
-.extra a{
-    color:rgb(250, 248, 248);
-    text-decoration:underline;
-}
-
-/* RESPONSIVE */
-@media(max-width:768px){
-    .login-wrapper{
-        flex-direction:column;
-    }
-
-    .login-brand{
-        width:100%;
-        height:30%;
-    }
-
-    .login-container{
-        width:100%;
-        height:70%;
-    }
-}
+ body {
+            background:#faf8f4;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+        }
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            backdrop-filter: blur(10px);
+            max-height: 90vh;
+            box-sizing: border-box;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .login-header h1 {
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .login-header p {
+            color: #666;
+            font-size: 14px;
+        }
+        .form-floating {
+            margin-bottom: 20px;
+        }
+        .form-control {
+            border: none;
+            border-bottom: 2px solid #ddd;
+            border-radius: 0;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            box-shadow: none;
+            border-bottom-color: #032e15;
+            background: rgba(102, 126, 234, 0.1);
+        }
+        .btn-login {
+            background:#032e15;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-weight: bold;
+            color: white;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .login-link a {
+            color: #032e15;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        .social-login {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .social-btn {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 0 10px;
+            line-height: 40px;
+            text-align: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .social-btn:hover {
+            transform: scale(1.1);
+        }
+        .social-login{
+           color: black;
+           font-size: 20px;  
+        }
+        .social-login a{
+            color: #032e15;
+            font-size: 28px;
+        }

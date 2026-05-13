@@ -1,32 +1,38 @@
-const formulario = document.getElementById("formLogin");
-
-formulario.addEventListener("submit", async (e) => {
+document.getElementById('formLogin').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const correo = document.getElementById("correo").value.trim();
-    const contrasena = document.getElementById("contrasena").value.trim();
+    const datos = {
+        correo: document.getElementById('correo').value,
+        contrasena: document.getElementById('contrasena').value
+    };
 
     try {
-        const respuesta = await fetch("http://localhost:3000/login", {
-            method: "POST",
+        const respuesta = await fetch('http://localhost:3000/login', {
+            method: 'POST',
             headers: {
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ correo, contrasena })
+            body: JSON.stringify(datos)
         });
 
         const data = await respuesta.json();
 
-        if (data.success) {
-            localStorage.setItem("correoUsuario", correo);
-            localStorage.setItem("usuarioData", JSON.stringify(data.usuario));
-            window.location.href = "index.html";
-            return;
+        if (respuesta.ok) {
+
+            alert('Bienvenido ' + data.usuario.nombre);
+
+            // 🔥 guardar usuario en sesión (opcional)
+            localStorage.setItem('usuario', JSON.stringify(data.usuario));
+
+            // 🚀 REDIRECCIÓN A LA PÁGINA PRINCIPAL
+            window.location.href = "inicio.html";
+
+        } else {
+            alert(data.mensaje);
         }
 
-        alert(data.message || "Error al iniciar sesión");
     } catch (error) {
-        console.error(error);
-        alert("No se pudo conectar con el servidor. Asegúrate de que el backend esté corriendo en localhost:3000.");
+        console.log(error);
+        alert('Error de conexión');
     }
 });
