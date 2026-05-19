@@ -54,8 +54,10 @@
 <button class="btn-comprar" onclick="comprarAhora()">
     Comprar ahora
 </button>            
+<button class="btn-carrito" onclick="agregarCarrito()">
+    Agregar al carrito
+</button>
 
-<button class="btn-carrito" id="carrito">Agregar al carrito</button>
             </div>
         </div>
     </section>
@@ -72,8 +74,7 @@
     </footer>
     <script src="../js/detalle_producto.js"></script>
     <script src="../js/carrito.js"></script>
-</body>
-<script>
+    <script>
 
 function comprarAhora(){
 
@@ -94,4 +95,46 @@ function comprarAhora(){
 }
 
 </script>
+<script>
+
+function agregarCarrito(){
+
+    const producto = {
+
+        nombre: document.getElementById("productoTitulo").textContent,
+
+        precio: parseInt(
+            document.getElementById("productoPrecio")
+            .textContent
+            .replace("$","")
+            .replace(/\./g,"")
+        ),
+
+        imagen: document.getElementById("productoImagen").src,
+
+        cantidad: 1
+    };
+
+    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+    const existe = carrito.find(item => item.nombre === producto.nombre);
+
+    if(existe){
+
+        existe.cantidad++;
+
+    }else{
+
+        carrito.push(producto);
+    }
+
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+
+    alert("Producto agregado al carrito");
+}
+
+</script>
+</body>
+
+
 </html>
