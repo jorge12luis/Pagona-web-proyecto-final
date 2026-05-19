@@ -76,22 +76,43 @@
     <script src="../js/carrito.js"></script>
     <script>
 
-function comprarAhora(){
+function comprarAhora() {
 
-    // Revisar si el usuario inició sesión
+    console.log("Botón comprar funcionando");
+
+    // verificar login
     const usuario = localStorage.getItem("usuarioData");
 
-    if(!usuario){
+    if (!usuario) {
 
-        alert("Debes iniciar sesión para continuar");
+        alert("Debes iniciar sesión");
 
         window.location.href = "../login.html";
 
         return;
     }
 
-    // Si ya inició sesión
-    window.location.href = "../checkout.html";
+    // obtener producto actual
+    const producto = {
+
+        nombre: document.getElementById("productoTitulo").textContent,
+
+        precio: document.getElementById("productoPrecio")
+            .textContent
+            .replace("$", "")
+            .replace(/\./g, ""),
+
+        imagen: document.getElementById("productoImagen").src
+    };
+
+    // guardar producto temporal
+    localStorage.setItem(
+        "productoComprar",
+        JSON.stringify(producto)
+    );
+
+    // redirigir
+    window.location.href = "../informacionCliente.html";
 }
 
 </script>
@@ -132,6 +153,40 @@ function agregarCarrito(){
 
     alert("Producto agregado al carrito");
 }
+
+</script>
+<script>
+
+document.getElementById("formRegistro").addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    // Obtener carrito
+    let carrito = JSON.parse(
+        localStorage.getItem("carrito")
+    ) || [];
+
+    let total = 0;
+
+    carrito.forEach(producto => {
+
+        total += producto.precio * producto.cantidad;
+
+    });
+
+    // Si no hay productos
+    if(total <= 0){
+
+        alert("No hay productos en el carrito");
+
+        return;
+    }
+
+    // REDIRECCIÓN WOMPI
+    window.location.href =
+    `https://checkout.wompi.co/p/?public-key=pub_test_TMtzLyFRKH2u1wbO8kRGX9ajyXvQ0pAG&currency=COP&amount-in-cents=${total * 100}&reference=DUNAKA${Date.now()}`;
+
+});
 
 </script>
 </body>

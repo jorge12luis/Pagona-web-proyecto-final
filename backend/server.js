@@ -3,6 +3,7 @@ const mysql = require("mysql2");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
 const path = require("path");
+const axios = require("axios");
 
 const app = express();
 app.use(cors());
@@ -366,6 +367,72 @@ app.get("/obtener-usuarios", (req, res) => {
     });
 });
 
+app.post("/crear-pago", async (req, res) => {
+
+    try {
+
+        const { total } = req.body;
+
+        const referencia = "DUNAKA-" + Date.now();
+
+        const respuesta = await axios.post(
+
+            "https://sandbox.wompi.co/v1/transactions",
+
+            {
+
+                amount_in_cents: total * 100,
+
+                currency: "COP",
+
+                customer_email: "cliente@gmail.com",
+
+                reference: referencia,
+
+                payment_method: {
+                    type: "NEQUI"
+                }
+
+            },
+
+            {
+
+                headers: {
+
+                    Authorization: "Bearer pub_test_TMtzLyFRKH2ulwbO8kRGX9ajyXvQOpAG",
+
+                    "Content-Type": "application/json"
+
+                }
+
+            }
+
+        );
+
+        res.json({
+
+            success: true,
+
+            data: respuesta.data
+
+        });
+
+    } catch(error){
+
+        console.log(error.response?.data || error);
+
+        res.json({
+
+            success: false,
+
+            error: error.response?.data || error.message
+
+        });
+
+    }
+
+});
 app.listen(3000, () => {
     console.log("Servidor corriendo en puerto 3000");
 });
+
