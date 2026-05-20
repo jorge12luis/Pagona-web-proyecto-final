@@ -123,3 +123,175 @@
             document.getElementById('productoExtra').textContent = producto.extra;
             document.getElementById('productoStock').textContent = producto.stock;
         }
+let calificacionSeleccionada = 0;
+
+
+// ==========================
+// SELECCIONAR ESTRELLAS
+// ==========================
+function seleccionarEstrella(numero){
+
+    calificacionSeleccionada = numero;
+
+    const estrellas =
+        document.querySelectorAll(".estrellas span");
+
+    estrellas.forEach((estrella, index) => {
+
+        estrella.style.opacity =
+            index < numero ? "1" : "0.3";
+    });
+}
+
+
+// ==========================
+// AGREGAR RESEÑA
+// ==========================
+async function agregarResena(){
+
+    const usuario =
+        JSON.parse(localStorage.getItem("usuarioData"));
+
+    if(!usuario){
+
+        alert("Debes iniciar sesión para comentar");
+
+        window.location.href = "../login.html";
+
+        return;
+    }
+
+    const comentario =
+        document.getElementById("comentario")
+        .value
+        .trim();
+
+    if(comentario === ""){
+
+        alert("Debes escribir un comentario");
+
+        return;
+    }
+
+    if(calificacionSeleccionada === 0){
+
+        alert("Selecciona una calificación");
+
+        return;
+    }
+
+    try{
+
+        const respuesta = await fetch(
+            "http://localhost:3000/agregar-resena",
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+                body: JSON.stringify({
+
+                    producto_id: productoId,
+
+                    usuario_correo: usuario.correo,
+
+                    usuario_nombre:
+                        usuario.nombre,
+
+                    comentario,
+
+                    calificacion:
+                        calificacionSeleccionada
+                })
+            }
+        );
+
+        const data =
+            await respuesta.json();
+
+        if(data.success){
+
+            alert("Reseña agregada");
+
+            document.getElementById(
+                "comentario"
+            ).value = "";
+
+            calificacionSeleccionada = 0;
+
+            cargarResenas();
+
+        }else{
+
+            alert(data.message);
+        }
+
+    }catch(error){
+
+        console.log(error);
+
+        alert("Error conectando al servidor");
+    }
+}
+
+
+// ==========================
+// CARGAR RESEÑAS
+// ==========================
+async function cargarResenas(){
+
+    try{
+
+        const respuesta =
+            await fetch(
+                `http://localhost:3000/obtener-resenas/${productoId}`
+            );
+
+        const data =
+            await respuesta.json();
+
+        const lista =
+            document.getElementById(
+                "listaResenas"
+            );
+
+        lista.innerHTML = "";
+
+        data.resenas.forEach(resena => {
+
+            lista.innerHTML += `
+
+            <div class="resena-card">
+
+                <h4>
+                    ${resena.usuario_nombre}
+                </h4>
+
+                <div class="estrellas-view">
+
+                    ${"⭐".repeat(
+                        resena.calificacion
+                    )}
+
+                </div>
+
+                <p>
+                    ${resena.comentario}
+                </p>
+
+            </div>
+
+            `;
+        });
+
+    }catch(error){
+
+        console.log(error);
+    }
+}
+
+
+// CARGAR AUTOMÁTICAMENTE
+cargarResenas();

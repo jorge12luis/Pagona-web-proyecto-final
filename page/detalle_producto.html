@@ -60,8 +60,42 @@
 
             </div>
         </div>
-    </section>
 
+    </section>
+    <section class="resenas-container">
+
+    <h2>Reseñas del producto</h2>
+
+    <div class="form-resena">
+
+        <h3>Deja tu reseña</h3>
+
+        <div class="estrellas">
+
+            <span onclick="seleccionarEstrella(1)">⭐</span>
+            <span onclick="seleccionarEstrella(2)">⭐</span>
+            <span onclick="seleccionarEstrella(3)">⭐</span>
+            <span onclick="seleccionarEstrella(4)">⭐</span>
+            <span onclick="seleccionarEstrella(5)">⭐</span>
+
+        </div>
+
+        <textarea
+            id="comentario"
+            placeholder="Escribe tu opinión del producto..."
+        ></textarea>
+
+        <button onclick="agregarResena()">
+            Enviar reseña
+        </button>
+
+    </div>
+
+    <div id="listaResenas">
+
+    </div>
+
+</section>
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-section">
