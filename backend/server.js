@@ -38,6 +38,19 @@ conexion.query(createRecoveryTable, (error) => {
     }
 });
 
+// Agregar columna 'rol' a la tabla usuarios si no existe
+const alterTableRol = `
+ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS rol ENUM('usuario', 'admin') DEFAULT 'usuario';
+`;
+
+conexion.query(alterTableRol, (error) => {
+    if (error) {
+        console.log("Nota: Columna rol ya existe o error al crearla:", error.message);
+    } else {
+        console.log("Columna rol verificada/creada en tabla usuarios");
+    }
+});
+
 const smtpUser = process.env.SMTP_USER || "";
 const smtpPass = process.env.SMTP_PASS || "";
 
@@ -210,6 +223,10 @@ app.post("/login", (req, res) => {
 
         if (resultado.length > 0) {
             return res.json({ success: true, message: "Login correcto", usuario: resultado[0] });
+        } else{
+              res.json({
+                    success: false
+                });
         }
 
         return res.status(401).json({ success: false, message: "Correo o contraseña incorrectos." });
@@ -240,10 +257,11 @@ app.post("/registro", (req, res) => {
             correo,
             contrasena,
             numero_telefono,
-            fecha_nacimiento
+            fecha_nacimiento,
+            rol
         )
 
-        VALUES (?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, 'usuario')
 
     `;
 
@@ -278,6 +296,74 @@ app.post("/registro", (req, res) => {
 
     );
 
+});
+
+// Endpoint para cambiar rol de usuario a admin (requiere verificación)
+app.post("/cambiar-rol", (req, res) => {
+    const { correo, nuevoRol } = req.body;
+
+    if (!correo || !nuevoRol || !['usuario', 'admin'].includes(nuevoRol)) {
+        return res.status(400).json({ success: false, message: "Datos inválidos" });
+    }
+
+    const sql = `
+        UPDATE usuarios
+        SET rol = ?
+        WHERE correo = ?
+    `;
+
+    conexion.query(sql, [nuevoRol, correo], (error) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({ success: false, message: "Error actualizando rol" });
+        }
+
+        res.json({ success: true, message: `Rol actualizado a ${nuevoRol}` });
+    });
+});
+
+// Endpoint para obtener info de usuario (incluyendo rol)
+app.post("/obtener-usuario", (req, res) => {
+    const { correo } = req.body;
+
+    if (!correo) {
+        return res.status(400).json({ success: false, message: "Correo requerido" });
+    }
+
+    const sql = `
+        SELECT id, nombre, apellido, correo, rol FROM usuarios
+        WHERE correo = ?
+    `;
+
+    conexion.query(sql, [correo], (error, resultado) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({ success: false, message: "Error obteniendo usuario" });
+        }
+
+        if (resultado.length > 0) {
+            return res.json({ success: true, usuario: resultado[0] });
+        } else {
+            return res.status(404).json({ success: false, message: "Usuario no encontrado" });
+        }
+    });
+});
+
+// Endpoint para obtener todos los usuarios
+app.get("/obtener-usuarios", (req, res) => {
+    const sql = `
+        SELECT id, nombre, apellido, correo, rol FROM usuarios
+        ORDER BY nombre ASC
+    `;
+
+    conexion.query(sql, (error, resultado) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({ success: false, message: "Error obteniendo usuarios" });
+        }
+
+        res.json({ success: true, usuarios: resultado });
+    });
 });
 
 app.listen(3000, () => {
