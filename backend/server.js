@@ -39,17 +39,7 @@ conexion.query(createRecoveryTable, (error) => {
 });
 
 // Agregar columna 'rol' a la tabla usuarios si no existe
-const alterTableRol = `
-ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS rol ENUM('usuario', 'admin') DEFAULT 'usuario';
-`;
 
-conexion.query(alterTableRol, (error) => {
-    if (error) {
-        console.log("Nota: Columna rol ya existe o error al crearla:", error.message);
-    } else {
-        console.log("Columna rol verificada/creada en tabla usuarios");
-    }
-});
 
 const smtpUser = process.env.SMTP_USER || "";
 const smtpPass = process.env.SMTP_PASS || "";
@@ -208,6 +198,7 @@ app.post("/recuperar/cambiar", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
+
     const { correo, contrasena } = req.body;
 
     const sql = `
@@ -216,21 +207,37 @@ app.post("/login", (req, res) => {
     `;
 
     conexion.query(sql, [correo, contrasena], (error, resultado) => {
-        if (error) {
+
+        if(error){
+
             console.log(error);
-            return res.status(500).json({ success: false, message: "Error interno del servidor." });
+
+            return res.status(500).json({
+                success: false,
+                message: "Error interno del servidor"
+            });
+
         }
 
-        if (resultado.length > 0) {
-            return res.json({ success: true, message: "Login correcto", usuario: resultado[0] });
-        } else{
-              res.json({
-                    success: false
-                });
+        if(resultado.length > 0){
+
+            return res.json({
+                success: true,
+                message: "Login correcto",
+                usuario: resultado[0]
+            });
+
+        } else {
+
+            return res.status(401).json({
+                success: false,
+                message: "Correo o contraseña incorrectos"
+            });
+
         }
 
-        return res.status(401).json({ success: false, message: "Correo o contraseña incorrectos." });
     });
+
 });
 
 app.post("/registro", (req, res) => {
@@ -297,75 +304,164 @@ app.post("/registro", (req, res) => {
     );
 
 });
+app.post("/comprar", (req, res) => {
 
-// Endpoint para cambiar rol de usuario a admin (requiere verificación)
-app.post("/cambiar-rol", (req, res) => {
-    const { correo, nuevoRol } = req.body;
+    const { idProducto, cantidad } = req.body;
 
-    if (!correo || !nuevoRol || !['usuario', 'admin'].includes(nuevoRol)) {
-        return res.status(400).json({ success: false, message: "Datos inválidos" });
-    }
-
-    const sql = `
-        UPDATE usuarios
-        SET rol = ?
-        WHERE correo = ?
+    const sqlBuscar = `
+        SELECT stock
+        FROM productos
+        WHERE id = ?
     `;
 
-    conexion.query(sql, [nuevoRol, correo], (error) => {
-        if (error) {
-            console.log(error);
-            return res.status(500).json({ success: false, message: "Error actualizando rol" });
+    conexion.query(sqlBuscar, [idProducto], (error, resultado) => {
+
+        if(error){
+            return res.send("Error");
         }
 
-        res.json({ success: true, message: `Rol actualizado a ${nuevoRol}` });
+        const stockActual = resultado[0].stock;
+
+        if(stockActual < cantidad){
+
+            return res.send("No hay suficiente stock");
+        }
+
+        const nuevoStock = stockActual - cantidad;
+
+        const sqlActualizar = `
+            UPDATE productos
+            SET stock = ?
+            WHERE id = ?
+        `;
+
+        conexion.query(
+            sqlActualizar,
+            [nuevoStock, idProducto],
+            (error) => {
+
+                if(error){
+                    return res.send("Error actualizando stock");
+                }
+
+                res.send("Compra realizada");
+            }
+        );
+
     });
+
 });
+// =======================
+// DASHBOARD ADMIN
+// =======================
 
-// Endpoint para obtener info de usuario (incluyendo rol)
-app.post("/obtener-usuario", (req, res) => {
-    const { correo } = req.body;
+// TOTAL USUARIOS
+app.get("/admin/total-usuarios", (req, res) => {
 
-    if (!correo) {
-        return res.status(400).json({ success: false, message: "Correo requerido" });
-    }
-
-    const sql = `
-        SELECT id, nombre, apellido, correo, rol FROM usuarios
-        WHERE correo = ?
-    `;
-
-    conexion.query(sql, [correo], (error, resultado) => {
-        if (error) {
-            console.log(error);
-            return res.status(500).json({ success: false, message: "Error obteniendo usuario" });
-        }
-
-        if (resultado.length > 0) {
-            return res.json({ success: true, usuario: resultado[0] });
-        } else {
-            return res.status(404).json({ success: false, message: "Usuario no encontrado" });
-        }
-    });
-});
-
-// Endpoint para obtener todos los usuarios
-app.get("/obtener-usuarios", (req, res) => {
-    const sql = `
-        SELECT id, nombre, apellido, correo, rol FROM usuarios
-        ORDER BY nombre ASC
-    `;
+    const sql = "SELECT COUNT(*) AS total FROM usuarios";
 
     conexion.query(sql, (error, resultado) => {
-        if (error) {
+
+        if(error){
+
             console.log(error);
-            return res.status(500).json({ success: false, message: "Error obteniendo usuarios" });
+
+            return res.status(500).json({
+                success: false
+            });
+
         }
 
-        res.json({ success: true, usuarios: resultado });
+        res.json({
+            success: true,
+            total: resultado[0].total
+        });
+
     });
+
+});
+
+
+// TOTAL PRODUCTOS
+app.get("/admin/total-productos", (req, res) => {
+
+    const sql = "SELECT COUNT(*) AS total FROM productos";
+
+    conexion.query(sql, (error, resultado) => {
+
+        if(error){
+
+            console.log(error);
+
+            return res.status(500).json({
+                success: false
+            });
+
+        }
+
+        res.json({
+            success: true,
+            total: resultado[0].total
+        });
+
+    });
+
+});
+
+
+// TOTAL VENTAS
+app.get("/admin/total-ventas", (req, res) => {
+
+    const sql = "SELECT COUNT(*) AS total FROM ventas";
+
+    conexion.query(sql, (error, resultado) => {
+
+        if(error){
+
+            console.log(error);
+
+            return res.status(500).json({
+                success: false
+            });
+
+        }
+
+        res.json({
+            success: true,
+            total: resultado[0].total
+        });
+
+    });
+
+});
+
+
+// GANANCIAS
+app.get("/admin/ganancias", (req, res) => {
+
+    const sql = "SELECT SUM(total) AS ganancias FROM ventas";
+
+    conexion.query(sql, (error, resultado) => {
+
+        if(error){
+
+            console.log(error);
+
+            return res.status(500).json({
+                success: false
+            });
+
+        }
+
+        res.json({
+            success: true,
+            ganancias: resultado[0].ganancias || 0
+        });
+
+    });
+
 });
 
 app.listen(3000, () => {
-    console.log("Servidor corriendo en puerto 3000");
+    console.log("Servidor corriendo");
 });

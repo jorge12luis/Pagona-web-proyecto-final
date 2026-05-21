@@ -74,30 +74,55 @@
     </footer>
     <script src="../js/detalle_producto.js"></script>
     <script src="../js/carrito.js"></script>
-    <script>
+<script>
 
 function comprarAhora(){
 
-    // Revisar si el usuario inició sesión
-    const usuario = localStorage.getItem("usuarioData");
+    const stockTexto =
+        document.getElementById("productoStock").textContent;
+
+    // Revisar stock
+    if(stockTexto.includes("Sin stock")){
+
+        alert("Producto agotado");
+
+        return;
+    }
+
+    // Revisar login
+    const usuario =
+        localStorage.getItem("usuarioData");
 
     if(!usuario){
 
         alert("Debes iniciar sesión para continuar");
 
-        window.location.href = "../login.html";
+        window.location.href =
+            "../login.html";
 
         return;
     }
 
-    // Si ya inició sesión
-    window.location.href = "../checkout.html";
+    // Ir a información cliente
+    window.location.href =
+        "../informacionCliente.html";
 }
 
 </script>
 <script>
 
 function agregarCarrito(){
+
+    const stockTexto =
+        document.getElementById("productoStock").textContent;
+
+    // Verificar stock
+    if(stockTexto.includes("Sin stock")){
+
+        alert("Este producto está agotado");
+
+        return;
+    }
 
     const producto = {
 
@@ -115,9 +140,11 @@ function agregarCarrito(){
         cantidad: 1
     };
 
-    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    let carrito =
+        JSON.parse(localStorage.getItem("carrito")) || [];
 
-    const existe = carrito.find(item => item.nombre === producto.nombre);
+    const existe =
+        carrito.find(item => item.nombre === producto.nombre);
 
     if(existe){
 
@@ -128,7 +155,10 @@ function agregarCarrito(){
         carrito.push(producto);
     }
 
-    localStorage.setItem("carrito", JSON.stringify(carrito));
+    localStorage.setItem(
+        "carrito",
+        JSON.stringify(carrito)
+    );
 
     alert("Producto agregado al carrito");
 }
