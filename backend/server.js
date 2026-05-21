@@ -3,6 +3,7 @@ const mysql = require("mysql2");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
 const path = require("path");
+const axios = require("axios");
 
 const app = express();
 app.use(cors());
@@ -39,7 +40,17 @@ conexion.query(createRecoveryTable, (error) => {
 });
 
 // Agregar columna 'rol' a la tabla usuarios si no existe
+const alterTableRol = `
+ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS rol ENUM('usuario', 'admin') DEFAULT 'usuario';
+`;
 
+conexion.query(alterTableRol, (error) => {
+    if (error) {
+        console.log("Nota: Columna rol ya existe o error al crearla:", error.message);
+    } else {
+        console.log("Columna rol verificada/creada en tabla usuarios");
+    }
+});
 
 const smtpUser = process.env.SMTP_USER || "";
 const smtpPass = process.env.SMTP_PASS || "";
@@ -198,7 +209,6 @@ app.post("/recuperar/cambiar", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-
     const { correo, contrasena } = req.body;
 
     const sql = `
@@ -207,37 +217,21 @@ app.post("/login", (req, res) => {
     `;
 
     conexion.query(sql, [correo, contrasena], (error, resultado) => {
-
-        if(error){
-
+        if (error) {
             console.log(error);
-
-            return res.status(500).json({
-                success: false,
-                message: "Error interno del servidor"
-            });
-
+            return res.status(500).json({ success: false, message: "Error interno del servidor." });
         }
 
-        if(resultado.length > 0){
-
-            return res.json({
-                success: true,
-                message: "Login correcto",
-                usuario: resultado[0]
-            });
-
-        } else {
-
-            return res.status(401).json({
-                success: false,
-                message: "Correo o contraseña incorrectos"
-            });
-
+        if (resultado.length > 0) {
+            return res.json({ success: true, message: "Login correcto", usuario: resultado[0] });
+        } else{
+              res.json({
+                    success: false
+                });
         }
 
+        return res.status(401).json({ success: false, message: "Correo o contraseña incorrectos." });
     });
-
 });
 
 app.post("/registro", (req, res) => {
@@ -304,164 +298,141 @@ app.post("/registro", (req, res) => {
     );
 
 });
-app.post("/comprar", (req, res) => {
 
-    const { idProducto, cantidad } = req.body;
+// Endpoint para cambiar rol de usuario a admin (requiere verificación)
+app.post("/cambiar-rol", (req, res) => {
+    const { correo, nuevoRol } = req.body;
 
-    const sqlBuscar = `
-        SELECT stock
-        FROM productos
-        WHERE id = ?
+    if (!correo || !nuevoRol || !['usuario', 'admin'].includes(nuevoRol)) {
+        return res.status(400).json({ success: false, message: "Datos inválidos" });
+    }
+
+    const sql = `
+        UPDATE usuarios
+        SET rol = ?
+        WHERE correo = ?
     `;
 
-    conexion.query(sqlBuscar, [idProducto], (error, resultado) => {
-
-        if(error){
-            return res.send("Error");
+    conexion.query(sql, [nuevoRol, correo], (error) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({ success: false, message: "Error actualizando rol" });
         }
 
-        const stockActual = resultado[0].stock;
+        res.json({ success: true, message: `Rol actualizado a ${nuevoRol}` });
+    });
+});
 
-        if(stockActual < cantidad){
+// Endpoint para obtener info de usuario (incluyendo rol)
+app.post("/obtener-usuario", (req, res) => {
+    const { correo } = req.body;
 
-            return res.send("No hay suficiente stock");
+    if (!correo) {
+        return res.status(400).json({ success: false, message: "Correo requerido" });
+    }
+
+    const sql = `
+        SELECT id, nombre, apellido, correo, rol FROM usuarios
+        WHERE correo = ?
+    `;
+
+    conexion.query(sql, [correo], (error, resultado) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({ success: false, message: "Error obteniendo usuario" });
         }
 
-        const nuevoStock = stockActual - cantidad;
+        if (resultado.length > 0) {
+            return res.json({ success: true, usuario: resultado[0] });
+        } else {
+            return res.status(404).json({ success: false, message: "Usuario no encontrado" });
+        }
+    });
+});
 
-        const sqlActualizar = `
-            UPDATE productos
-            SET stock = ?
-            WHERE id = ?
-        `;
+// Endpoint para obtener todos los usuarios
+app.get("/obtener-usuarios", (req, res) => {
+    const sql = `
+        SELECT id, nombre, apellido, correo, rol FROM usuarios
+        ORDER BY nombre ASC
+    `;
 
-        conexion.query(
-            sqlActualizar,
-            [nuevoStock, idProducto],
-            (error) => {
+    conexion.query(sql, (error, resultado) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({ success: false, message: "Error obteniendo usuarios" });
+        }
 
-                if(error){
-                    return res.send("Error actualizando stock");
+        res.json({ success: true, usuarios: resultado });
+    });
+});
+
+app.post("/crear-pago", async (req, res) => {
+
+    try {
+
+        const { total } = req.body;
+
+        const referencia = "DUNAKA-" + Date.now();
+
+        const respuesta = await axios.post(
+
+            "https://sandbox.wompi.co/v1/transactions",
+
+            {
+
+                amount_in_cents: total * 100,
+
+                currency: "COP",
+
+                customer_email: "cliente@gmail.com",
+
+                reference: referencia,
+
+                payment_method: {
+                    type: "NEQUI"
                 }
 
-                res.send("Compra realizada");
+            },
+
+            {
+
+                headers: {
+
+                    Authorization: "Bearer pub_test_TMtzLyFRKH2ulwbO8kRGX9ajyXvQOpAG",
+
+                    "Content-Type": "application/json"
+
+                }
+
             }
+
         );
 
-    });
-
-});
-// =======================
-// DASHBOARD ADMIN
-// =======================
-
-// TOTAL USUARIOS
-app.get("/admin/total-usuarios", (req, res) => {
-
-    const sql = "SELECT COUNT(*) AS total FROM usuarios";
-
-    conexion.query(sql, (error, resultado) => {
-
-        if(error){
-
-            console.log(error);
-
-            return res.status(500).json({
-                success: false
-            });
-
-        }
-
         res.json({
+
             success: true,
-            total: resultado[0].total
+
+            data: respuesta.data
+
         });
 
-    });
+    } catch(error){
 
-});
-
-
-// TOTAL PRODUCTOS
-app.get("/admin/total-productos", (req, res) => {
-
-    const sql = "SELECT COUNT(*) AS total FROM productos";
-
-    conexion.query(sql, (error, resultado) => {
-
-        if(error){
-
-            console.log(error);
-
-            return res.status(500).json({
-                success: false
-            });
-
-        }
+        console.log(error.response?.data || error);
 
         res.json({
-            success: true,
-            total: resultado[0].total
+
+            success: false,
+
+            error: error.response?.data || error.message
+
         });
 
-    });
+    }
 
 });
-
-
-// TOTAL VENTAS
-app.get("/admin/total-ventas", (req, res) => {
-
-    const sql = "SELECT COUNT(*) AS total FROM ventas";
-
-    conexion.query(sql, (error, resultado) => {
-
-        if(error){
-
-            console.log(error);
-
-            return res.status(500).json({
-                success: false
-            });
-
-        }
-
-        res.json({
-            success: true,
-            total: resultado[0].total
-        });
-
-    });
-
-});
-
-
-// GANANCIAS
-app.get("/admin/ganancias", (req, res) => {
-
-    const sql = "SELECT SUM(total) AS ganancias FROM ventas";
-
-    conexion.query(sql, (error, resultado) => {
-
-        if(error){
-
-            console.log(error);
-
-            return res.status(500).json({
-                success: false
-            });
-
-        }
-
-        res.json({
-            success: true,
-            ganancias: resultado[0].ganancias || 0
-        });
-
-    });
-
-});
-
 app.listen(3000, () => {
-    console.log("Servidor corriendo");
+    console.log("Servidor corriendo en puerto 3000");
 });
+

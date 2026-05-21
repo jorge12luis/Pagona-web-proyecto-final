@@ -23,10 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Cerrar sesión
 function cerrarSesion() {
-    const confirmacion = confirm('¿Estás seguro de que deseas cerrar sesión?');
-    if (!confirmacion) {
-        return;
-    }
     localStorage.removeItem('correoUsuario');
     localStorage.removeItem('usuarioData');
     localStorage.removeItem('rolUsuario');
@@ -169,66 +165,3 @@ async function cambiarRolDirecto(correo, nuevoRol) {
         mostrarMensaje('mensaje-usuarios', 'Error al conectar con el servidor', 'error');
     }
 }
-// ===============================
-// DASHBOARD
-// ===============================
-
-async function cargarDashboard() {
-
-    try {
-
-        // TOTAL PRODUCTOS
-        const productos = await fetch(
-            "http://localhost:3000/admin/total-productos"
-        );
-
-        const dataProductos = await productos.json();
-
-        document.getElementById("totalProductos").textContent =
-            dataProductos.total || 0;
-
-
-        // TOTAL USUARIOS
-        const usuarios = await fetch(
-            "http://localhost:3000/admin/total-usuarios"
-        );
-
-        const dataUsuarios = await usuarios.json();
-
-        document.getElementById("totalUsuarios").textContent =
-            dataUsuarios.total || 0;
-
-
-        // TOTAL VENTAS
-        const ventas = await fetch(
-            "http://localhost:3000/admin/total-ventas"
-        );
-
-        const dataVentas = await ventas.json();
-
-        document.getElementById("totalVentas").textContent =
-            dataVentas.total || 0;
-
-
-        // GANANCIAS
-        const ganancias = await fetch(
-            "http://localhost:3000/admin/ganancias"
-        );
-
-        const dataGanancias = await ganancias.json();
-
-        document.getElementById("ganancias").textContent =
-            "$" + Number(
-                dataGanancias.ganancias || 0
-            ).toLocaleString();
-
-    } catch (error) {
-
-        console.log(error);
-
-    }
-
-}
-
-// Ejecutar dashboard
-cargarDashboard();
