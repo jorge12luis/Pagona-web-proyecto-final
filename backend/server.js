@@ -224,6 +224,7 @@ app.post("/login", (req, res) => {
 
         if (resultado.length > 0) {
             return res.json({ success: true, message: "Login correcto", usuario: resultado[0] });
+            
         } else{
               res.json({
                     success: false

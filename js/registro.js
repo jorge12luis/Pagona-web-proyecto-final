@@ -62,9 +62,16 @@ async (e)=>{
 
     });
 
-    const data =
-    await respuesta.text();
+    if (respuesta.ok) {
+        const data =
+        await respuesta.text();
 
-    alert(data);
+        alert(data);
 
+        formulario.reset();
+
+        window.location.href = "login.html";
+    } else {
+        alert("Error al registrarse");
+    }
 });
