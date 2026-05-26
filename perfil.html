@@ -243,13 +243,16 @@ document.addEventListener(
     'DOMContentLoaded',
     function() {
 
-    const usuarioData =
+    // MYSQL
+    let usuarioData =
     localStorage.getItem('usuarioData');
 
-    const correoUsuario =
-    localStorage.getItem('correoUsuario');
+    // GOOGLE
+    let usuarioGoogle =
+    localStorage.getItem('usuarioGoogle');
 
-    if(!usuarioData || !correoUsuario){
+    // SI NO HAY NINGUNO
+    if(!usuarioData && !usuarioGoogle){
 
         alert(
             'Por favor inicia sesión primero'
@@ -263,8 +266,20 @@ document.addEventListener(
 
     try{
 
-        const usuario =
-        JSON.parse(usuarioData);
+        let usuario;
+
+        // SI ES GOOGLE
+        if(usuarioGoogle){
+
+            usuario =
+            JSON.parse(usuarioGoogle);
+
+        }else{
+
+            usuario =
+            JSON.parse(usuarioData);
+
+        }
 
         // NOMBRE
         document.getElementById(
@@ -276,7 +291,7 @@ document.addEventListener(
         document.getElementById(
             'correoUsuario'
         ).textContent =
-        usuario.correo || correoUsuario;
+        usuario.correo || 'Sin correo';
 
         // INICIALES
         const iniciales =
@@ -314,12 +329,22 @@ function cerrarSesion(){
 
     if(confirmar){
 
+        // MYSQL
         localStorage.removeItem(
             "usuarioData"
         );
 
         localStorage.removeItem(
             "correoUsuario"
+        );
+
+        localStorage.removeItem(
+            "rolUsuario"
+        );
+
+        // GOOGLE
+        localStorage.removeItem(
+            "usuarioGoogle"
         );
 
         alert(
