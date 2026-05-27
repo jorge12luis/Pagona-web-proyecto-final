@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Perfil</title>
+    <link rel="stylesheet" href="css/editar_perfil.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <!-- LOGO -->
+        <div class="logo">
+            <h2>Editar Perfil</h2>
+        </div>
+
+        <!-- PERFIL -->
+        <div class="perfil_superior">
+
+        <!-- IMAGEN -->
+        <div class="contenedor_imagen">
+
+            <!-- SI HAY IMAGEN -->
+            <img class="fotoPerfil" src="" alt="Foto de perfil">
+
+            <!-- ICONO POR DEFECTO -->
+            <div class="iconoUsuario">
+                <i class="fa-solid fa-user icono"></i>
+            </div>
+
+        </div>
+
+        <!-- BOTON -->
+        <div class="boton_agregar_foto">
+        </div>
+
+        <!-- TEXTO -->
+        <h3>Bienvenido, ah dunaka!</h3>
+        </div>
+
+        <!-- MENU -->
+        <nav>
+            <h3><a href="perfil.html"> Mi Perfil </a></h3>
+            <h3><a href="index.html"> Inicio </a></h3>
+        </nav>
+
+    </aside>
+
+
+    <!-- CONTENIDO -->
+    <main class="contenido_principal">
+        <!-- CONTENIDO INTERNO -->
+        <section class="content">
+
+            <!-- FOTO PERFIL -->
+            <center>
+                <section class="perfil-foto-seccion">
+
+                    <div class="text">
+                        <h1>Foto de perfil</h1>
+
+                        <div class="contenedor_imagen">
+
+                            <!--SI HAY IMAGEN-->
+                            <img class="fotoPerfil" src="" alt="Foto de perfil">
+
+                            <!-- ICONO POR DEFECTO -->
+                            <div class="iconoUsuario">
+                             <i class="fa-solid fa-user icono" style="color: rgba(0, 0, 0, 0.562);"></i>
+                            </div>
+
+                        </div>
+
+                        <center>
+                        <p>
+                            Sube tu foto de perfil,
+                            un retrato en primer plano es ideal.
+                        </p>
+                        </center>
+                    </div>
+
+                    <div class="photo-box">
+                        <center><button class="button-perfil">
+                            Editar Foto de Perfil
+                        </button>
+                        </center>
+                    </div>
+
+                </section>
+
+            </center>
+
+
+            <hr>
+
+
+            <!-- DATOS USUARIO -->
+            <section class="datos-usuario">
+
+                <center><div class="section-title">
+                    <h2>Datos de usuario</h2>
+                    <p>Añade tus datos de contacto.</p>
+                </div>
+                </center>
+
+                <form class="formulario-de-datos-de-usuario">
+
+                    <div class="row">
+
+                        <div class="input-group">
+                            <label>Nombre</label>
+                            <input type="text">
+                         </div>
+
+                         <div class="input-group">
+                            <label>Apellido</label>
+                            <input type="text">
+                         </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="input-group">
+                            <label>Correo Electrónico</label>
+                            <input type="email">
+                        </div>
+
+                        <div class="input-group">
+                            <label>Contraseña</label>
+                            <input type="password">
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="input-group">
+                            <label>Número de Teléfono</label>
+                            <input type="number">
+                        </div>
+
+                         <div class="input-group">
+                            <label>Fecha de nacimiento</label>
+                            <input type="date">
+                         </div>
+
+                    </div>
+                    <center>
+                    <Button>
+                        Actualizar datos
+                    </Button>
+                    </center>
+                </form>
+            </section>
+        </section>
+    </main>
+</body>
+</html>

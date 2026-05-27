@@ -39,7 +39,6 @@ conexion.query(createRecoveryTable, (error) => {
     }
 });
 
-// Agregar columna 'rol' a la tabla usuarios si no existe
 const alterTableRol = `
 ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS rol ENUM('usuario', 'admin') DEFAULT 'usuario';
 `;
