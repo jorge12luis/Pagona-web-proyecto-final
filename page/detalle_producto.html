@@ -108,55 +108,51 @@
     </footer>
     <script src="../js/detalle_producto.js"></script>
     <script src="../js/carrito.js"></script>
-<script>
+    <script>
 
-function comprarAhora(){
+function comprarAhora() {
 
-    const stockTexto =
-        document.getElementById("productoStock").textContent;
+    console.log("Botón comprar funcionando");
 
-    // Revisar stock
-    if(stockTexto.includes("Sin stock")){
+    // verificar login
+    const usuario = localStorage.getItem("usuarioData");
 
-        alert("Producto agotado");
+    if (!usuario) {
 
-        return;
-    }
+        alert("Debes iniciar sesión");
 
-    // Revisar login
-    const usuario =
-        localStorage.getItem("usuarioData");
-
-    if(!usuario){
-
-        alert("Debes iniciar sesión para continuar");
-
-        window.location.href =
-            "../login.html";
+        window.location.href = "../login.html";
 
         return;
     }
 
-    // Ir a información cliente
-    window.location.href =
-        "../informacionCliente.html";
+    // obtener producto actual
+    const producto = {
+
+        nombre: document.getElementById("productoTitulo").textContent,
+
+        precio: document.getElementById("productoPrecio")
+            .textContent
+            .replace("$", "")
+            .replace(/\./g, ""),
+
+        imagen: document.getElementById("productoImagen").src
+    };
+
+    // guardar producto temporal
+    localStorage.setItem(
+        "productoComprar",
+        JSON.stringify(producto)
+    );
+
+    // redirigir
+    window.location.href = "../informacionCliente.html";
 }
 
 </script>
 <script>
 
 function agregarCarrito(){
-
-    const stockTexto =
-        document.getElementById("productoStock").textContent;
-
-    // Verificar stock
-    if(stockTexto.includes("Sin stock")){
-
-        alert("Este producto está agotado");
-
-        return;
-    }
 
     const producto = {
 
@@ -174,11 +170,9 @@ function agregarCarrito(){
         cantidad: 1
     };
 
-    let carrito =
-        JSON.parse(localStorage.getItem("carrito")) || [];
+    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-    const existe =
-        carrito.find(item => item.nombre === producto.nombre);
+    const existe = carrito.find(item => item.nombre === producto.nombre);
 
     if(existe){
 
@@ -189,13 +183,44 @@ function agregarCarrito(){
         carrito.push(producto);
     }
 
-    localStorage.setItem(
-        "carrito",
-        JSON.stringify(carrito)
-    );
+    localStorage.setItem("carrito", JSON.stringify(carrito));
 
     alert("Producto agregado al carrito");
 }
+
+</script>
+<script>
+
+document.getElementById("formRegistro").addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    // Obtener carrito
+    let carrito = JSON.parse(
+        localStorage.getItem("carrito")
+    ) || [];
+
+    let total = 0;
+
+    carrito.forEach(producto => {
+
+        total += producto.precio * producto.cantidad;
+
+    });
+
+    // Si no hay productos
+    if(total <= 0){
+
+        alert("No hay productos en el carrito");
+
+        return;
+    }
+
+    // REDIRECCIÓN WOMPI
+    window.location.href =
+    `https://checkout.wompi.co/p/?public-key=pub_test_TMtzLyFRKH2u1wbO8kRGX9ajyXvQ0pAG&currency=COP&amount-in-cents=${total * 100}&reference=DUNAKA${Date.now()}`;
+
+});
 
 </script>
 </body>

@@ -1,4 +1,5 @@
 const productos = {
+
     "bolso-manhattan": {
         title: "Bolso Manhattan",
         image: "../img/bolso1.webp",
@@ -112,28 +113,74 @@ const productos = {
 
 const params = new URLSearchParams(window.location.search);
 
-const productoId = params.get('producto');
+const productoId = params.get("producto");
 
 const producto = productos[productoId];
 
 const botonComprar = document.querySelector(".btn-comprar");
 
-        if (!producto) {
-            document.getElementById('productoTitulo').textContent = 'Producto no encontrado';
-            document.getElementById('productoDescripcion').textContent = 'No se encontró la información de este producto. Regresa a la colección y selecciona otro.';
-            document.getElementById('productoImagen').src = '../img/bolso10.jpg';
-            document.getElementById('productoImagen').alt = 'Producto no encontrado';
-            document.getElementById('productoStock').textContent = 'No disponible';
-            document.getElementById('productoEstado').textContent = 'No encontrado';
-            document.getElementById('productoPrecio').textContent = '-';
-            document.getElementById('productoExtra').textContent = '';
-        } else {
-            document.getElementById('productoImagen').src = producto.image;
-            document.getElementById('productoImagen').alt = producto.title;
-            document.getElementById('productoEstado').textContent = producto.label;
-            document.getElementById('productoTitulo').textContent = producto.title;
-            document.getElementById('productoDescripcion').textContent = producto.description;
-            document.getElementById('productoPrecio').textContent = producto.price;
-            document.getElementById('productoExtra').textContent = producto.extra;
-            document.getElementById('productoStock').textContent = producto.stock;
-        }
+if (!producto) {
+
+    document.getElementById("productoTitulo").textContent =
+        "Producto no encontrado";
+
+    document.getElementById("productoDescripcion").textContent =
+        "No se encontró la información de este producto. Regresa a la colección y selecciona otro.";
+
+    document.getElementById("productoImagen").src =
+        "../img/bolso10.jpg";
+
+    document.getElementById("productoImagen").alt =
+        "Producto no encontrado";
+
+    document.getElementById("productoStock").textContent =
+        "No disponible";
+
+    document.getElementById("productoEstado").textContent =
+        "No encontrado";
+
+    document.getElementById("productoPrecio").textContent =
+        "-";
+
+    document.getElementById("productoExtra").textContent =
+        "";
+
+} else {
+
+    document.getElementById("productoImagen").src =
+        producto.image;
+
+    document.getElementById("productoImagen").alt =
+        producto.title;
+
+    document.getElementById("productoEstado").textContent =
+        producto.label;
+
+    document.getElementById("productoTitulo").textContent =
+        producto.title;
+
+    document.getElementById("productoDescripcion").textContent =
+        producto.description;
+
+    document.getElementById("productoPrecio").textContent =
+        producto.price;
+
+    document.getElementById("productoExtra").textContent =
+        producto.extra;
+
+    document.getElementById("productoStock").textContent =
+        producto.stock > 0
+            ? `Stock disponible (${producto.stock})`
+            : "Agotado";
+
+    if (producto.stock <= 0 && botonComprar) {
+
+        botonComprar.disabled = true;
+
+        botonComprar.textContent = "Agotado";
+
+        botonComprar.style.opacity = "0.6";
+
+        botonComprar.style.cursor = "not-allowed";
+    }
+}
