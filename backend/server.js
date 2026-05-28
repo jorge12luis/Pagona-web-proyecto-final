@@ -432,6 +432,52 @@ app.post("/crear-pago", async (req, res) => {
     }
 
 });
+
+// routes para consulta de los datos del usuario //
+app.post("/usuario-perfil", (req, res) => {
+
+    console.log("🔥 PETICIÓN RECIBIDA /usuario-perfil");
+
+    const { correo } = req.body;
+
+    if (!correo) {
+        return res.status(400).json({
+            success: false,
+            message: "Correo requerido"
+        });
+    }
+
+    const sql = `
+        SELECT nombre, apellido, correo, numero_telefono, fecha_nacimiento, contrasena
+        FROM usuarios
+        WHERE correo = ?
+    `;
+
+    conexion.query(sql, [correo], (error, resultado) => {
+
+        if (error) {
+            return res.status(500).json({
+                success: false,
+                message: "Error en la consulta"
+            });
+        }
+
+        if (resultado.length > 0) {
+
+            console.log("Usuario encontrado:", resultado[0]);
+
+            return res.json({
+                success: true,
+                usuario: resultado[0]
+            });
+        }
+
+        return res.status(404).json({
+            success: false,
+            message: "Usuario no encontrado"
+        });
+    });
+});
 app.listen(3000, () => {
     console.log("Servidor corriendo en puerto 3000");
 });

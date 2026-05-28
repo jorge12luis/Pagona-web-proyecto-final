@@ -1,40 +1,49 @@
-document.addEventListener(
-    'DOMContentLoaded',
-    function(){
+document.addEventListener("DOMContentLoaded", function () {
 
-    Mostrar_datos_personales();
+    cargarUsuarioDesdeBackend();
 
     eventos();
 
 });
 
 
-function Mostrar_datos_personales() {
-    // OBTENER USUARIO
-    let datos_usuario = localStorage.getItem('usuarioData');
+function cargarUsuarioDesdeBackend() {
 
-    // VALIDAR
-    if(!datos_usuario){
+    let usuario = JSON.parse(localStorage.getItem("usuarioData"));
 
-        alert(
-            'Debes iniciar sesión'
-        );
-
+    if (!usuario) {
+        alert("Debes iniciar sesión");
         return;
     }
 
-    // CONVERTIR A OBJETO
-    let usuario =
-    JSON.parse(datos_usuario);
+    fetch("http://localhost:3000/usuario-perfil", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            correo: usuario.correo
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
 
-    // LLENAR INPUTS
-    document.getElementById(
-        'inputNombre'
-    ).value =
-    usuario.nombre || '';
+        if (data.success) {
 
-    document.getElementById(
-        'inputCorreo'
-    ).value =
-    usuario.correo || '';  
+            let u = data.usuario;
+            console.log("DATA COMPLETA:", data.usuario);
+
+            document.getElementById("inputNombre").value = u.nombre || "";
+            document.getElementById("inputApellido").value = u.apellido || "";
+            document.getElementById("inputemail").value = u.correo || "";
+            document.getElementById("inputcelular").value = u.numero_telefono || "";
+            document.getElementById("inputdate").value = u.fecha_nacimiento || "";
+            document.getElementById("inputpassword").value = u.contrasena || "";
+
+        } else {
+            console.log("No se encontró usuario");
+        }
+
+    })
+    .catch(err => console.log(err));
 }
