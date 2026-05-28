@@ -533,6 +533,8 @@ app.get("/obtener-usuarios", (req, res) => {
     });
 });
 
+
+
 app.post("/crear-pago", async (req, res) => {
     try {
         const { total } = req.body;
@@ -642,44 +644,147 @@ app.post("/agregar-resena", (req, res) => {
         });
     }
 
-    const sql = `
-        INSERT INTO resenas
-        (
-            producto_id,
-            usuario_correo,
-            usuario_nombre,
-            comentario,
-            calificacion
-        )
-        VALUES (?, ?, ?, ?, ?)
+
+});
+// GUARDAR COMPRA
+app.post("/guardar-compra", (req, res) => {
+
+    const { usuarioId, carrito, total } = req.body;
+
+    if(!carrito || carrito.length === 0){
+
+        return res.json({
+
+            success: false,
+            message: "Carrito vacío"
+
+        });
+
+    }
+
+    const sqlVenta = `
+    
+        INSERT INTO ventas
+        (usuario_id, total, estado)
+
+        VALUES (?, ?, ?)
+
     `;
 
     conexion.query(
-        sql,
-        [
-            producto_id,
-            usuario_correo,
-            usuario_nombre,
-            comentario,
-            calificacion
-        ],
-        (error) => {
-            if (error) {
+
+        sqlVenta,
+
+        [usuarioId, total, "Pendiente"],
+
+        (error, resultado) => {
+
+            if(error){
+
                 console.log(error);
 
-                return res.status(500).json({
-                    success: false,
-                    message:
-                        "Error guardando reseña"
+                return res.json({
+
+                    success: false
+
                 });
+
             }
 
-            res.json({
-                success: true,
-                message: "Reseña agregada"
+            const ventaId = resultado.insertId;
+
+            carrito.forEach(producto => {
+
+                const subtotal =
+                producto.precio *
+                producto.cantidad;
+
+                const sqlDetalle = `
+
+                    INSERT INTO detalle_ventas
+                    (
+                        venta_id,
+                        producto_id,
+                        nombre_producto,
+                        precio,
+                        cantidad,
+                        subtotal
+                    )
+
+                    VALUES (?, ?, ?, ?, ?, ?)
+
+                `;
+
+                conexion.query(
+
+                    sqlDetalle,
+
+                    [
+
+                        ventaId,
+                        producto.id,
+                        producto.nombre,
+                        producto.precio,
+                        producto.cantidad,
+                        subtotal
+
+                    ]
+
+                );
+
             });
+
+            res.json({
+
+                success: true
+
+            });
+
         }
+
     );
+
+});
+app.get("/mis-compras/:usuarioId", (req, res) => {
+    const usuarioId = req.params.usuarioId;
+
+   const sql = `
+    SELECT
+        v.id AS id,
+        v.usuario_id AS usuarioId,
+        v.total,
+        v.estado,
+        v.fecha,
+
+        dv.producto_id,
+        p.nombre AS nombre,
+        dv.precio,
+        dv.cantidad,
+        dv.subtotal
+
+    FROM ventas v
+
+    LEFT JOIN detalle_ventas dv
+    ON dv.venta_id = v.id
+
+    LEFT JOIN productos p
+    ON p.id = dv.producto_id
+
+    WHERE v.usuario_id = ?
+
+    ORDER BY v.id DESC, dv.id ASC
+`;
+
+    conexion.query(sql, [usuarioId], (error, resultado) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({ success: false, message: "Error obteniendo pedidos" });
+        }
+
+        res.json({ success: true, ventas: resultado || [] });
+    });
+});
+app.listen(3000, () => {
 });
 
 // OBTENER RESEÑAS
