@@ -85,10 +85,23 @@
                     </div>
 
                     <div class="photo-box">
-                        <center><button class="button-perfil">
+                        <input
+                        type="file"
+                        id="inputFoto"
+                        accept="image/*"
+                        hidden
+                        >
+
+                        <center>
+                            <button
+                            type="button"
+                            class="button-perfil"
+                            id="btnEditarFoto"
+                            >
                             Editar Foto de Perfil
-                        </button>
+                            </button>
                         </center>
+
                     </div>
 
                 </section>
@@ -133,7 +146,11 @@
 
                         <div class="input-group">
                             <label>Contraseña</label>
-                            <input type="password" , placeholder="password" , id="inputpassword">
+                            
+                            <div class="contenedor-password">
+                                <input type="password" placeholder="password" id="inputpassword">
+                                    <i class="fa-solid fa-eye ojo-password" id="togglePassword"></i>
+                            </div>
                         </div>
 
                     </div>
@@ -147,7 +164,7 @@
 
                          <div class="input-group">
                             <label>Fecha de nacimiento</label>
-                            <input type="date" , id="inputdate">
+                            <input type="date" id="inputdate">
                          </div>
 
                     </div>

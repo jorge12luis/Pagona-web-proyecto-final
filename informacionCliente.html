@@ -442,6 +442,33 @@ document.getElementById("formRegistro").addEventListener("submit", async functio
     // URL WOMPI
     const url =
     `https://checkout.wompi.co/p/?public-key=${publicKey}&currency=${currency}&amount-in-cents=${amountInCents}&reference=${reference}&signature:integrity=${signature}&acceptance-token=${acceptanceToken}`;
+    
+    // USUARIO LOGUEADO
+const usuario =
+JSON.parse(localStorage.getItem("usuarioData"))
+||
+JSON.parse(localStorage.getItem("usuario"));
+
+// GUARDAR COMPRA
+await fetch("http://localhost:3000/guardar-compra", {
+
+    method: "POST",
+
+    headers: {
+        "Content-Type": "application/json"
+    },
+
+    body: JSON.stringify({
+
+        usuarioId: 1, // USUARIO GOOGLE
+
+        carrito: carrito,
+
+        total: total
+
+    })
+
+});
 
     window.location.href = url;
 
