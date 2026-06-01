@@ -4,6 +4,8 @@ const cors = require("cors");
 const nodemailer = require("nodemailer");
 const path = require("path");
 const axios = require("axios");
+const multer = require("multer");
+
 
 const app = express();
 app.use(cors());
@@ -50,7 +52,33 @@ conexion.query(alterTableRol, (error) => {
         console.log("Columna rol verificada/creada en tabla usuarios");
     }
 });
+//////////////////////////////////////////
+const storage = multer.diskStorage({
 
+    destination: (req, file, cb) => {
+
+        cb(null, "uploads/perfiles");
+
+    },
+
+    filename: (req, file, cb) => {
+
+        const nombreArchivo =
+        Date.now() + "-" + file.originalname;
+
+        cb(null, nombreArchivo);
+
+    }
+
+});
+
+const upload = multer({ storage });
+//////////////////////////////////////////
+app.use(
+    "/uploads",
+    express.static("uploads")
+);
+///////////////////////////////////////// permite acceder a la imagenes 
 const smtpUser = process.env.SMTP_USER || "";
 const smtpPass = process.env.SMTP_PASS || "";
 
@@ -450,7 +478,7 @@ app.post("/usuario-perfil", (req, res) => {
     }
 
     const sql = `
-        SELECT nombre, apellido, correo, numero_telefono, fecha_nacimiento, contrasena
+        SELECT nombre, apellido, correo, numero_telefono, fecha_nacimiento, contrasena, imagenes
         FROM usuarios
         WHERE correo = ?
     `;
@@ -478,6 +506,67 @@ app.post("/usuario-perfil", (req, res) => {
             success: false,
             message: "Usuario no encontrado"
         });
+    })
+    
+});
+//endpoint para editar los datos del usuario en la base de datos
+app.put("/actualizar-usuario", (req, res) => {
+
+    const {
+        correo_original,
+        nombre,
+        apellido,
+        correo,
+        celular,
+        fecha_nacimiento,
+        clave
+    } = req.body;
+
+    const sql = `
+        UPDATE usuarios
+        SET
+            nombre = ?,
+            apellido = ?,
+            correo = ?,
+            numero_telefono = ?,
+            fecha_nacimiento = ?,
+            contrasena = ?
+        WHERE correo = ?
+    `;
+    console.log(req.body);
+
+    conexion.query(
+        sql,
+        [
+            nombre,
+            apellido,
+            correo,
+            celular,
+            fecha_nacimiento,
+            clave,
+            correo_original
+        ],
+        (error, resultado) => {
+
+            if (error) {
+
+                console.log(error);
+
+                return res.status(500).json({
+                    success: false,
+                    message: "Error al actualizar usuario"
+                });
+
+            }
+
+            return res.json({
+                success: true,
+                message: "Usuario actualizado correctamente"
+            });
+
+        }
+    );
+
 });
 // GUARDAR COMPRA
 app.post("/guardar-compra", (req, res) => {
@@ -616,7 +705,50 @@ app.get("/mis-compras/:usuarioId", (req, res) => {
 
         res.json({ success: true, ventas: resultado || [] });
     });
-});
+},
+
+// endpoint para subir foto
+app.post(
+    "/subir-foto",
+    upload.single("foto"),
+    (req, res) => {
+
+        const { correo } = req.body;
+
+        const nombreArchivo = req.file.filename;
+
+        const sql = `
+            UPDATE usuarios
+            SET imagenes = ?
+            WHERE correo = ?
+        `;
+
+        conexion.query(
+            sql,
+            [nombreArchivo, correo],
+            (error) => {
+
+                if(error){
+
+                    console.log(error);
+
+                    return res.json({
+                        success: false
+                    });
+
+                }
+
+                res.json({
+                    success: true,
+                    foto: nombreArchivo
+                });
+
+            }
+        );
+
+    }
+),
+);
 app.listen(3000, () => {
     console.log("Servidor corriendo en puerto 3000");
 });

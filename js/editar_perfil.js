@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     mostrarFotoPerfil();
 
+    ActualizarDatos();
+
 });
 
 
@@ -33,13 +35,11 @@ function cargarUsuarioDesdeBackend() {
         if (data.success) {
 
             let u = data.usuario;
-            console.log("DATA COMPLETA:", data.usuario);
-
             document.getElementById("inputNombre").value = u.nombre || "";
             document.getElementById("inputApellido").value = u.apellido || "";
             document.getElementById("inputemail").value = u.correo || "";
             document.getElementById("inputcelular").value = u.numero_telefono || "";
-            document.getElementById("inputdate").value = u.fecha_nacimiento.split("T")[0];
+            document.getElementById("inputdate").value = u.fecha_nacimiento ? u.fecha_nacimiento.split("T")[0] : "";
             document.getElementById("inputpassword").value = u.contrasena || "";
             
 
@@ -58,7 +58,7 @@ function mostrarOcultarPassword(){
 
     togglePassword.addEventListener("click", () => {
 
-        if(inputPassword.type === "password"){
+        if(inputPassword.type == "password"){
 
             inputPassword.type = "text";
 
@@ -127,4 +127,101 @@ function mostrarFotoPerfil(){
 
     });
 
+}
+
+function ActualizarDatos() {
+    const usuario =
+    JSON.parse(localStorage.getItem("usuarioData"));
+
+    const btnActualizar =
+    document.getElementById("BotonActualizar");
+
+    btnActualizar.addEventListener("click", () => {
+
+    const nombre = document.getElementById("inputNombre").value.trim();
+    const apellido = document.getElementById("inputApellido").value.trim();
+    const correo = document.getElementById("inputemail").value.trim();
+    const celular = document.getElementById("inputcelular").value.trim();
+    const clave = document.getElementById("inputpassword").value.trim();
+    const fecha_nacimiento = document.getElementById("inputdate").value.trim();
+
+    if(nombre == "" || apellido == "" || correo == "" || celular == "" || fecha_nacimiento == "" || clave == ""){
+        alert("Todos los campos deben estar llenos");
+        return;
+    }
+
+    const datos = {
+    correo_original : usuario.correo,
+    nombre,
+    apellido,
+    correo,
+    celular,
+    fecha_nacimiento,
+    clave
+
+    };
+    [
+   
+]
+    fetch("http://localhost:3000/actualizar-usuario", {
+
+        method: "PUT",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(datos)
+
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if(data.success){
+
+            alert("Datos actualizados correctamente");
+
+        }else{
+
+            alert(data.message);
+
+        }
+
+    })
+    .catch(err => {
+
+        alert("ERROR MYSQL:", err);
+
+    });
+    });
+}
+
+function Subir_Foto_de_perfil() {
+    const archivo = e.target.files[0];
+
+    const usuario =
+    JSON.parse(localStorage.getItem("usuarioData"));
+
+    const formData = new FormData();
+
+    formData.append("foto", archivo);
+    formData.append("correo", usuario.correo);
+
+    fetch("http://localhost:3000/subir-foto", {
+
+        method: "POST",
+        body: formData
+
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if(data.success){
+
+            alert("Foto actualizada");
+
+        }
+
+    });
+    
 }
