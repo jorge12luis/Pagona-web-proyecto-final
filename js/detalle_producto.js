@@ -184,3 +184,62 @@ if (!producto) {
         botonComprar.style.cursor = "not-allowed";
     }
 }
+
+// ====================
+// SISTEMA DE RESEÑAS
+// ====================
+
+let calificacionSeleccionada = 0;
+
+window.seleccionarEstrella = function(valor){
+
+    calificacionSeleccionada = valor;
+
+    const estrellas =
+    document.querySelectorAll(".estrellas span");
+
+    estrellas.forEach((estrella, index)=>{
+
+        estrella.style.opacity =
+        index < valor ? "1" : "0.3";
+
+    });
+
+}
+
+window.agregarResena = function(){
+
+    const comentario =
+    document.getElementById("comentario").value;
+
+    if(calificacionSeleccionada === 0){
+
+        alert("Selecciona una calificación");
+
+        return;
+    }
+
+    if(comentario.trim() === ""){
+
+        alert("Escribe una reseña");
+
+        return;
+    }
+
+    const lista =
+    document.getElementById("listaResenas");
+
+    const div =
+    document.createElement("div");
+
+    div.innerHTML = `
+        <p>${"⭐".repeat(calificacionSeleccionada)}</p>
+        <p>${comentario}</p>
+        <hr>
+    `;
+
+    lista.prepend(div);
+
+    document.getElementById("comentario").value = "";
+
+}
