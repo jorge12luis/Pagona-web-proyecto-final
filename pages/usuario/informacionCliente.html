@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../public/favicon/favicon.ico">
+    <title>Informacion del cliente - Dunaka</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../public/css/Style.css">
+    <link rel="stylesheet" href="../../public/css/informacionCliente.css">
+</head>
+
+<body>
+<div class="registro-container">
+    <div class="registro-header">
+        <h1>
+            <i class="fas fa-user-plus"></i>
+            Informacion
+        </h1>
+        <p>Completa tu informacion para realizar compras rapidas y seguras en DUNAKA.</p>
+    </div>
+
+    <form id="formRegistro">
+        <div class="titulo-seccion">Informacion personal</div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="nombre" required>
+                    <label for="nombre">Nombre</label>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="apellido" required>
+                    <label for="apellido">Apellido</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-floating">
+            <input type="email" class="form-control" id="correo" required>
+            <label for="correo">Correo electronico</label>
+        </div>
+
+        <div class="form-floating">
+            <input type="text" class="form-control" id="numero" required>
+            <label for="numero">Numero de telefono</label>
+        </div>
+
+        <div class="titulo-seccion">Direccion de envio</div>
+
+        <div class="form-floating">
+            <input type="text" class="form-control" id="direccion" required>
+            <label for="direccion">Direccion</label>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="ciudad" required>
+                    <label for="ciudad">Ciudad</label>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="departamento" required>
+                    <label for="departamento">Departamento</label>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-registro">Ir a pagar</button>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/crypto-js@4.2.0/crypto-js.min.js"></script>
+<script src="../../public/js/informacionCliente.js"></script>
+</body>
+</html>

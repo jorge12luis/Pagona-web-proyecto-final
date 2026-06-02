@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../public/favicon/favicon.ico">
+    <title>Producto - DUNAKA</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../public/css/Style.css">
+    <link rel="stylesheet" href="../../public/css/detalle_producto.css">
+</head>
+<body>
+<nav class="navegacion-premium">
+    <div class="nav-container">
+        <div class="nav-brand-section">
+            <a href="../../index.html" class="logo-section">
+                <img src="../../dunaka.png" alt="DUNAKA" class="logo-img">
+            </a>
+        </div>
+        <div class="nav-text">
+            <a href="../../index.html">Inicio</a>
+            <a href="./categorias.html">Categorias</a>
+            <a href="./nuevas_colecciones.html">Nuevas Colecciones</a>
+            <a href="./ediciones_limitadas.html">Ediciones Limitadas</a>
+        </div>
+        <div class="nav-icons-section">
+            <a href="./favoritos.html" title="Favoritos"><i class="fa-solid fa-heart"></i></a>
+            <a href="../carrito/micompra.html" title="Mis Compras"><i class="fa-solid fa-bag-shopping"></i></a>
+            <a href="../carrito/carrito.html" class="cart-icon" title="Carrito"><i class="fa-solid fa-cart-shopping"></i></a>
+            <div class="user-menu-custom">
+                <span class="user-name"><i class="fa-solid fa-user"></i></span>
+                <div class="dropdown-content right">
+                    <a href="../usuario/perfil.html">Mi Perfil</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<section class="producto-container">
+    <div class="producto-img">
+        <img id="productoImagen" src="../../public/images/bolso10.jpg" alt="Producto Dunaka">
+    </div>
+    <div class="producto-info">
+        <span id="productoEstado" class="estado">Nuevo</span>
+        <h1 id="productoTitulo">Bolso Elegante DUNAKA</h1>
+        <p id="productoDescripcion" class="descripcion">
+            Diseno exclusivo, elaborado con materiales de alta calidad. Perfecto para mujeres autenticas que buscan elegancia.
+        </p>
+        <div class="precio">
+            <h2 id="productoPrecio">$150.000</h2>
+            <span id="productoExtra">o 3 cuotas sin interes</span>
+        </div>
+        <div id="productoStock" class="stock">Stock disponible</div>
+        <div class="acciones">
+            <button class="btn-comprar" onclick="comprarAhora()">Comprar ahora</button>
+            <button class="btn-carrito" onclick="agregarCarrito()">Agregar al carrito</button>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-section">
+            <h3>Contactanos</h3>
+            <p>Email: <a href="mailto:info@dunaka.com">info@dunaka.com</a></p>
+        </div>
+    </div>
+</footer>
+
+<script src="../../public/js/detalle_producto.js"></script>
+<script src="../../public/js/carrito.js"></script>
+<script>
+function comprarAhora() {
+    const usuario = localStorage.getItem("usuarioData");
+
+    if (!usuario) {
+        alert("Debes iniciar sesion");
+        window.location.href = "../autenticacion/login.html";
+        return;
+    }
+
+    const producto = {
+        nombre: document.getElementById("productoTitulo").textContent,
+        precio: document.getElementById("productoPrecio").textContent.replace("$", "").replace(/\./g, ""),
+        imagen: document.getElementById("productoImagen").src
+    };
+
+    localStorage.setItem("productoComprar", JSON.stringify(producto));
+    window.location.href = "../usuario/informacionCliente.html";
+}
+
+function agregarCarrito() {
+    const producto = {
+        nombre: document.getElementById("productoTitulo").textContent,
+        precio: parseInt(document.getElementById("productoPrecio").textContent.replace("$", "").replace(/\./g, "")),
+        imagen: document.getElementById("productoImagen").src,
+        cantidad: 1
+    };
+
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    const existe = carrito.find(item => item.nombre === producto.nombre);
+
+    if (existe) {
+        existe.cantidad++;
+    } else {
+        carrito.push(producto);
+    }
+
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+    alert("Producto agregado al carrito");
+}
+</script>
+</body>
+</html>

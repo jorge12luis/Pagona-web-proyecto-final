@@ -1,41 +1,42 @@
-  <!DOCTYPE html>
-  <html lang="es">
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link rel="icon" href="/favicon_io (1)/favicon.ico">
-      <title>Dunaka</title>
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="public/favicon/favicon.ico">
+    <title>Dunaka</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="public/css/Style.css">
+</head>
 
-    <link rel="stylesheet" href="css/Style.css"> 
- </head>
-
-  <body class="cuerpo">
+<body class="cuerpo">
 <nav class="navegacion-premium">
     <div class="nav-container">
         <div class="nav-brand-section">
             <a href="index.html" class="logo-section">
-               <img src="dunaka.png" alt="DUNAKA" class="logo-img">
-             </a>
-            </div>
+                <img src="dunaka.png" alt="DUNAKA" class="logo-img">
+            </a>
+        </div>
 
-            <div class="nav-text">
-                <a href="index.html">Inicio</a>
-                <a href="pages_nav/categorias.html">Categorias</a>
-                <a href="pages_nav/nuevas_colecciones.html">Nuevas Colecciones</a>
-                <a href="pages_nav/ediciones_limitadas.html">Ediciones Limitadas</a>
-            </div>
+        <div class="nav-text">
+            <a href="index.html">Inicio</a>
+            <a href="pages/productos/categorias.html">Categorias</a>
+            <a href="pages/productos/nuevas_colecciones.html">Nuevas Colecciones</a>
+            <a href="pages/productos/ediciones_limitadas.html">Ediciones Limitadas</a>
+        </div>
+
         <div class="nav-icons-section">
-            <a href="page/favoritos.html" title="Favoritos"><i class="fa-solid fa-heart"></i></a>
-            <a href="page/micompra.html" title="Mis Compras"><i class="fa-solid fa-bag-shopping"></i></a>
-            <a href="page/carrito.html" class="cart-icon">
+            <a href="pages/productos/favoritos.html" title="Favoritos"><i class="fa-solid fa-heart"></i></a>
+            <a href="pages/carrito/micompra.html" title="Mis Compras"><i class="fa-solid fa-bag-shopping"></i></a>
+            <a href="pages/carrito/carrito.html" class="cart-icon" title="Carrito">
                 <i class="fa-solid fa-cart-shopping"></i>
             </a>
             <div class="user-menu-custom">
                 <span class="user-name"><i class="fa-solid fa-user"></i></span>
                 <div class="dropdown-content right">
-                    <a href="perfil.html">Mi Perfil</a>
+                    <a href="pages/usuario/perfil.html">Mi Perfil</a>
+                    
                 </div>
             </div>
         </div>
@@ -43,141 +44,90 @@
 </nav>
 
 <div class="carruselVideo" id="videoDunaka">
-
-    <video class="carruselItem"
-    autoplay
-    muted
-    loop>
-
-        <source src="dunaka_video.mp4">
-
+    <video class="carruselItem" autoplay muted loop>
+        <source src="dunaka_video.mp4" type="video/mp4">
     </video>
-
 </div>
 
 <h1 class="coleccion">COLECCION DESTACADA</h1>
+
 <section class="hero-slider">
-
     <div class="slider">
-
         <div class="slide active">
-
-            <img src="img/banner1.jpg">
-
+            <img src="public/images/banner1.jpg" alt="Coleccion destacada">
             <div class="slide-content">
                 <h1>Elegancia artesanal</h1>
-                <p>Colección exclusiva DUNAKA</p>
+                <p>Coleccion exclusiva DUNAKA</p>
             </div>
-
         </div>
 
-
         <div class="slide">
-
-            <img src="img/bolso2.webp">
-
+            <img src="public/images/bolso2.webp" alt="Bolso artesanal">
             <div class="slide-content">
-                <h1>Diseños únicos</h1>
-                <p>Hecho para mujeres auténticas</p>
+                <h1>Disenos unicos</h1>
+                <p>Hecho para mujeres autenticas</p>
             </div>
-
         </div>
 
-
         <div class="slide">
-
-            <img src="img/bolso9.jpg">
-
+            <img src="public/images/bolso9.jpg" alt="Nueva coleccion">
             <div class="slide-content">
-                <h1>Nueva colección</h1>
+                <h1>Nueva coleccion</h1>
                 <p>Descubre tu estilo</p>
             </div>
-
         </div>
-
     </div>
 
     <div class="indicators"></div>
-
 </section>
 
 <section class="sobre-dunaka">
-
     <div class="sobre-imagen">
         <img src="imagen-dunaka.jpeg" alt="DUNAKA">
     </div>
 
-
     <div class="sobre-card">
-
         <span class="subtitulo">Nuestra esencia</span>
-
         <h2>DUNAKA</h2>
 
         <p>
-            En DUNAKA transformamos diseño, elegancia y autenticidad
-            en piezas únicas. Nuestra marca nace con la visión de
+            En DUNAKA transformamos diseno, elegancia y autenticidad
+            en piezas unicas. Nuestra marca nace con la vision de
             ofrecer accesorios que reflejen estilo, personalidad y
-            distinción en cada detalle.
+            distincion en cada detalle.
         </p>
 
         <p>
-            Cada colección está inspirada en la mujer moderna,
-            segura y auténtica, creando productos que no solo
+            Cada coleccion esta inspirada en la mujer moderna,
+            segura y autentica, creando productos que no solo
             complementan un estilo, sino que cuentan una historia.
         </p>
 
-        <a href="#" class="btn-dunaka">
-            Conocer más
+        <a href="pages/informacion.html" class="btn-dunaka">
+            Conocer mas
         </a>
-
     </div>
-
-</section>
-
 </section>
 
 <footer class="footer-dunaka">
-
     <div class="footer-contenido">
-
         <h2>DUNAKA</h2>
-
-        <p>
-            Elegancia artesanal en cada detalle
-        </p>
-        
+        <p>Elegancia artesanal en cada detalle</p>
 
         <div class="redes-sociales">
-
-            <a href="#">
-                <i class="fa-brands fa-instagram"></i>
-            </a>
-
-            <a href="#">
-                <i class="fa-brands fa-facebook-f"></i>
-            </a>
-
-            <a href="#">
-                <i class="fa-brands fa-tiktok"></i>
-            </a>
-
-            <a href="#">
-                <i class="fa-brands fa-whatsapp"></i>
-            </a>
-
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+            <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
         </div>
 
-
         <p class="copyright">
-            © 2026 DUNAKA · Todos los derechos reservados
+            2026 DUNAKA - Todos los derechos reservados
         </p>
-
     </div>
-
 </footer>
 
-<script src="js/scrit.js"></script>
-<script src="js/carrusel.js"></script>
-  </body>
-  </html>
+<script src="public/js/scrit.js"></script>
+<script src="public/js/carrusel.js"></script>
+</body>
+</html>
