@@ -199,54 +199,51 @@ document.querySelector(".google").addEventListener("click", async (e) => {
 
         const user = result.user;
 
+        // GUARDAR EN MYSQL
+        const respuesta = await fetch(
+            "http://localhost:3000/google-login",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    nombre: user.displayName,
+                    correo: user.email
+                })
+            }
+        );
+
+        const data = await respuesta.json();
+
+        localStorage.setItem(
+            "usuarioData",
+            JSON.stringify(data.usuario)
+        );
+
+        localStorage.setItem(
+            "correoUsuario",
+            data.usuario.correo
+        );
+
+        localStorage.setItem(
+            "rolUsuario",
+            data.usuario.rol
+        );
+
         alert("Bienvenido " + user.displayName);
 
-        console.log(user);
-
-        // GUARDAR SESION
-     const usuario = {
-
-    nombre: user.displayName,
-
-    correo: user.email,
-
-    foto: user.photoURL,
-
-    rol: "usuario"
-
-};
-
-// GUARDAR COMO LOGIN NORMAL
-localStorage.setItem(
-    "usuarioData",
-    JSON.stringify(usuario)
-);
-
-localStorage.setItem(
-    "correoUsuario",
-    user.email
-);
-
-localStorage.setItem(
-    "rolUsuario",
-    "usuario"
-);
-
-        // REDIRECCION
         window.location.href = "index.html";
 
     } catch(error){
 
-        console.log(error);
+        console.error(error);
 
-        alert("Error al iniciar sesión con Google");
+        alert(error.message);
 
     }
 
 });
-
-
-
 </script>
 <script src="./js/login.js"></script>
 
