@@ -571,6 +571,73 @@ app.get("/mis-compras/:usuarioId", (req, res) => {
         res.json({ success: true, ventas: resultado || [] });
     });
 });
+
+app.post("/google-login", (req, res) => {
+
+    const { nombre, correo } = req.body;
+
+    const sqlBuscar = `
+        SELECT * FROM usuarios
+        WHERE correo = ?
+    `;
+
+    conexion.query(sqlBuscar, [correo], (error, resultado) => {
+
+        if(error){
+            console.log(error);
+            return res.status(500).json({
+                success: false
+            });
+        }
+
+        if(resultado.length > 0){
+
+            return res.json({
+                success: true,
+                usuario: resultado[0]
+            });
+
+        }
+
+        const sqlInsert = `
+            INSERT INTO usuarios
+            (nombre, correo, rol)
+            VALUES (?, ?, 'usuario')
+        `;
+
+        conexion.query(
+            sqlInsert,
+            [nombre, correo],
+            (error2) => {
+
+                if(error2){
+                    console.log(error2);
+                    return res.status(500).json({
+                        success: false
+                    });
+                }
+
+                conexion.query(
+                    sqlBuscar,
+                    [correo],
+                    (error3, usuarioNuevo) => {
+
+                        res.json({
+                            success: true,
+                            usuario: usuarioNuevo[0]
+                        });
+
+                    }
+                );
+
+            }
+        );
+
+    });
+
+});
+console.log("RUTA GOOGLE CARGADA");
+
 app.listen(3000, () => {
     console.log("Servidor corriendo en puerto 3000");
 });
