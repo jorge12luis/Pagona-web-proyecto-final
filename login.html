@@ -216,6 +216,8 @@ document.querySelector(".google").addEventListener("click", async (e) => {
 
         const data = await respuesta.json();
 
+
+        alert(JSON.stringify(data.usuario, null, 2));
         localStorage.setItem(
             "usuarioData",
             JSON.stringify(data.usuario)

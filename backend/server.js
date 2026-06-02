@@ -476,14 +476,16 @@ app.post("/usuario-perfil", (req, res) => {
             message: "Correo requerido"
         });
     }
-
     const sql = `
-        SELECT nombre, apellido, correo, numero_telefono, fecha_nacimiento, contrasena, imagenes
+        SELECT nombre, apellido, correo, numero_telefono, fecha_nacimiento, contrasena, imagen
         FROM usuarios
         WHERE correo = ?
     `;
 
     conexion.query(sql, [correo], (error, resultado) => {
+
+        console.log("Error:", error);
+        console.log("Resultado:", resultado);
 
         if (error) {
             return res.status(500).json({

@@ -4,9 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     mostrarOcultarPassword();
 
-    mostrarFotoPerfil();
-
-    ActualizarDatos();
+    iniciarSubidaFoto(); // ✅ AQUÍ
 
 });
 
@@ -41,7 +39,6 @@ function cargarUsuarioDesdeBackend() {
             document.getElementById("inputcelular").value = u.numero_telefono || "";
             document.getElementById("inputdate").value = u.fecha_nacimiento ? u.fecha_nacimiento.split("T")[0] : "";
             document.getElementById("inputpassword").value = u.contrasena || "";
-            
 
         } else {
             console.log("No se encontró usuario");
@@ -79,54 +76,6 @@ function mostrarOcultarPassword(){
 }
 
 function mostrarFotoPerfil(){
-
-    const btnEditarFoto =
-    document.getElementById("btnEditarFoto");
-
-    const inputFoto =
-    document.getElementById("inputFoto");
-
-    btnEditarFoto.addEventListener("click", () => {
-
-        inputFoto.click();
-
-    });
-
-    inputFoto.addEventListener("change", (e) => {
-
-        const archivo = e.target.files[0];
-
-        if(!archivo) return;
-
-        const reader = new FileReader();
-
-        reader.onload = function(event){
-
-            const imagenes =
-            document.querySelectorAll(".fotoPerfil");
-
-            const iconos =
-            document.querySelectorAll(".iconoUsuario");
-
-            imagenes.forEach(img => {
-
-                img.src = event.target.result;
-                img.style.display = "block";
-
-            });
-
-            iconos.forEach(icono => {
-
-                icono.style.display = "none";
-
-            });
-
-        };
-
-        reader.readAsDataURL(archivo);
-
-    });
-
 }
 
 function ActualizarDatos() {
@@ -196,11 +145,13 @@ function ActualizarDatos() {
     });
 }
 
-function Subir_Foto_de_perfil() {
+function Subir_Foto_de_perfil(e) {
+
     const archivo = e.target.files[0];
 
-    const usuario =
-    JSON.parse(localStorage.getItem("usuarioData"));
+    if (!archivo) return;
+
+    const usuario = JSON.parse(localStorage.getItem("usuarioData"));
 
     const formData = new FormData();
 
@@ -208,20 +159,80 @@ function Subir_Foto_de_perfil() {
     formData.append("correo", usuario.correo);
 
     fetch("http://localhost:3000/subir-foto", {
-
         method: "POST",
         body: formData
-
     })
     .then(res => res.json())
     .then(data => {
 
-        if(data.success){
+        if (data.success) {
 
             alert("Foto actualizada");
 
+            // 🔥 actualizar preview en pantalla
+            document.querySelectorAll(".fotoPerfil").forEach(img => {
+                img.src = "http://localhost:3000" + data.ruta;
+                img.style.display = "block";
+            });
+
+            document.querySelectorAll(".iconoUsuario").forEach(i => {
+                i.style.display = "none";
+            });
+
+        } else {
+            alert("Error al subir foto");
         }
 
-    });
-    
+    })
+    .catch(err => console.log(err));
 }
+
+function iniciarSubidaFoto() {
+        const btnEditarFoto =
+    document.getElementById("btnEditarFoto");
+
+    const inputFoto =
+    document.getElementById("inputFoto");
+
+    btnEditarFoto.addEventListener("click", () => {
+
+        inputFoto.click();
+
+    });
+
+    inputFoto.addEventListener("change", (e) => {
+
+        const archivo = e.target.files[0];
+
+        if(!archivo) return;
+
+        const reader = new FileReader();
+
+        reader.onload = function(event){
+
+            const imagenes =
+            document.querySelectorAll(".fotoPerfil");
+
+            const iconos =
+            document.querySelectorAll(".iconoUsuario");
+
+            imagenes.forEach(img => {
+
+                img.src = event.target.result;
+                img.style.display = "block";
+
+            });
+
+            iconos.forEach(icono => {
+
+                icono.style.display = "none";
+
+            });
+
+        };
+
+        reader.readAsDataURL(archivo);
+
+    });
+}
+
