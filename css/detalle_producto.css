@@ -106,4 +106,90 @@
     .producto-img img{
         width:100%;
     }
+    
+}
+
+.resenas-container{
+
+    width: 85%;
+
+    margin: 80px auto;
+
+    background: white;
+
+    padding: 40px;
+
+    border-radius: 20px;
+
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+.resenas-container h2{
+
+    margin-bottom: 30px;
+}
+
+.form-resena{
+
+    margin-bottom: 40px;
+}
+
+.estrellas{
+
+    font-size: 30px;
+
+    cursor: pointer;
+
+    margin-bottom: 20px;
+}
+
+textarea{
+
+    width: 100%;
+
+    min-height: 120px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 10px;
+
+    padding: 15px;
+
+    resize: none;
+
+    margin-bottom: 20px;
+}
+
+.form-resena button{
+
+    background: black;
+
+    color: white;
+
+    border: none;
+
+    padding: 14px 25px;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+}
+
+.resena-card{
+
+    border-bottom: 1px solid #eee;
+
+    padding: 20px 0;
+}
+
+.resena-card h4{
+
+    margin-bottom: 10px;
+}
+
+.estrellas-view{
+
+    color: gold;
+
+    margin-bottom: 10px;
 }

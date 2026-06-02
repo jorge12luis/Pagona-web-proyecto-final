@@ -60,8 +60,42 @@
 
             </div>
         </div>
-    </section>
 
+    </section>
+    <section class="resenas-container">
+
+    <h2>Reseñas del producto</h2>
+
+    <div class="form-resena">
+
+        <h3>Deja tu reseña</h3>
+
+        <div class="estrellas">
+
+            <span onclick="seleccionarEstrella(1)">⭐</span>
+            <span onclick="seleccionarEstrella(2)">⭐</span>
+            <span onclick="seleccionarEstrella(3)">⭐</span>
+            <span onclick="seleccionarEstrella(4)">⭐</span>
+            <span onclick="seleccionarEstrella(5)">⭐</span>
+
+        </div>
+
+        <textarea
+            id="comentario"
+            placeholder="Escribe tu opinión del producto..."
+        ></textarea>
+
+        <button onclick="agregarResena()">
+            Enviar reseña
+        </button>
+
+    </div>
+
+    <div id="listaResenas">
+
+    </div>
+
+</section>
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-section">
@@ -74,7 +108,120 @@
     </footer>
     <script src="../js/detalle_producto.js"></script>
     <script src="../js/carrito.js"></script>
-    <script src="../js/comprarahora.js"></script>
+    <script>
 
+function comprarAhora() {
+
+    console.log("Botón comprar funcionando");
+
+    // verificar login
+    const usuario = localStorage.getItem("usuarioData");
+
+    if (!usuario) {
+
+        alert("Debes iniciar sesión");
+
+        window.location.href = "../login.html";
+
+        return;
+    }
+
+    // obtener producto actual
+    const producto = {
+
+        nombre: document.getElementById("productoTitulo").textContent,
+
+        precio: document.getElementById("productoPrecio")
+            .textContent
+            .replace("$", "")
+            .replace(/\./g, ""),
+
+        imagen: document.getElementById("productoImagen").src
+    };
+
+    // guardar producto temporal
+    localStorage.setItem(
+        "productoComprar",
+        JSON.stringify(producto)
+    );
+
+    // redirigir
+    window.location.href = "../informacionCliente.html";
+}
+
+</script>
+<script>
+
+function agregarCarrito(){
+
+    const producto = {
+
+        nombre: document.getElementById("productoTitulo").textContent,
+
+        precio: parseInt(
+            document.getElementById("productoPrecio")
+            .textContent
+            .replace("$","")
+            .replace(/\./g,"")
+        ),
+
+        imagen: document.getElementById("productoImagen").src,
+
+        cantidad: 1
+    };
+
+    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+    const existe = carrito.find(item => item.nombre === producto.nombre);
+
+    if(existe){
+
+        existe.cantidad++;
+
+    }else{
+
+        carrito.push(producto);
+    }
+
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+
+    alert("Producto agregado al carrito");
+}
+
+</script>
+<script>
+
+document.getElementById("formRegistro").addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    // Obtener carrito
+    let carrito = JSON.parse(
+        localStorage.getItem("carrito")
+    ) || [];
+
+    let total = 0;
+
+    carrito.forEach(producto => {
+
+        total += producto.precio * producto.cantidad;
+
+    });
+
+    // Si no hay productos
+    if(total <= 0){
+
+        alert("No hay productos en el carrito");
+
+        return;
+    }
+
+    // REDIRECCIÓN WOMPI
+    window.location.href =
+    `https://checkout.wompi.co/p/?public-key=pub_test_TMtzLyFRKH2u1wbO8kRGX9ajyXvQ0pAG&currency=COP&amount-in-cents=${total * 100}&reference=DUNAKA${Date.now()}`;
+
+});
+
+</script>
 </body>
 </html>
