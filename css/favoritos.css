@@ -1,13 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Favoritos</title>
-
-    <link rel="stylesheet" href="../css/Style.css">
-
-    <style>
-
+ 
         .contenedorFavoritos{
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
@@ -84,27 +75,3 @@
 
     cursor: pointer;
 }   
-
-    </style>
-
-</head>
-<body>
-
-<h1 style="text-align:center;">
-    ❤️ Mis favoritos
-</h1>
-<div class="accionesFavoritos">
-
-    <button onclick="vaciarFavoritos()">
-        Vaciar favoritos
-    </button>
-
-</div>
-
-<div class="contenedorFavoritos"
-id="contenedorFavoritos"></div>
-
-<script src="../js/favoritos.js"></script>
-
-</body>
-</html>

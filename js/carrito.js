@@ -1,3 +1,6 @@
+// ===============================
+// VARIABLES GLOBALES
+// ===============================
 
 // Contenedor donde aparecerán los productos del carrito
 const contenedorCarrito = document.querySelector(".carrito-items");
@@ -5,32 +8,54 @@ const contenedorCarrito = document.querySelector(".carrito-items");
 // Elemento HTML donde se mostrará el subtotal
 const subtotalHTML = document.querySelector(".fila span");
 
+// Elemento HTML donde se mostrará el total
 const totalHTML = document.querySelector(".total h4");
 
 
-// Arreglo para almacenar los productos del carrito
+// ===============================
+// CARGAR DATOS DEL LOCALSTORAGE
+// ===============================
+
+// Variable principal del carrito
 let carrito = [];
 
+// Obtener información guardada
 let carritoGuardado = localStorage.getItem("carrito");
 
-// Verificar si hay un carrito guardado en localStorage
+// Verificar si existe información guardada
 if (carritoGuardado != null) {
 
+    // Convertir el texto JSON a arreglo
     carrito = JSON.parse(carritoGuardado);
 
 } else {
+
+    // Si no hay datos, crear arreglo vacío
     carrito = [];
 }
 
 
+// ===============================
+// FUNCIÓN GUARDAR CARRITO
+// ===============================
+
+// Esta función guarda el carrito en localStorage
 function guardarCarrito() {
 
     // Convertir arreglo a texto JSON
     let carritoTexto = JSON.stringify(carrito);
 
+    // Guardar información
     localStorage.setItem("carrito", carritoTexto);
 }
 
+
+// ===============================
+// FUNCIÓN FORMATEAR PRECIO
+// ===============================
+
+// Esta función recibe un número
+// y devuelve el precio con formato
 function formatearPrecio(precio) {
 
     let precioFormateado = "$" + precio.toLocaleString();
@@ -38,11 +63,21 @@ function formatearPrecio(precio) {
     return precioFormateado;
 }
 
+
+// ===============================
+// FUNCIÓN MOSTRAR CARRITO
+// ===============================
+
+// Esta función pinta todos los productos
 function renderizarCarrito() {
 
+    // Limpiar contenido anterior
     contenedorCarrito.innerHTML = "";
 
-    
+    // ===============================
+    // VALIDAR SI EL CARRITO ESTÁ VACÍO
+    // ===============================
+
     if (carrito.length == 0) {
 
         // Mostrar mensaje
@@ -56,20 +91,33 @@ function renderizarCarrito() {
         subtotalHTML.textContent = "$0";
         totalHTML.textContent = "$0";
 
+        // Salir de la función
         return;
     }
 
+    // ===============================
+    // VARIABLE PARA EL SUBTOTAL
+    // ===============================
+
     let subtotal = 0;
 
-//recorrer producto 1 porr 1
+    // ===============================
+    // RECORRER PRODUCTOS
+    // ===============================
+
+    // Ciclo for tradicional
     for (let i = 0; i < carrito.length; i++) {
 
-        
+        // Obtener producto actual
+        let producto = carrito[i];
 
+        // Obtener precio total del producto
         let totalProducto = producto.precio * producto.cantidad;
 
+        // Sumar al subtotal general
         subtotal = subtotal + totalProducto;
 
+        // Crear HTML del producto
         let productoHTML = `
         
             <div class="item">
@@ -122,50 +170,123 @@ function renderizarCarrito() {
         contenedorCarrito.innerHTML =
             contenedorCarrito.innerHTML + productoHTML;
     }
+
+    // ===============================
+    // MOSTRAR TOTALES
+    // ===============================
+
     subtotalHTML.textContent = formatearPrecio(subtotal);
 
     totalHTML.textContent = formatearPrecio(subtotal);
 }
 
+
+// ===============================
+// FUNCIÓN AUMENTAR CANTIDAD
+// ===============================
+
 function aumentarCantidad(indiceProducto) {
 
+    // Obtener cantidad actual
     let cantidadActual = carrito[indiceProducto].cantidad;
 
+    // Sumar 1
     cantidadActual = cantidadActual + 1;
 
+    // Actualizar cantidad
     carrito[indiceProducto].cantidad = cantidadActual;
 
+    // Guardar cambios
     guardarCarrito();
 
+    // Actualizar pantalla
     renderizarCarrito();
 }
 
+
+// ===============================
+// FUNCIÓN DISMINUIR CANTIDAD
+// ===============================
+
 function disminuirCantidad(indiceProducto) {
 
+    // Obtener cantidad actual
     let cantidadActual = carrito[indiceProducto].cantidad;
+
+    // Verificar si es mayor a 1
     if (cantidadActual > 1) {
 
+        // Restar 1
         cantidadActual = cantidadActual - 1;
 
+        // Actualizar cantidad
         carrito[indiceProducto].cantidad = cantidadActual;
 
     } else {
 
+        // Eliminar producto del arreglo
         carrito.splice(indiceProducto, 1);
     }
 
+    // Guardar cambios
     guardarCarrito();
 
+    // Actualizar pantalla
     renderizarCarrito();
 }
+
+
+// ===============================
+// FUNCIÓN ELIMINAR PRODUCTO
+// ===============================
+
 function eliminarProducto(indiceProducto) {
 
+    // Eliminar producto
     carrito.splice(indiceProducto, 1);
 
+    // Guardar cambios
     guardarCarrito();
 
+    // Volver a mostrar carrito
     renderizarCarrito();
 }
 
-
 renderizarCarrito();
+
+function agregarCarrito(){
+
+    const producto = {
+
+        nombre: document.getElementById("productoTitulo").textContent,
+
+        precio: parseInt(
+            document.getElementById("productoPrecio")
+            .textContent
+            .replace("$","")
+            .replace(/\./g,"")
+        ),
+
+        imagen: document.getElementById("productoImagen").src,
+
+        cantidad: 1
+    };
+
+    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+    const existe = carrito.find(item => item.nombre === producto.nombre);
+
+    if(existe){
+
+        existe.cantidad++;
+
+    }else{
+
+        carrito.push(producto);
+    }
+
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+
+    alert("Producto agregado al carrito");
+}
+
