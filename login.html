@@ -133,21 +133,14 @@ document.querySelector(".google").addEventListener("click", async (e) => {
             data.usuario.rol
         );
 
-        alert("Bienvenido " + user.displayName);
+                    console.error(error);
 
-        window.location.href = "index.html";
+                    alert("Error al iniciar sesión con Google");
 
-    } catch(error){
+                }
 
-        console.error(error);
+           });
 
-        alert(error.message);
-
-    }
-
-});
-</script>
-<script src="./js/login.js"></script>
-
+    </script>
 </body>
 </html>
