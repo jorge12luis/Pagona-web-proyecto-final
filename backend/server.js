@@ -374,33 +374,34 @@ app.post("/login", (req, res) => {
         (error, resultado) => {
             if (error) {
                 console.log(error);
-
-        if (resultado.length > 0) {
-            return res.json({ success: true, message: "Login correcto", usuario: resultado[0] });
-            
-        } else{
-              res.json({
-                    success: false
-                return res.status(500).json({
-                    success: false,
-                    message:
-                        "Error interno del servidor."
-                });
             }
-
             if (resultado.length > 0) {
-                return res.json({
-                    success: true,
-                    message: "Login correcto",
-                    usuario: resultado[0]
-                });
-            }
+                return res.json({ success: true, message: "Login correcto", usuario: resultado[0] });
+            
+            } else{
+                    res.json({
+                        success: false,
+                        return : res.status(500).json({
+                        success: false,
+                        message:
+                            "Error interno del servidor."
+                        })
+                    })
 
-            return res.status(401).json({
-                success: false,
-                message:
-                    "Correo o contraseña incorrectos."
-            });
+                    if (resultado.length > 0) {
+                        return res.json({
+                        success: true,
+                        message: "Login correcto",
+                        usuario: resultado[0]
+                        });
+                    }
+
+                    return res.status(401).json({
+                        success: false,
+                        message:
+                        "Correo o contraseña incorrectos."
+                    });
+                }
         }
     );
 });

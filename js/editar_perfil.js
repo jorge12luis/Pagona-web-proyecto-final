@@ -4,7 +4,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     mostrarOcultarPassword();
 
-    iniciarSubidaFoto(); // ✅ AQUÍ
+    iniciarSubidaFoto();
+    
+    ActualizarDatos();// ✅ AQUÍ
 
 });
 
