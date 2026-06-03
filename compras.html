@@ -26,7 +26,24 @@ rel="stylesheet">
     <h3>Cargando compras...</h3>
 
 </div>
+<script>
+  const usuario =
+JSON.parse(localStorage.getItem("usuarioData"))
+||
+JSON.parse(localStorage.getItem("usuario"));
 
+if(!usuario){
+
+    const confirmacion = confirm(
+        "Para ver tus compras debes iniciar sesión. ¿Deseas iniciar sesión ahora?"
+    );
+
+    if(confirmacion){
+        window.location.href = "login.html";
+    }
+
+}
+</script>
 <script src="js/compras.js"></script>
 </body>
 </html>

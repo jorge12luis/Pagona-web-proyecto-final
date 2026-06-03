@@ -28,6 +28,8 @@ formulario.addEventListener("submit", async (e) => {
 
         const data = await respuesta.json();
 
+        console.log(data);
+
         if(data.success){
 
             // GUARDAR DATOS
