@@ -4,6 +4,8 @@ const cors = require("cors");
 const nodemailer = require("nodemailer");
 const path = require("path");
 const axios = require("axios");
+const multer = require("multer");
+
 
 const app = express();
 
@@ -55,7 +57,33 @@ conexion.query(alterTableRol, (error) => {
         console.log("Columna rol verificada/creada en tabla usuarios");
     }
 });
+//////////////////////////////////////////
+const storage = multer.diskStorage({
 
+    destination: (req, file, cb) => {
+
+        cb(null, "uploads/perfiles");
+
+    },
+
+    filename: (req, file, cb) => {
+
+        const nombreArchivo =
+        Date.now() + "-" + file.originalname;
+
+        cb(null, nombreArchivo);
+
+    }
+
+});
+
+const upload = multer({ storage });
+//////////////////////////////////////////
+app.use(
+    "/uploads",
+    express.static("uploads")
+);
+///////////////////////////////////////// permite acceder a la imagenes 
 const smtpUser = process.env.SMTP_USER || "";
 const smtpPass = process.env.SMTP_PASS || "";
 
@@ -346,27 +374,34 @@ app.post("/login", (req, res) => {
         (error, resultado) => {
             if (error) {
                 console.log(error);
-
-                return res.status(500).json({
-                    success: false,
-                    message:
-                        "Error interno del servidor."
-                });
             }
-
             if (resultado.length > 0) {
-                return res.json({
-                    success: true,
-                    message: "Login correcto",
-                    usuario: resultado[0]
-                });
-            }
+                return res.json({ success: true, message: "Login correcto", usuario: resultado[0] });
+            
+            } else{
+                    res.json({
+                        success: false,
+                        return : res.status(500).json({
+                        success: false,
+                        message:
+                            "Error interno del servidor."
+                        })
+                    })
 
-            return res.status(401).json({
-                success: false,
-                message:
-                    "Correo o contraseña incorrectos."
-            });
+                    if (resultado.length > 0) {
+                        return res.json({
+                        success: true,
+                        message: "Login correcto",
+                        usuario: resultado[0]
+                        });
+                    }
+
+                    return res.status(401).json({
+                        success: false,
+                        message:
+                        "Correo o contraseña incorrectos."
+                    });
+                }
         }
     );
 });
@@ -646,6 +681,295 @@ app.post("/agregar-resena", (req, res) => {
 
 
 });
+
+// routes para consulta de los datos del usuario //
+app.post("/usuario-perfil", (req, res) => {
+
+    console.log("🔥 PETICIÓN RECIBIDA /usuario-perfil");
+
+    const { correo } = req.body;
+
+    if (!correo) {
+        return res.status(400).json({
+            success: false,
+            message: "Correo requerido"
+        });
+    }
+    const sql = `
+        SELECT nombre, apellido, correo, numero_telefono, fecha_nacimiento, contrasena, imagen
+        FROM usuarios
+        WHERE correo = ?
+    `;
+
+    conexion.query(sql, [correo], (error, resultado) => {
+
+        console.log("Error:", error);
+        console.log("Resultado:", resultado);
+
+        if (error) {
+            return res.status(500).json({
+                success: false,
+                message: "Error en la consulta"
+            });
+        }
+
+        if (resultado.length > 0) {
+
+            console.log("Usuario encontrado:", resultado[0]);
+
+            return res.json({
+                success: true,
+                usuario: resultado[0]
+            });
+        }
+
+        return res.status(404).json({
+            success: false,
+            message: "Usuario no encontrado"
+        });
+    })
+    
+});
+//endpoint para editar los datos del usuario en la base de datos
+app.put("/actualizar-usuario", (req, res) => {
+
+    const {
+        correo_original,
+        nombre,
+        apellido,
+        correo,
+        celular,
+        fecha_nacimiento,
+        clave
+    } = req.body;
+
+    const sql = `
+        UPDATE usuarios
+        SET
+            nombre = ?,
+            apellido = ?,
+            correo = ?,
+            numero_telefono = ?,
+            fecha_nacimiento = ?,
+            contrasena = ?
+        WHERE correo = ?
+    `;
+    console.log(req.body);
+
+    conexion.query(
+        sql,
+        [
+            nombre,
+            apellido,
+            correo,
+            celular,
+            fecha_nacimiento,
+            clave,
+            correo_original
+        ],
+        (error, resultado) => {
+
+            if (error) {
+
+                console.log(error);
+
+                return res.status(500).json({
+                    success: false,
+                    message: "Error al actualizar usuario"
+                });
+
+            }
+
+            return res.json({
+                success: true,
+                message: "Usuario actualizado correctamente"
+            });
+
+        }
+    );
+
+});
+// GUARDAR COMPRA
+app.post("/guardar-compra", (req, res) => {
+
+    const { usuarioId, carrito, total } = req.body;
+
+    if(!carrito || carrito.length === 0){
+
+        return res.json({
+
+            success: false,
+            message: "Carrito vacío"
+
+        });
+
+    }
+
+    const sqlVenta = `
+    
+        INSERT INTO ventas
+        (usuario_id, total, estado)
+
+        VALUES (?, ?, ?)
+
+    `;
+
+    conexion.query(
+
+        sqlVenta,
+
+        [usuarioId, total, "Pendiente"],
+
+        (error, resultado) => {
+
+            if(error){
+
+                console.log(error);
+
+                return res.json({
+
+                    success: false
+
+                });
+
+            }
+
+            const ventaId = resultado.insertId;
+
+            carrito.forEach(producto => {
+
+                const subtotal =
+                producto.precio *
+                producto.cantidad;
+
+                const sqlDetalle = `
+
+                    INSERT INTO detalle_ventas
+                    (
+                        venta_id,
+                        producto_id,
+                        nombre_producto,
+                        precio,
+                        cantidad,
+                        subtotal
+                    )
+
+                    VALUES (?, ?, ?, ?, ?, ?)
+
+                `;
+
+                conexion.query(
+
+                    sqlDetalle,
+
+                    [
+
+                        ventaId,
+                        producto.id,
+                        producto.nombre,
+                        producto.precio,
+                        producto.cantidad,
+                        subtotal
+
+                    ]
+
+                );
+
+            });
+
+            res.json({
+
+                success: true
+
+            });
+
+        }
+
+    );
+
+});
+app.get("/mis-compras/:usuarioId", (req, res) => {
+    const usuarioId = req.params.usuarioId;
+
+   const sql = `
+    SELECT
+        v.id AS id,
+        v.usuario_id AS usuarioId,
+        v.total,
+        v.estado,
+        v.fecha,
+
+        dv.producto_id,
+        p.nombre AS nombre,
+        dv.precio,
+        dv.cantidad,
+        dv.subtotal
+
+    FROM ventas v
+
+    LEFT JOIN detalle_ventas dv
+    ON dv.venta_id = v.id
+
+    LEFT JOIN productos p
+    ON p.id = dv.producto_id
+
+    WHERE v.usuario_id = ?
+
+    ORDER BY v.id DESC, dv.id ASC
+`;
+
+    conexion.query(sql, [usuarioId], (error, resultado) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({ success: false, message: "Error obteniendo pedidos" });
+        }
+
+        res.json({ success: true, ventas: resultado || [] });
+    });
+},
+
+// endpoint para subir foto
+app.post(
+    "/subir-foto",
+    upload.single("foto"),
+    (req, res) => {
+
+        const { correo } = req.body;
+
+        const nombreArchivo = req.file.filename;
+
+        const sql = `
+            UPDATE usuarios
+            SET imagenes = ?
+            WHERE correo = ?
+        `;
+
+        conexion.query(
+            sql,
+            [nombreArchivo, correo],
+            (error) => {
+
+                if(error){
+
+                    console.log(error);
+
+                    return res.json({
+                        success: false
+                    });
+
+                }
+
+                res.json({
+                    success: true,
+                    foto: nombreArchivo
+                });
+
+            }
+        );
+
+    }
+),
+);
 // GUARDAR COMPRA
 app.post("/guardar-compra", (req, res) => {
 
