@@ -176,6 +176,15 @@ CREATE TABLE `usuarios` (
   `direccion` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE `resenas` (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    producto_id VARCHAR(100) NOT NULL,
+    usuario_nombre VARCHAR(100) NOT NULL,
+    comentario TEXT NOT NULL,
+    calificacion INT NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 --
 -- Volcado de datos para la tabla `usuarios`
 --

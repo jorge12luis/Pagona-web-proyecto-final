@@ -623,6 +623,7 @@ app.get("/admin/ganancias", (req, res) => {
 
 // AGREGAR RESEÑA
 app.post("/agregar-resena", (req, res) => {
+
     const {
         producto_id,
         usuario_correo,
@@ -638,12 +639,53 @@ app.post("/agregar-resena", (req, res) => {
         !comentario ||
         !calificacion
     ) {
+
         return res.status(400).json({
             success: false,
             message: "Faltan datos"
         });
+
     }
 
+    const sql = `
+        INSERT INTO resenas
+        (
+            producto_id,
+            usuario_nombre,
+            comentario,
+            calificacion
+        )
+        VALUES (?, ?, ?, ?)
+    `;
+
+    conexion.query(
+        sql,
+        [
+            producto_id,
+            usuario_nombre,
+            comentario,
+            calificacion
+        ],
+        (error, resultado) => {
+
+            if (error) {
+
+                console.log(error);
+
+                return res.status(500).json({
+                    success: false,
+                    message: "Error guardando reseña"
+                });
+
+            }
+
+            res.json({
+                success: true,
+                message: "Reseña guardada correctamente"
+            });
+
+        }
+    );
 
 });
 // GUARDAR COMPRA
@@ -851,8 +893,6 @@ app.post("/google-login", (req, res) => {
 });
 console.log("RUTA GOOGLE CARGADA");
 
-app.listen(3000, () => {
-});
 
 // OBTENER RESEÑAS
 app.get(

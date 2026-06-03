@@ -198,7 +198,7 @@ window.seleccionarEstrella = function(valor){
     const estrellas =
     document.querySelectorAll(".estrellas span");
 
-    estrellas.forEach((estrella, index)=>{
+    estrellas.forEach((estrella,index)=>{
 
         estrella.style.opacity =
         index < valor ? "1" : "0.3";
@@ -207,7 +207,7 @@ window.seleccionarEstrella = function(valor){
 
 }
 
-window.agregarResena = function(){
+window.agregarResena = async function(){
 
     const comentario =
     document.getElementById("comentario").value;
@@ -226,20 +226,128 @@ window.agregarResena = function(){
         return;
     }
 
-    const lista =
-    document.getElementById("listaResenas");
+    const usuario =
+    JSON.parse(localStorage.getItem("usuarioData"))
+    ||
+    JSON.parse(localStorage.getItem("usuario"));
 
-    const div =
-    document.createElement("div");
+    if(!usuario){
 
-    div.innerHTML = `
-        <p>${"⭐".repeat(calificacionSeleccionada)}</p>
-        <p>${comentario}</p>
-        <hr>
-    `;
+        alert("Debes iniciar sesión");
 
-    lista.prepend(div);
+        return;
+    }
 
-    document.getElementById("comentario").value = "";
+    try{
+
+        const respuesta = await fetch(
+            "http://localhost:3000/agregar-resena",
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+                body:JSON.stringify({
+
+                    producto_id: productoId,
+
+                    usuario_correo: usuario.correo,
+
+                    usuario_nombre: usuario.nombre,
+
+                    comentario: comentario,
+
+                    calificacion: calificacionSeleccionada
+
+                })
+            }
+        );
+
+        const data =
+        await respuesta.json();
+
+        alert(data.message);
+
+        document.getElementById(
+            "comentario"
+        ).value = "";
+
+        calificacionSeleccionada = 0;
+
+        document
+        .querySelectorAll(".estrellas span")
+        .forEach(estrella => {
+
+            estrella.style.opacity = "1";
+
+        });
+
+        cargarResenas();
+
+    }catch(error){
+
+        console.log(error);
+
+        alert("Error guardando reseña");
+
+    }
 
 }
+
+async function cargarResenas(){
+
+    try{
+
+        const respuesta = await fetch(
+            `http://localhost:3000/obtener-resenas/${productoId}`
+        );
+
+        const data =
+        await respuesta.json();
+
+        const lista =
+        document.getElementById("listaResenas");
+
+        lista.innerHTML = "";
+
+        if(!data.resenas) return;
+
+        data.resenas.forEach(resena=>{
+
+            lista.innerHTML += `
+
+                <div class="resena-item">
+
+                    <strong>
+                        ${resena.usuario_nombre}
+                    </strong>
+
+                    <p>
+                        ${"⭐".repeat(
+                            resena.calificacion
+                        )}
+                    </p>
+
+                    <p>
+                        ${resena.comentario}
+                    </p>
+
+                    <hr>
+
+                </div>
+
+            `;
+
+        });
+
+    }catch(error){
+
+        console.log(error);
+
+    }
+
+}
+
+cargarResenas();
