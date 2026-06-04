@@ -42,27 +42,27 @@ if(rol !== "admin"){
             Admin
         </h2>
 
-        <a href="#">
+        <a href="#" onclick="mostrarDashboard()">
             <i class="fa-solid fa-chart-line"></i>
             Dashboard
         </a>
 
-        <a href="#">
+        <a href="#" onclick="mostrarProductos()">
             <i class="fa-solid fa-box"></i>
             Productos
         </a>
 
-        <a href="#">
+        <a href="#" onclick="mostrarUsuarios()">
             <i class="fa-solid fa-users"></i>
             Usuarios
         </a>
 
-        <a href="#">
+        <a href="#" onclick="mostrarVentas()">
             <i class="fa-solid fa-cart-shopping"></i>
             Ventas
         </a>
 
-        <a href="#">
+        <a href="#" onclick="mostrarEstadisticas()">
             <i class="fa-solid fa-chart-pie"></i>
             Estadísticas
         </a>
@@ -148,27 +148,27 @@ if(rol !== "admin"){
 
         </div>
 
-        <!-- CRUD PRODUCTOS -->
+        <!-- DASHBOARD SECTION -->
 
-        <div class="tabla">
-
+        <div id="dashboardSection" class="tabla">
             <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>Resumen del Dashboard</h3>
+            </div>
+            <p>Este panel muestra métricas generales y te permite navegar hacia productos, usuarios, ventas y estadísticas con datos reales de la base de datos.</p>
+        </div>
 
-                <h3>
-                    CRUD Productos
-                </h3>
+        <!-- PRODUCTOS -->
 
+        <div id="productosSection" class="tabla" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>CRUD Productos</h3>
                 <button class="btn-admin" onclick="agregarProducto()">
                     <i class="fa-solid fa-plus"></i>
                     Agregar producto
                 </button>
-
             </div>
-
             <table class="table">
-
                 <thead>
-
                     <tr>
                         <th>ID</th>
                         <th>Producto</th>
@@ -176,15 +176,82 @@ if(rol !== "admin"){
                         <th>Stock</th>
                         <th>Acciones</th>
                     </tr>
-
                 </thead>
-
-                <tbody id="tablaProductos">
-
-                </tbody>
-
+                <tbody id="tablaProductos"></tbody>
             </table>
+        </div>
 
+        <!-- USUARIOS -->
+
+        <div id="usuariosSection" class="tabla" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>Usuarios</h3>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Rol</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaUsuarios"></tbody>
+            </table>
+        </div>
+
+        <!-- VENTAS -->
+
+        <div id="ventasSection" class="tabla" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>Ventas</h3>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaVentas"></tbody>
+            </table>
+        </div>
+
+        <!-- ESTADÍSTICAS -->
+
+        <div id="estadisticasSection" class="tabla" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>Estadísticas</h3>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-6 mb-3">
+                    <div class="card-admin p-3">
+                        <h5>Total de productos</h5>
+                        <p id="estadisticasProductos">0</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 mb-3">
+                    <div class="card-admin p-3">
+                        <h5>Total de usuarios</h5>
+                        <p id="estadisticasUsuarios">0</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 mb-3">
+                    <div class="card-admin p-3">
+                        <h5>Total de ventas</h5>
+                        <p id="estadisticasVentas">0</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 mb-3">
+                    <div class="card-admin p-3">
+                        <h5>Ganancias</h5>
+                        <p id="estadisticasGanancias">$0</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>

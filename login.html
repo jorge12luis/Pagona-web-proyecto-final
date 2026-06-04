@@ -116,8 +116,6 @@ document.querySelector(".google").addEventListener("click", async (e) => {
 
         const data = await respuesta.json();
 
-
-        alert(JSON.stringify(data.usuario, null, 2));
         localStorage.setItem(
             "usuarioData",
             JSON.stringify(data.usuario)
@@ -133,14 +131,20 @@ document.querySelector(".google").addEventListener("click", async (e) => {
             data.usuario.rol
         );
 
-                    console.error(error);
+        alert("Bienvenido " + user.displayName);
 
-                    alert("Error al iniciar sesión con Google");
+        window.location.href = "index.html";
 
-                }
+    } catch(error){
 
-           });
+        console.error(error);
 
-    </script>
+        alert(error.message);
+
+    }
+
+});
+</script>
+
 </body>
 </html>

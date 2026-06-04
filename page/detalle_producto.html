@@ -49,6 +49,45 @@
                 <span id="productoExtra">o 3 cuotas sin interés</span>
             </div>
             <div id="productoStock" class="stock">Stock disponible</div>
+         <div class="selector-color">
+
+    <h4>Color:</h4>
+
+    <div class="colores">
+
+        <span class="color activo"
+              data-color="Negro"
+              style="background:black;"
+              onclick="seleccionarColor(this)">
+        </span>
+
+        <span class="color"
+              data-color="Blanco"
+              style="background:white;border:1px solid #ccc;"
+              onclick="seleccionarColor(this)">
+        </span>
+
+        <span class="color"
+              data-color="Beige"
+              style="background:beige;"
+              onclick="seleccionarColor(this)">
+        </span>
+
+        <span class="color"
+              data-color="Marrón"
+              style="background:brown;"
+              onclick="seleccionarColor(this)">
+        </span>
+
+        <span class="color"
+              data-color="Rosado"
+              style="background:pink;"
+              onclick="seleccionarColor(this)">
+        </span>
+
+    </div>
+
+</div>
             <div class="acciones">
 
 <button class="btn-comprar" onclick="comprarAhora()">
@@ -109,6 +148,22 @@
     <script src="../js/detalle_producto.js"></script>
     <script src="../js/carrito.js"></script>
     <script>
+        
+let colorSeleccionado = "Negro";
+
+function seleccionarColor(elemento){
+
+    document
+    .querySelectorAll(".color")
+    .forEach(color => {
+        color.classList.remove("activo");
+    });
+
+    elemento.classList.add("activo");
+
+    colorSeleccionado =
+    elemento.dataset.color;
+}
 
 function comprarAhora() {
 
@@ -127,17 +182,19 @@ function comprarAhora() {
     }
 
     // obtener producto actual
-    const producto = {
+   const producto = {
 
-        nombre: document.getElementById("productoTitulo").textContent,
+    nombre: document.getElementById("productoTitulo").textContent,
 
-        precio: document.getElementById("productoPrecio")
-            .textContent
-            .replace("$", "")
-            .replace(/\./g, ""),
+    precio: document.getElementById("productoPrecio")
+        .textContent
+        .replace("$", "")
+        .replace(/\./g, ""),
 
-        imagen: document.getElementById("productoImagen").src
-    };
+    imagen: document.getElementById("productoImagen").src,
+
+    color: colorSeleccionado
+};
 
     // guardar producto temporal
     localStorage.setItem(
@@ -154,22 +211,23 @@ function comprarAhora() {
 
 function agregarCarrito(){
 
-    const producto = {
+   const producto = {
 
-        nombre: document.getElementById("productoTitulo").textContent,
+    nombre: document.getElementById("productoTitulo").textContent,
 
-        precio: parseInt(
-            document.getElementById("productoPrecio")
-            .textContent
-            .replace("$","")
-            .replace(/\./g,"")
-        ),
+    precio: parseInt(
+        document.getElementById("productoPrecio")
+        .textContent
+        .replace("$","")
+        .replace(/\./g,"")
+    ),
 
-        imagen: document.getElementById("productoImagen").src,
+    imagen: document.getElementById("productoImagen").src,
 
-        cantidad: 1
-    };
+    color: colorSeleccionado,
 
+    cantidad: 1
+};
     let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
     const existe = carrito.find(item => item.nombre === producto.nombre);
@@ -223,5 +281,6 @@ document.getElementById("formRegistro").addEventListener("submit", function(e){
 });
 
 </script>
+ 
 </body>
 </html>
