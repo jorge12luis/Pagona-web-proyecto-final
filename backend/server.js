@@ -113,8 +113,8 @@ function formatDateTime(date) {
 }
 
 
-
 app.post("/login", (req, res) => {
+
     const { correo, contrasena } = req.body;
 
     const sql = `
@@ -126,40 +126,37 @@ app.post("/login", (req, res) => {
         sql,
         [correo, contrasena],
         (error, resultado) => {
-            if (error) {
+
+            if(error){
+
                 console.log(error);
+
+                return res.status(500).json({
+                    success: false,
+                    message: "Error interno del servidor"
+                });
+
             }
-            if (resultado.length > 0) {
-                return res.json({ success: true, message: "Login correcto", usuario: resultado[0] });
-            
-            } else{
-                    res.json({
-                        success: false,
-                        return : res.status(500).json({
-                        success: false,
-                        message:
-                            "Error interno del servidor."
-                        })
-                    })
 
-                    if (resultado.length > 0) {
-                        return res.json({
-                        success: true,
-                        message: "Login correcto",
-                        usuario: resultado[0]
-                        });
-                    }
+            if(resultado.length > 0){
 
-                    return res.status(401).json({
-                        success: false,
-                        message:
-                        "Correo o contraseÃ±a incorrectos."
-                    });
-                }
+                return res.json({
+                    success: true,
+                    message: "Login correcto",
+                    usuario: resultado[0]
+                });
+
+            }
+
+            return res.status(401).json({
+                success: false,
+                message: "Correo o contraseña incorrectos"
+            });
+
         }
     );
-});
 
+});
 app.post("/registro", (req, res) => {
     const {
         nombre,

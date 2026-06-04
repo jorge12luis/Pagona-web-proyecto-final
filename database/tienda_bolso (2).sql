@@ -11,10 +11,6 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-CREATE DATABASE IF NOT EXISTS tienda_bolso;
-
-USE tienda_bolso;
-
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -183,8 +179,7 @@ CREATE TABLE `usuarios` (
 INSERT INTO `usuarios` (`id`, `nombre`, `apellido`, `correo`, `contrasena`, `rol`, `numero_telefono`, `fecha_nacimiento`, `direccion`) VALUES
 (1, 'jorge', NULL, 'jorge@gmail', '123456', 'admin', NULL, NULL, NULL),
 (4, 'luiis', NULL, 'luis@gmail.com', '1122', 'admin', NULL, NULL, NULL),
-(5, 'jorge', 'pinto', 'pintojorge@gmail', '111111', 'usuario', '123123', '0000-00-00', NULL),
-(7, 'julio', 'martinez', 'julio763284@gmail.com' , '12345' , 'usuario' , '3017794660' , '2004-09-17' , "calle 72 # 17 - 20");
+(5, 'jorge', 'pinto', 'pintojorge@gmail', '111111', 'usuario', '123123', '0000-00-00', NULL);
 
 -- --------------------------------------------------------
 
@@ -397,9 +392,6 @@ ALTER TABLE `productos`
 ALTER TABLE `ventas`
   ADD CONSTRAINT `ventas_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
 COMMIT;
-
-ALTER TABLE usuarios
-ADD COLUMN imagen VARCHAR(255);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

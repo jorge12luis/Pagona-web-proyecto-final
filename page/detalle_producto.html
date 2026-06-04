@@ -149,7 +149,37 @@
     <script src="../js/carrito.js"></script>
     <script>
         
-let colorSeleccionado = "Negro";
+const imagenesProductos = {
+
+    "Bolso Manhattan": {
+
+        Negro: "../img/manhattan-negro.jpg",
+        Blanco: "../img/manhattan-blanco.jpg",
+        Beige: "../img/manhattan-beige.jpg",
+        Marrón: "../img/manhattan-marron.jpg",
+        Rosado: "../img/manhattan-rosado.jpg"
+    },
+
+    "Mochila Urban": {
+
+        Negro: "../img/urban-negro.jpg",
+        Blanco: "../img/urban-blanco.jpg",
+        Beige: "../img/urban-beige.jpg",
+        Marrón: "../img/urban-marron.jpg",
+        Rosado: "../img/urban-rosado.jpg"
+    },
+
+    "Cartera Noche": {
+
+        Negro: "../img/noche-negro.jpg",
+        Blanco: "../img/noche-blanco.jpg",
+        Beige: "../img/noche-beige.jpg",
+        Marrón: "../img/noche-marron.jpg",
+        Rosado: "../img/noche-rosado.jpg"
+    }
+
+};
+
 
 function seleccionarColor(elemento){
 
@@ -163,8 +193,26 @@ function seleccionarColor(elemento){
 
     colorSeleccionado =
     elemento.dataset.color;
-}
 
+    const nombreProducto =
+    document.getElementById("productoTitulo")
+    .textContent
+    .trim();
+
+    const imagen =
+    document.getElementById("productoImagen");
+
+    if(
+        imagenesProductos[nombreProducto] &&
+        imagenesProductos[nombreProducto][colorSeleccionado]
+    ){
+
+        imagen.src =
+        imagenesProductos[nombreProducto][colorSeleccionado];
+
+    }
+
+}
 function comprarAhora() {
 
     console.log("Botón comprar funcionando");
