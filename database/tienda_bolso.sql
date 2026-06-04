@@ -176,6 +176,15 @@ CREATE TABLE `usuarios` (
   `direccion` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE `resenas` (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    producto_id VARCHAR(100) NOT NULL,
+    usuario_nombre VARCHAR(100) NOT NULL,
+    comentario TEXT NOT NULL,
+    calificacion INT NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 --
 -- Volcado de datos para la tabla `usuarios`
 --
@@ -400,6 +409,8 @@ COMMIT;
 
 ALTER TABLE usuarios
 ADD COLUMN imagen VARCHAR(255);
+
+Alter TABLE ventas ADD COLUMN estado VARCHAR(50) DEFAULT 'pendiente';
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

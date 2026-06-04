@@ -255,22 +255,18 @@ function eliminarProducto(indiceProducto) {
 renderizarCarrito();
 
 function agregarCarrito(){
-
+    
     const producto = {
-
-        nombre: document.getElementById("productoTitulo").textContent,
-
-        precio: parseInt(
-            document.getElementById("productoPrecio")
-            .textContent
-            .replace("$","")
-            .replace(/\./g,"")
-        ),
-
-        imagen: document.getElementById("productoImagen").src,
-
-        cantidad: 1
-    };
+    id: producto.id,
+    nombre: producto.title,
+    precio: parseInt(
+        producto.price
+            .replace("$", "")
+            .replace(/\./g, "")
+    ),
+    imagen: producto.image,
+    cantidad: 1
+};
 
     let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 

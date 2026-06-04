@@ -656,7 +656,7 @@ app.get("/admin/ganancias", (req, res) => {
     });
 });
 
-// AGREGAR RESEÃ‘A
+// AGREGAR RESEÑA
 app.post("/agregar-resena", (req, res) => {
 
     const {
@@ -709,14 +709,14 @@ app.post("/agregar-resena", (req, res) => {
 
                 return res.status(500).json({
                     success: false,
-                    message: "Error guardando reseÃ±a"
+                    message: "Error guardando resena"
                 });
 
             }
 
             res.json({
                 success: true,
-                message: "ReseÃ±a guardada correctamente"
+                message: "Resena guardada correctamente"
             });
 
         }
@@ -841,7 +841,7 @@ app.post("/guardar-compra", (req, res) => {
         return res.json({
 
             success: false,
-            message: "Carrito vacÃ­o"
+            message: "Carrito vaci­o"
 
         });
 
@@ -906,7 +906,7 @@ app.post("/guardar-compra", (req, res) => {
                     [
 
                         ventaId,
-                        producto.id,
+                        producto.producto_id || null,
                         producto.precio,
                         producto.cantidad,
                         subtotal
