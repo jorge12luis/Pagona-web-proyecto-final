@@ -162,14 +162,15 @@ app.post("/registro", (req, res) => {
         nombre,
         apellido,
         correo,
-        contrasena,
+        clave,
+        confirmarclave,
         telefono,
-        fechaNacimiento
+        date,
+        direccion
     } = req.body;
 
     if (
-        !correo ||
-        !correo.toLowerCase().endsWith("@gmail.com")
+        !correo || !correo.toLowerCase().endsWith("@gmail.com")
     ) {
         return res
             .status(400)
@@ -183,11 +184,12 @@ app.post("/registro", (req, res) => {
             apellido,
             correo,
             contrasena,
+            rol,
             numero_telefono,
             fecha_nacimiento,
-            rol
+            direccion
         )
-        VALUES (?, ?, ?, ?, ?, ?, 'usuario')
+        VALUES (?,?,?,?,"usuario",?,?,?)
     `;
 
     conexion.query(
@@ -196,9 +198,10 @@ app.post("/registro", (req, res) => {
             nombre,
             apellido,
             correo,
-            contrasena,
+            clave,
             telefono,
-            fechaNacimiento
+            date,
+            direccion,
         ],
         (error) => {
             if (error) {
