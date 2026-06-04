@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS recuperacion_codes (
 
 conexion.query(createRecoveryTable, (error) => {
     if (error) {
-        console.log("Error creando tabla de recuperación:", error);
+        console.log("Error creando tabla de recuperaciÃ³n:", error);
     }
 });
 
@@ -104,7 +104,7 @@ const transporter = nodemailer.createTransport({
 
 if (!smtpUser || !smtpPass) {
     console.log(
-        "Advertencia: SMTP_USER y SMTP_PASS no están configurados."
+        "Advertencia: SMTP_USER y SMTP_PASS no estÃ¡n configurados."
     );
 }
 
@@ -118,7 +118,7 @@ function formatDateTime(date) {
 function enviarCodigoEmail(correo, codigo) {
     if (!smtpUser || !smtpPass) {
         console.log(
-            `Código de recuperación para ${correo}: ${codigo}`
+            `CÃ³digo de recuperaciÃ³n para ${correo}: ${codigo}`
         );
         return Promise.resolve();
     }
@@ -126,8 +126,8 @@ function enviarCodigoEmail(correo, codigo) {
     const mailOptions = {
         from: smtpUser,
         to: correo,
-        subject: "Código de recuperación",
-        text: `Tu código de recuperación es: ${codigo}.`
+        subject: "CÃ³digo de recuperaciÃ³n",
+        text: `Tu cÃ³digo de recuperaciÃ³n es: ${codigo}.`
     };
 
     return transporter.sendMail(mailOptions);
@@ -135,7 +135,7 @@ function enviarCodigoEmail(correo, codigo) {
 
 function enviarCodigoSms(telefono, codigo) {
     console.log(
-        `SMS simulado para ${telefono}: Tu código de recuperación es ${codigo}`
+        `SMS simulado para ${telefono}: Tu cÃ³digo de recuperaciÃ³n es ${codigo}`
     );
 }
 
@@ -145,7 +145,7 @@ app.post("/recuperar/codigo", (req, res) => {
     if (!correo) {
         return res.status(400).json({
             success: false,
-            message: "Debes enviar un correo válido."
+            message: "Debes enviar un correo vÃ¡lido."
         });
     }
 
@@ -209,7 +209,7 @@ app.post("/recuperar/codigo", (req, res) => {
 
                     return res.status(500).json({
                         success: false,
-                        message: "No se pudo guardar el código."
+                        message: "No se pudo guardar el cÃ³digo."
                     });
                 }
 
@@ -220,7 +220,7 @@ app.post("/recuperar/codigo", (req, res) => {
                     );
                 });
 
-                let mensaje = `Se envió el código al correo ${correo}.`;
+                let mensaje = `Se enviÃ³ el cÃ³digo al correo ${correo}.`;
 
                 if (usuario.numero_telefono) {
                     enviarCodigoSms(
@@ -228,7 +228,7 @@ app.post("/recuperar/codigo", (req, res) => {
                         codigo
                     );
 
-                    mensaje += ` También se envió al número ${usuario.numero_telefono}.`;
+                    mensaje += ` TambiÃ©n se enviÃ³ al nÃºmero ${usuario.numero_telefono}.`;
                 }
 
                 return res.json({
@@ -257,14 +257,14 @@ app.post("/recuperar/cambiar", (req, res) => {
         return res.status(400).json({
             success: false,
             message:
-                "Faltan datos para cambiar la contraseña."
+                "Faltan datos para cambiar la contraseÃ±a."
         });
     }
 
     if (nuevaContrasena !== confirmarContrasena) {
         return res.status(400).json({
             success: false,
-            message: "Las contraseñas no coinciden."
+            message: "Las contraseÃ±as no coinciden."
         });
     }
 
@@ -287,7 +287,7 @@ app.post("/recuperar/cambiar", (req, res) => {
             return res.status(400).json({
                 success: false,
                 message:
-                    "No hay un código activo para ese correo."
+                    "No hay un cÃ³digo activo para ese correo."
             });
         }
 
@@ -301,14 +301,14 @@ app.post("/recuperar/cambiar", (req, res) => {
             return res.status(400).json({
                 success: false,
                 message:
-                    "El código ha expirado. Solicita uno nuevo."
+                    "El cÃ³digo ha expirado. Solicita uno nuevo."
             });
         }
 
         if (registro.codigo !== codigo) {
             return res.status(400).json({
                 success: false,
-                message: "Código incorrecto."
+                message: "CÃ³digo incorrecto."
             });
         }
 
@@ -328,7 +328,7 @@ app.post("/recuperar/cambiar", (req, res) => {
                     return res.status(500).json({
                         success: false,
                         message:
-                            "Error actualizando la contraseña."
+                            "Error actualizando la contraseÃ±a."
                     });
                 }
 
@@ -343,7 +343,7 @@ app.post("/recuperar/cambiar", (req, res) => {
                     (error) => {
                         if (error) {
                             console.log(
-                                "Error eliminando código:",
+                                "Error eliminando cÃ³digo:",
                                 error
                             );
                         }
@@ -353,7 +353,7 @@ app.post("/recuperar/cambiar", (req, res) => {
                 return res.json({
                     success: true,
                     message:
-                        "Contraseña actualizada correctamente."
+                        "ContraseÃ±a actualizada correctamente."
                 });
             }
         );
@@ -399,7 +399,7 @@ app.post("/login", (req, res) => {
                     return res.status(401).json({
                         success: false,
                         message:
-                        "Correo o contraseña incorrectos."
+                        "Correo o contraseÃ±a incorrectos."
                     });
                 }
         }
@@ -473,7 +473,7 @@ app.post("/cambiar-rol", (req, res) => {
     ) {
         return res.status(400).json({
             success: false,
-            message: "Datos inválidos"
+            message: "Datos invÃ¡lidos"
         });
     }
 
@@ -656,7 +656,7 @@ app.get("/admin/ganancias", (req, res) => {
     });
 });
 
-// AGREGAR RESEÑA
+// AGREGAR RESEÃ‘A
 app.post("/agregar-resena", (req, res) => {
 
     const {
@@ -709,14 +709,14 @@ app.post("/agregar-resena", (req, res) => {
 
                 return res.status(500).json({
                     success: false,
-                    message: "Error guardando reseña"
+                    message: "Error guardando reseÃ±a"
                 });
 
             }
 
             res.json({
                 success: true,
-                message: "Reseña guardada correctamente"
+                message: "ReseÃ±a guardada correctamente"
             });
 
         }
@@ -727,7 +727,7 @@ app.post("/agregar-resena", (req, res) => {
 // routes para consulta de los datos del usuario //
 app.post("/usuario-perfil", (req, res) => {
 
-    console.log("🔥 PETICIÓN RECIBIDA /usuario-perfil");
+    console.log("ðŸ”¥ PETICIÃ“N RECIBIDA /usuario-perfil");
 
     const { correo } = req.body;
 
@@ -841,7 +841,7 @@ app.post("/guardar-compra", (req, res) => {
         return res.json({
 
             success: false,
-            message: "Carrito vacío"
+            message: "Carrito vacÃ­o"
 
         });
 
@@ -890,13 +890,12 @@ app.post("/guardar-compra", (req, res) => {
                     (
                         venta_id,
                         producto_id,
-                        nombre_producto,
                         precio,
                         cantidad,
                         subtotal
                     )
 
-                    VALUES (?, ?, ?, ?, ?, ?)
+                    VALUES (?, ?, ?, ?, ?)
 
                 `;
 
@@ -908,7 +907,6 @@ app.post("/guardar-compra", (req, res) => {
 
                         ventaId,
                         producto.id,
-                        producto.nombre,
                         producto.precio,
                         producto.cantidad,
                         subtotal
@@ -930,45 +928,6 @@ app.post("/guardar-compra", (req, res) => {
     );
 
 });
-app.get("/mis-compras/:usuarioId", (req, res) => {
-    const usuarioId = req.params.usuarioId;
-
-   const sql = `
-    SELECT
-        v.id AS id,
-        v.usuario_id AS usuarioId,
-        v.total,
-        v.estado,
-        v.fecha,
-
-        dv.producto_id,
-        p.nombre AS nombre,
-        dv.precio,
-        dv.cantidad,
-        dv.subtotal
-
-    FROM ventas v
-
-    LEFT JOIN detalle_ventas dv
-    ON dv.venta_id = v.id
-
-    LEFT JOIN productos p
-    ON p.id = dv.producto_id
-
-    WHERE v.usuario_id = ?
-
-    ORDER BY v.id DESC, dv.id ASC
-`;
-
-    conexion.query(sql, [usuarioId], (error, resultado) => {
-        if (error) {
-            console.log(error);
-            return res.status(500).json({ success: false, message: "Error obteniendo pedidos" });
-        }
-
-        res.json({ success: true, ventas: resultado || [] });
-    });
-},
 
 // endpoint para subir foto
 app.post(
@@ -1010,107 +969,8 @@ app.post(
         );
 
     }
-),
 );
-// GUARDAR COMPRA
-app.post("/guardar-compra", (req, res) => {
 
-    const { usuarioId, carrito, total } = req.body;
-
-    if(!carrito || carrito.length === 0){
-
-        return res.json({
-
-            success: false,
-            message: "Carrito vacío"
-
-        });
-
-    }
-
-    const sqlVenta = `
-    
-        INSERT INTO ventas
-        (usuario_id, total, estado)
-
-        VALUES (?, ?, ?)
-
-    `;
-
-    conexion.query(
-
-        sqlVenta,
-
-        [usuarioId, total, "Pendiente"],
-
-        (error, resultado) => {
-
-            if(error){
-
-                console.log(error);
-
-                return res.json({
-
-                    success: false
-
-                });
-
-            }
-
-            const ventaId = resultado.insertId;
-
-            carrito.forEach(producto => {
-
-                const subtotal =
-                producto.precio *
-                producto.cantidad;
-
-                const sqlDetalle = `
-
-                    INSERT INTO detalle_ventas
-                    (
-                        venta_id,
-                        producto_id,
-                        nombre_producto,
-                        precio,
-                        cantidad,
-                        subtotal
-                    )
-
-                    VALUES (?, ?, ?, ?, ?, ?)
-
-                `;
-
-                conexion.query(
-
-                    sqlDetalle,
-
-                    [
-
-                        ventaId,
-                        producto.id,
-                        producto.nombre,
-                        producto.precio,
-                        producto.cantidad,
-                        subtotal
-
-                    ]
-
-                );
-
-            });
-
-            res.json({
-
-                success: true
-
-            });
-
-        }
-
-    );
-
-});
 app.get("/mis-compras/:usuarioId", (req, res) => {
     const usuarioId = req.params.usuarioId;
 
@@ -1218,7 +1078,7 @@ app.post("/google-login", (req, res) => {
 console.log("RUTA GOOGLE CARGADA");
 
 
-// OBTENER RESEÑAS
+// OBTENER RESEÃ‘AS
 app.get(
     "/obtener-resenas/:productoId",
     (req, res) => {
@@ -1242,7 +1102,7 @@ app.get(
                     return res.status(500).json({
                         success: false,
                         message:
-                            "Error obteniendo reseñas"
+                            "Error obteniendo reseÃ±as"
                     });
                 }
 
