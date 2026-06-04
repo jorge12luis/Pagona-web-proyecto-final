@@ -155,6 +155,61 @@ if(rol !== "admin"){
                 <h3>Resumen del Dashboard</h3>
             </div>
             <p>Este panel muestra métricas generales y te permite navegar hacia productos, usuarios, ventas y estadísticas con datos reales de la base de datos.</p>
+
+            <div class="row mb-4">
+                <div class="col-12 col-md-6 col-xl-3 mb-3">
+                    <div class="card-admin p-3">
+                        <h5>Ventas hoy</h5>
+                        <p id="totalVentasHoy">0</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-xl-3 mb-3">
+                    <div class="card-admin p-3">
+                        <h5>Ventas semana</h5>
+                        <p id="totalVentasSemana">0</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-xl-3 mb-3">
+                    <div class="card-admin p-3">
+                        <h5>Ventas mes</h5>
+                        <p id="totalVentasMes">0</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-xl-3 mb-3">
+                    <div class="card-admin p-3">
+                        <h5>Pedidos realizados</h5>
+                        <p id="totalPedidos">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-12 col-md-6 mb-3">
+                    <div class="card-admin p-3">
+                        <h5>Ingresos generados</h5>
+                        <p id="ingresosGenerados">$0</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 mb-3">
+                    <div class="card-admin p-3">
+                        <h5>Clientes registrados</h5>
+                        <p id="clientesRegistrados">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <h5>Productos más vendidos</h5>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad vendida</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productosMasVendidos"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- PRODUCTOS -->

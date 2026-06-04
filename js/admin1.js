@@ -26,22 +26,26 @@ function mostrarDashboard() {
 function mostrarProductos() {
     ocultarSecciones();
     document.getElementById("productosSection").style.display = "block";
+    cargarProductos();
 }
 
 function mostrarUsuarios() {
     ocultarSecciones();
     document.getElementById("usuariosSection").style.display = "block";
+    cargarUsuarios();
 }
 
 function mostrarVentas() {
     ocultarSecciones();
     document.getElementById("ventasSection").style.display = "block";
+    cargarVentas();
 }
 
 function mostrarEstadisticas() {
     ocultarSecciones();
     document.getElementById("estadisticasSection").style.display = "block";
     cargarEstadisticas();
+    actualizarCards();
 }
 
 async function cargarProductos() {
@@ -81,23 +85,24 @@ async function cargarVentas() {
 
 async function actualizarCards() {
     try {
-        const [dashboardResp, gananciasResp] = await Promise.all([
-            fetch("http://localhost:3000/admin/dashboard"),
-            fetch("http://localhost:3000/admin/total-ganancias")
-        ]);
-
+        const dashboardResp = await fetch("http://localhost:3000/admin/dashboard");
         if (!dashboardResp.ok) throw new Error("Error cargando dashboard");
-        if (!gananciasResp.ok) throw new Error("Error cargando ganancias");
 
         const dashboard = await dashboardResp.json();
-        const gananciasData = await gananciasResp.json();
 
         document.getElementById("totalProductos").textContent = dashboard.totalProductos || 0;
         document.getElementById("totalUsuarios").textContent = dashboard.totalUsuarios || 0;
         document.getElementById("totalVentas").textContent = dashboard.totalVentas || 0;
+        document.getElementById("ganancias").textContent = "$" + Number(dashboard.ganancias || 0).toLocaleString();
 
-        const ganancias = gananciasData.ganancias ?? dashboard.ganancias ?? 0;
-        document.getElementById("ganancias").textContent = "$" + Number(ganancias).toLocaleString();
+        document.getElementById("totalVentasHoy").textContent = dashboard.totalVentasHoy || 0;
+        document.getElementById("totalVentasSemana").textContent = dashboard.totalVentasSemana || 0;
+        document.getElementById("totalVentasMes").textContent = dashboard.totalVentasMes || 0;
+        document.getElementById("totalPedidos").textContent = dashboard.totalPedidos || 0;
+        document.getElementById("clientesRegistrados").textContent = dashboard.clientesRegistrados || 0;
+        document.getElementById("ingresosGenerados").textContent = "$" + Number(dashboard.ingresosGenerados || 0).toLocaleString();
+
+        renderProductosMasVendidos(dashboard.productosMasVendidos || []);
     } catch (error) {
         console.error("Error actualizando cards:", error);
     }
@@ -151,6 +156,29 @@ function renderVentas() {
                 <td>$${Number(venta.total).toLocaleString()}</td>
                 <td>${venta.estado}</td>
                 <td>${venta.fecha}</td>
+            </tr>
+        `;
+    });
+}
+
+function renderProductosMasVendidos(productos) {
+    const tabla = document.getElementById("productosMasVendidos");
+    tabla.innerHTML = "";
+
+    if (!productos.length) {
+        tabla.innerHTML = `
+            <tr>
+                <td colspan="2">No hay productos vendidos aún</td>
+            </tr>
+        `;
+        return;
+    }
+
+    productos.forEach((producto) => {
+        tabla.innerHTML += `
+            <tr>
+                <td>${producto.nombre}</td>
+                <td>${producto.cantidadVendida || 0}</td>
             </tr>
         `;
     });

@@ -997,42 +997,60 @@ app.get("/admin/total-ganancias", (req, res) => {
     });
 });
 app.get("/admin/dashboard", (req, res) => {
-    const sqlProductos = "SELECT COUNT(*) AS totalProductos FROM productos";
-    const sqlUsuarios = "SELECT COUNT(*) AS totalUsuarios FROM usuarios";
-    const sqlVentas = "SELECT COUNT(*) AS totalVentas FROM ventas";
-    const sqlGanancias = "SELECT SUM(total) AS ganancias FROM ventas";
+    const sql = `
+        SELECT
+            (SELECT COUNT(*) FROM productos) AS totalProductos,
+            (SELECT COUNT(*) FROM usuarios) AS totalUsuarios,
+            (SELECT COUNT(*) FROM ventas) AS totalPedidos,
+            (SELECT SUM(total) FROM ventas) AS ingresosGenerados,
+            (SELECT COUNT(*) FROM ventas WHERE fecha >= CURDATE()) AS ventasHoy,
+            (SELECT COUNT(*) FROM ventas WHERE fecha >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)) AS ventasSemana,
+            (SELECT COUNT(*) FROM ventas WHERE MONTH(fecha) = MONTH(CURDATE()) AND YEAR(fecha) = YEAR(CURDATE())) AS ventasMes,
+            (SELECT SUM(total) FROM ventas WHERE fecha >= CURDATE()) AS ingresosHoy,
+            (SELECT SUM(total) FROM ventas WHERE fecha >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)) AS ingresosSemana,
+            (SELECT SUM(total) FROM ventas WHERE MONTH(fecha) = MONTH(CURDATE()) AND YEAR(fecha) = YEAR(CURDATE())) AS ingresosMes,
+            (SELECT COUNT(*) FROM usuarios) AS clientesRegistrados
+    `;
 
-    conexion.query(sqlProductos, (e1, p) => {
-        if (e1) {
-            console.log(e1);
-            return res.status(500).json({ success: false, message: "Error obteniendo productos" });
+    const sqlTopProductos = `
+        SELECT
+            p.id,
+            p.nombre,
+            COALESCE(SUM(dv.cantidad), 0) AS cantidadVendida
+        FROM productos p
+        LEFT JOIN detalle_ventas dv ON dv.producto_id = p.id
+        GROUP BY p.id, p.nombre
+        ORDER BY cantidadVendida DESC
+        LIMIT 5
+    `;
+
+    conexion.query(sql, (error, resumen) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({ success: false, message: "Error obteniendo métricas de dashboard" });
         }
 
-        conexion.query(sqlUsuarios, (e2, u) => {
-            if (e2) {
-                console.log(e2);
-                return res.status(500).json({ success: false, message: "Error obteniendo usuarios" });
+        conexion.query(sqlTopProductos, (error2, topProductos) => {
+            if (error2) {
+                console.log(error2);
+                return res.status(500).json({ success: false, message: "Error obteniendo productos más vendidos" });
             }
 
-            conexion.query(sqlVentas, (e3, v) => {
-                if (e3) {
-                    console.log(e3);
-                    return res.status(500).json({ success: false, message: "Error obteniendo ventas" });
-                }
-
-                conexion.query(sqlGanancias, (e4, g) => {
-                    if (e4) {
-                        console.log(e4);
-                        return res.status(500).json({ success: false, message: "Error obteniendo ganancias" });
-                    }
-
-                    res.json({
-                        totalProductos: p[0].totalProductos,
-                        totalUsuarios: u[0].totalUsuarios,
-                        totalVentas: v[0].totalVentas,
-                        ganancias: g[0].ganancias || 0
-                    });
-                });
+            const fila = resumen[0] || {};
+            res.json({
+                totalProductos: fila.totalProductos || 0,
+                totalUsuarios: fila.totalUsuarios || 0,
+                totalVentas: fila.totalPedidos || 0,
+                ganancias: fila.ingresosGenerados || 0,
+                totalVentasHoy: fila.ventasHoy || 0,
+                totalVentasSemana: fila.ventasSemana || 0,
+                totalVentasMes: fila.ventasMes || 0,
+                ingresosHoy: fila.ingresosHoy || 0,
+                ingresosSemana: fila.ingresosSemana || 0,
+                ingresosMes: fila.ingresosMes || 0,
+                totalPedidos: fila.totalPedidos || 0,
+                clientesRegistrados: fila.clientesRegistrados || 0,
+                productosMasVendidos: topProductos || []
             });
         });
     });
