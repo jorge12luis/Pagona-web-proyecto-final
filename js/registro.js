@@ -16,30 +16,14 @@ async (e)=>{
     const correo =
     document.getElementById("correo").value;
 
-    const contrasena =
-    document.getElementById("contrasena").value;
-
-    const confirmarContrasena =
-    document.getElementById("confirmarContrasena").value;
 
     const telefono =
     document.getElementById("numero").value;
 
-    const fechaNacimiento =
-    document.getElementById(
-    "diaNacimiento"
-    ).value;
-
-    if (contrasena !== confirmarContrasena) {
-        alert("Las contraseñas no coinciden.");
-        return;
-    }
-
-    if (!correo.toLowerCase().endsWith("@gmail.com")) {
-        alert("Debes registrar un correo con @gmail.com.");
-        return;
-    }
-
+    const direccion =
+    document.getElementById("direccion").value;
+    
+ 
     const respuesta = await fetch(
     "http://localhost:3000/registro",{
 
@@ -62,9 +46,16 @@ async (e)=>{
 
     });
 
-    const data =
-    await respuesta.text();
+    if (respuesta.ok) {
+        const data =
+        await respuesta.text();
 
-    alert(data);
+        alert(data);
 
+        formulario.reset();
+
+        window.location.href = "login.html";
+    } else {
+        alert("Error al registrarse");
+    }
 });

@@ -103,8 +103,31 @@
 
 <div class="contenedorFavoritos"
 id="contenedorFavoritos"></div>
+<script>
+
+// Verificar sesión
+const usuario =
+JSON.parse(localStorage.getItem("usuarioData"))
+||
+JSON.parse(localStorage.getItem("usuario"));
+
+if(!usuario){
+
+    alert(
+        "Debes iniciar sesión para ver tus favoritos."
+    );
+
+    window.location.href =
+    "../login.html";
+
+}
+
+</script>
 
 <script src="../js/favoritos.js"></script>
+
+<script src="../js/favoritos.js"></script>
+
 
 </body>
 </html>

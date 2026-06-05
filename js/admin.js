@@ -1,9 +1,9 @@
-// Verificar que el usuario sea admin cuando carga la página
+// Verificar que el usuario sea administrador cuando se entra en la pagina
 document.addEventListener('DOMContentLoaded', () => {
     const rol = localStorage.getItem('rolUsuario');
     const usuarioData = localStorage.getItem('usuarioData');
 
-    // Si no hay rol o no es admin, redirigir a inicio
+    // Si verifica si es admninistrador, si no lo es redirige a la pagina de inicio
     if (!rol || rol !== 'admin') {
         alert('Acceso denegado. Solo administradores pueden acceder a esta página.');
         window.location.href = 'index.html';

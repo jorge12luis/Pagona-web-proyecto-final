@@ -16,208 +16,8 @@
     <link rel="stylesheet"
     href="css/Style.css">
 
-<style>
-
-body{
-
-    background:#faf8f4;
-
-    min-height:100vh;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    font-family:'Arial',sans-serif;
-
-    padding:40px 20px;
-}
-
-.registro-container{
-
-    background:rgba(255,255,255,0.95);
-
-    border-radius:20px;
-
-    box-shadow:0 15px 35px rgba(0,0,0,0.1);
-
-    padding:40px;
-
-    max-width:600px;
-
-    width:100%;
-
-    backdrop-filter:blur(10px);
-}
-
-.registro-header{
-
-    text-align:center;
-
-    margin-bottom:30px;
-}
-
-.registro-header h1{
-
-    color:#333;
-
-    font-weight:bold;
-
-    margin-bottom:10px;
-}
-
-.registro-header p{
-
-    color:#666;
-
-    font-size:14px;
-}
-
-.form-floating{
-
-    margin-bottom:20px;
-}
-
-.form-control{
-
-    border:none;
-
-    border-bottom:2px solid #ddd;
-
-    border-radius:0;
-
-    background:transparent;
-
-    transition:0.3s;
-}
-
-.form-control:focus{
-
-    box-shadow:none;
-
-    border-bottom-color:#667eea;
-
-    background:rgba(102,126,234,0.1);
-}
-
-.btn-registro{
-
-    background:linear-gradient(
-    135deg,
-    #667eea 0%,
-    #764ba2 100%);
-
-    border:none;
-
-    border-radius:50px;
-
-    padding:14px;
-
-    font-weight:bold;
-
-    color:white;
-
-    width:100%;
-
-    transition:0.3s;
-}
-
-.btn-registro:hover{
-
-    transform:translateY(-2px);
-
-    box-shadow:0 10px 25px rgba(102,126,234,0.3);
-}
-
-.form-check{
-
-    margin-top:15px;
-}
-
-.login-link{
-
-    text-align:center;
-
-    margin-top:20px;
-}
-
-.login-link a{
-
-    color:#667eea;
-
-    text-decoration:none;
-
-    font-weight:bold;
-}
-
-.social-login{
-
-    text-align:center;
-
-    margin-top:25px;
-}
-
-.social-btn{
-
-    display:inline-block;
-
-    width:40px;
-
-    height:40px;
-
-    border-radius:50%;
-
-    margin:0 10px;
-
-    line-height:40px;
-
-    text-align:center;
-
-    color:white;
-
-    text-decoration:none;
-
-    transition:0.3s;
-}
-
-.social-btn:hover{
-
-    transform:scale(1.1);
-}
-
-.google{
-    background:#db4437;
-}
-
-.facebook{
-    background:#4267b2;
-}
-
-.twitter{
-    background:#1da1f2;
-}
-
-.titulo-seccion{
-
-    margin-top:30px;
-
-    margin-bottom:15px;
-
-    font-size:18px;
-
-    font-weight:bold;
-
-    color:#444;
-
-    border-left:4px solid #667eea;
-
-    padding-left:10px;
-}
-
-</style>
-
+    <link rel="stylesheet"
+    href="css/registro.css">
 </head>
 
 <body>
@@ -237,7 +37,6 @@ body{
         </p>
 
     </div>
-
 <form id="formRegistro">
 
     <!-- DATOS PERSONALES -->
@@ -255,11 +54,9 @@ body{
                 type="text"
                 class="form-control"
                 id="nombre"
-                placeholder="Nombre"
                 required>
 
-                <label for="nombre">
-                    <i class="fas fa-user"></i>
+                <label>
                     Nombre
                 </label>
 
@@ -275,11 +72,9 @@ body{
                 type="text"
                 class="form-control"
                 id="apellido"
-                placeholder="Apellido"
                 required>
 
-                <label for="apellido">
-                    <i class="fas fa-user"></i>
+                <label>
                     Apellido
                 </label>
 
@@ -295,55 +90,25 @@ body{
         type="email"
         class="form-control"
         id="correo"
-        placeholder="Correo"
         required>
 
-        <label for="correo">
-            <i class="fas fa-envelope"></i>
+        <label>
             Correo electrónico
         </label>
 
     </div>
 
-    <div class="row">
+    <div class="form-floating">
 
-        <div class="col-md-6">
+        <input
+        type="text"
+        class="form-control"
+        id="numero"
+        required>
 
-            <div class="form-floating">
-
-                <input
-                type="text"
-                class="form-control"
-                id="numero"
-                placeholder="Número"
-                required>
-
-                <label for="numero">
-                    <i class="fas fa-phone"></i>
-                    Número de teléfono
-                </label>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-6">
-
-            <div class="form-floating">
-
-                <input
-                type="date"
-                class="form-control"
-                id="fechaNacimiento"
-                required>
-
-                <label for="fechaNacimiento">
-                    Fecha de nacimiento
-                </label>
-
-            </div>
-
-        </div>
+        <label>
+            Número de teléfono
+        </label>
 
     </div>
 
@@ -358,11 +123,9 @@ body{
         type="text"
         class="form-control"
         id="direccion"
-        placeholder="Dirección"
         required>
 
-        <label for="direccion">
-            <i class="fas fa-location-dot"></i>
+        <label>
             Dirección
         </label>
 
@@ -378,10 +141,9 @@ body{
                 type="text"
                 class="form-control"
                 id="ciudad"
-                placeholder="Ciudad"
                 required>
 
-                <label for="ciudad">
+                <label>
                     Ciudad
                 </label>
 
@@ -397,10 +159,9 @@ body{
                 type="text"
                 class="form-control"
                 id="departamento"
-                placeholder="Departamento"
                 required>
 
-                <label for="departamento">
+                <label>
                     Departamento
                 </label>
 
@@ -410,246 +171,11 @@ body{
 
     </div>
 
-    <!-- SEGURIDAD -->
-    <div class="titulo-seccion">
-        Seguridad de la cuenta
-    </div>
-
-    <div class="form-floating">
-
-        <input
-        type="password"
-        class="form-control"
-        id="contrasena"
-        placeholder="Contraseña"
-        required>
-
-        <label for="contrasena">
-            <i class="fas fa-lock"></i>
-            Contraseña
-        </label>
-
-    </div>
-
-    <div class="form-floating">
-
-        <input
-        type="password"
-        class="form-control"
-        id="confirmarContrasena"
-        placeholder="Confirmar contraseña"
-        required>
-
-        <label for="confirmarContrasena">
-            <i class="fas fa-lock"></i>
-            Confirmar contraseña
-        </label>
-
-    </div
-    >
-    <!-- MÉTODO DE PAGO -->
-<div class="titulo-seccion">
-    Método de pago
-</div>
-
-<div class="row">
-
-    <div class="col-md-6">
-
-        <div class="form-floating">
-
-            <select
-            class="form-control"
-            id="metodoPago"
-            required>
-
-                <option value="">
-                    Selecciona un método
-                </option>
-
-                <option value="tarjeta">
-                    Tarjeta débito/crédito
-                </option>
-
-                <option value="nequi">
-                    Nequi
-                </option>
-
-                <option value="daviplata">
-                    Daviplata
-                </option>
-
-                <option value="paypal">
-                    PayPal
-                </option>
-
-            </select>
-
-            <label for="metodoPago">
-                <i class="fas fa-credit-card"></i>
-                Método de pago
-            </label>
-
-        </div>
-
-    </div>
-
-    <div class="col-md-6">
-
-        <div class="form-floating">
-
-            <input
-            type="text"
-            class="form-control"
-            id="nombreTarjeta"
-            placeholder="Nombre tarjeta"
-            required>
-
-            <label for="nombreTarjeta">
-                <i class="fas fa-user"></i>
-                Nombre del titular
-            </label>
-
-        </div>
-
-    </div>
-
-</div>
-
-<div class="row">
-
-    <div class="col-md-8">
-
-        <div class="form-floating">
-
-            <input
-            type="text"
-            class="form-control"
-            id="numeroTarjeta"
-            placeholder="Número tarjeta"
-            maxlength="19"
-            required>
-
-            <label for="numeroTarjeta">
-                <i class="fas fa-credit-card"></i>
-                Número de tarjeta
-            </label>
-
-        </div>
-
-    </div>
-
-    <div class="col-md-4">
-
-        <div class="form-floating">
-
-            <input
-            type="text"
-            class="form-control"
-            id="cvv"
-            placeholder="CVV"
-            maxlength="4"
-            required>
-
-            <label for="cvv">
-                CVV
-            </label>
-
-        </div>
-
-    </div>
-
-</div>
-
-<div class="row">
-
-    <div class="col-md-6">
-
-        <div class="form-floating">
-
-            <input
-            type="month"
-            class="form-control"
-            id="fechaExpiracion"
-            required>
-
-            <label for="fechaExpiracion">
-                Fecha de expiración
-            </label>
-
-        </div>
-
-    </div>
-
-    <div class="col-md-6">
-
-        <div class="form-floating">
-
-            <select
-            class="form-control"
-            id="cuotas">
-
-                <option value="1">
-                    1 cuota
-                </option>
-
-                <option value="3">
-                    3 cuotas sin interés
-                </option>
-
-                <option value="6">
-                    6 cuotas
-                </option>
-
-                <option value="12">
-                    12 cuotas
-                </option>
-
-            </select>
-
-            <label for="cuotas">
-                Cuotas
-            </label>
-
-        </div>
-
-    </div>
-
-</div>
-
-<!-- ICONOS DE PAGO -->
-<div style="margin-top:20px; text-align:center;">
-
-    <p style="color:#666; margin-bottom:10px;">
-        Métodos aceptados
-    </p>
-
-    <div style="
-        display:flex;
-        justify-content:center;
-        gap:15px;
-        font-size:30px;
-        color:#555;
-    ">
-
-        <i class="fa-brands fa-cc-visa"></i>
-
-        <i class="fa-brands fa-cc-mastercard"></i>
-
-        <i class="fa-brands fa-paypal"></i>
-
-        <i class="fa-solid fa-wallet"></i>
-
-    </div>
-
-</div>
-    
     <button
     type="submit"
     class="btn btn-registro">
 
-        <i class="fas fa-user-plus"></i>
-        Pagar
+        Ir a pagar
 
     </button>
 
@@ -664,6 +190,8 @@ body{
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script src="./js/registro.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/crypto-js@4.2.0/crypto-js.min.js"></script>
+
 <script>
 
 document.getElementById("formRegistro").addEventListener("submit", async function(e){
@@ -676,27 +204,71 @@ document.getElementById("formRegistro").addEventListener("submit", async functio
 
     carrito.forEach(producto => {
 
-        total += producto.precio * producto.cantidad;
+        total += Number(producto.precio) * Number(producto.cantidad);
 
     });
 
-    if(total <= 0){
+    // CENTAVOS
+    const amountInCents = String(total * 100);
 
-        alert("No hay productos");
+    const currency = "COP";
 
-        return;
-    }
+    const reference = "DUNAKA-" + Date.now();
 
-    const referencia = "DUNAKA-" + Date.now();
-
-    // TU LLAVE PUBLICA
     const publicKey = "pub_test_TMtzLyFRKH2ulwbO8kRGX9ajyXvQOpAG";
 
-    // TU FIRMA INTEGRIDAD
-    const integrity = "test_integrity_SI1ltUwxeAkxE6lOToI0JOXXqDKVToVY";
+    const integritySecret = "test_integrity_SI1ltUwxeAkxE6lOToI0JOXXqDKVToVY";
 
-    // Redirigir a Wompi
-    const url = `https://checkout.wompi.co/p/?public-key=${publicKey}&currency=COP&amount-in-cents=${total * 100}&reference=${referencia}&signature:integrity=${integrity}`;
+    // TOKEN NUEVO
+    const respuesta = await fetch(
+        `https://sandbox.wompi.co/v1/merchants/${publicKey}`
+    );
+
+    const data = await respuesta.json();
+
+    const acceptanceToken =
+        data.data.presigned_acceptance.acceptance_token;
+
+    // FIRMA EXACTA WOMPI
+    const signature = CryptoJS.SHA256(
+        reference +
+        amountInCents +
+        currency +
+        integritySecret
+    ).toString();
+
+    console.log(signature);
+
+    // URL WOMPI
+    const url =
+    `https://checkout.wompi.co/p/?public-key=${publicKey}&currency=${currency}&amount-in-cents=${amountInCents}&reference=${reference}&signature:integrity=${signature}&acceptance-token=${acceptanceToken}`;
+    
+    // USUARIO LOGUEADO
+const usuario =
+JSON.parse(localStorage.getItem("usuarioData"))
+||
+JSON.parse(localStorage.getItem("usuario"));
+
+// GUARDAR COMPRA
+await fetch("http://localhost:3000/guardar-compra", {
+
+    method: "POST",
+
+    headers: {
+        "Content-Type": "application/json"
+    },
+
+    body: JSON.stringify({
+
+        usuarioId: 1, // USUARIO GOOGLE
+
+        carrito: carrito,
+
+        total: total
+
+    })
+
+});
 
     window.location.href = url;
 
