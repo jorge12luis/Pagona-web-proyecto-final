@@ -21,22 +21,78 @@
         }
     </script>
 
-    <div style="display: flex; min-height: 100vh;">
-        
-        <div style="width: 250px; background-color: #111625; color: white; padding: 20px 0;">
-            <div style="padding: 0 20px 20px 20px; border-bottom: 1px solid #1e2538; display: flex; align-items: center; gap: 10px;">
-                <i class="fa-solid fa-user-gear" style="font-size: 20px;"></i>
-                <span style="font-size: 18px; font-weight: bold;">Admin</span>
+<div class="admin-container">
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <h2>
+            <i class="fa-solid fa-user-shield"></i>
+            Admin
+        </h2>
+
+        <a href="#">
+            <i class="fa-solid fa-chart-line"></i>
+            Dashboard
+        </a>
+
+        <a href="#">
+            <i class="fa-solid fa-box"></i>
+            Productos
+        </a>
+
+        <a href="#">
+            <i class="fa-solid fa-users"></i>
+            Usuarios
+        </a>
+
+        <a href="#">
+            <i class="fa-solid fa-cart-shopping"></i>
+            Ventas
+        </a>
+
+        <a href="#">
+            <i class="fa-solid fa-chart-pie"></i>
+            Estadísticas
+        </a>
+
+        <a href="javascript:void(0)" onclick="cerrarSesion()">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Cerrar sesión
+        </a>
+
+    </div>
+
+    <!-- CONTENIDO -->
+
+    <div class="main-content">
+
+        <h1>
+            Panel de Administración
+        </h1>
+
+        <p>
+            Bienvenido administrador de DUNAKA
+        </p>
+
+        <!-- CARDS -->
+
+        <div class="cards">
+
+            <div class="card-admin">
+
+                <i class="fa-solid fa-box"></i>
+
+                <h3 id="totalProductos">
+                    0
+                </h3>
+
+                <p>
+                    Productos
+                </p>
+
             </div>
-            <ul style="list-style: none; padding: 20px 0; margin: 0;">
-                <li style="padding: 12px 20px; color: #a0aec0; display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-chart-pie"></i> Dashboard</li>
-                <li style="padding: 12px 20px; color: white; background-color: #1e2538; font-weight: 600; display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-box"></i> Productos</li>
-                <li style="padding: 12px 20px; color: #a0aec0; display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-users"></i> Usuarios</li>
-                <li style="padding: 12px 20px; color: #a0aec0; display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-cart-shopping"></i> Ventas</li>
-                <li style="padding: 12px 20px; color: #a0aec0; display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-chart-line"></i> Estadísticas</li>
-                <li style="padding: 12px 20px; color: #ff5c5c; display: flex; align-items: center; gap: 12px; margin-top: 60px;"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</li>
-            </ul>
-        </div>
 
         <div style="flex: 1; padding: 30px;">
             <h1 style="margin: 0; font-size: 26px; color: #222;">Panel de Administración</h1>
@@ -87,52 +143,42 @@
         </div>
     </div>
 
-    <div id="modalProducto" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
+        <!-- CRUD PRODUCTOS -->
+
+        <div class="tabla">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
                 <h3>
-                    <i class="fa-solid fa-box-open" style="color: #7366ff;"></i> 
-                    <span id="modalTitulo">Agregar Nuevo Producto</span>
+                    CRUD Productos
                 </h3>
-                <button type="button" class="close-btn" onclick="cerrarModal()">
-                    <i class="fa-solid fa-xmark"></i>
+
+                <button class="btn-admin" onclick="agregarProducto()">
+                    <i class="fa-solid fa-plus"></i>
+                    Agregar producto
                 </button>
             </div>
-            
-            <form id="formProducto" enctype="multipart/form-data">
-                <input type="hidden" id="productoId">
-                
-                <div class="form-group">
-                    <label>Nombre del Producto</label>
-                    <input type="text" id="prodNombre" class="form-input" placeholder="Ej. Bolso Manhattan" required>
-                </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Precio ($)</label>
-                        <input type="number" id="prodPrecio" class="form-input" placeholder="0" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Stock Inicial</label>
-                        <input type="number" id="prodStock" class="form-input" placeholder="0" required>
-                    </div>
-                </div>
+            <table class="table">
 
-                <div class="form-group">
-                    <label>Descripción / Detalles</label>
-                    <textarea id="prodDescripcion" class="form-input" placeholder="Materiales, dimensiones..." style="height: 60px; resize: none;"></textarea>
-                </div>
+                <thead>
 
-                <div class="form-group">
-                    <label>Imagen del Producto</label>
-                    <input type="file" id="prodImagen" accept="image/*" class="form-input" style="padding: 8px;">
-                </div>
+                    <tr>
+                        <th>ID</th>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Acciones</th>
+                    </tr>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
-                    <button type="submit" class="btn-guardar">Guardar Producto</button>
-                </div>
-            </form>
+                </thead>
+
+                <tbody id="tablaProductos">
+
+                </tbody>
+
+            </table>
+
         </div>
     </div>
 

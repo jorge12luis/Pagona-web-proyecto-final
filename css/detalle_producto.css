@@ -10,10 +10,26 @@
 }
 
 /* IMAGEN */
+.producto-img{
+    position:relative;
+    display:inline-block;
+}
+
 .producto-img img{
     width:500px;
     border-radius:20px;
     box-shadow:0 15px 40px rgba(0,0,0,.08);
+    transition: filter .3s ease;
+}
+
+.producto-img .img-overlay{
+    position:absolute;
+    inset:0;
+    border-radius:20px;
+    pointer-events:none;
+    mix-blend-mode:multiply;
+    opacity:0;
+    transition: background-color .3s ease, opacity .3s ease;
 }
 
 /* INFO */
@@ -192,4 +208,75 @@ textarea{
     color: gold;
 
     margin-bottom: 10px;
+}
+.selector-color{
+
+    margin:20px 0;
+
+}
+
+.colores{
+
+    display:flex;
+
+    gap:12px;
+
+    margin-top:10px;
+
+}
+
+.color{
+
+    width:35px;
+
+    height:35px;
+
+    border-radius:50%;
+
+    cursor:pointer;
+
+    transition:0.3s;
+
+}
+
+.color:hover{
+
+    transform:scale(1.15);
+
+}
+
+.color.activo{
+
+    border:3px solid #000;
+
+    transform:scale(1.15);
+
+
+
+}
+.selector-color{
+    margin:20px 0;
+}
+
+.colores{
+    display:flex;
+    gap:12px;
+    margin-top:10px;
+}
+
+.color{
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.color:hover{
+    transform:scale(1.15);
+}
+
+.color.activo{
+    border:3px solid #000;
+    transform:scale(1.15);
 }

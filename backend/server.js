@@ -57,7 +57,6 @@ conexion.query(alterTableRol, (error) => {
         console.log("Columna rol verificada/creada en tabla usuarios");
     }
 });
-//////////////////////////////////////////
 const storage = multer.diskStorage({
 
     destination: (req, file, cb) => {
@@ -78,26 +77,11 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-
-// ==========================================
-// CÓDIGO: Multer para fotos de productos
-// ==========================================
-const storageProductos = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "uploads/productos");
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + "-producto-" + file.originalname);
-    }
-});
-const uploadProducto = multer({ storage: storageProductos });
-// ==========================================
 //////////////////////////////////////////
 app.use(
     "/uploads",
     express.static("uploads")
 );
-///////////////////////////////////////// permite acceder a la imagenes 
 const smtpUser = process.env.SMTP_USER || "";
 const smtpPass = process.env.SMTP_PASS || "";
 
@@ -129,252 +113,9 @@ function formatDateTime(date) {
         .replace("T", " ");
 }
 
-function enviarCodigoEmail(correo, codigo) {
-    if (!smtpUser || !smtpPass) {
-        console.log(
-            `CÃ³digo de recuperaciÃ³n para ${correo}: ${codigo}`
-        );
-        return Promise.resolve();
-    }
-
-    const mailOptions = {
-        from: smtpUser,
-        to: correo,
-        subject: "CÃ³digo de recuperaciÃ³n",
-        text: `Tu cÃ³digo de recuperaciÃ³n es: ${codigo}.`
-    };
-
-    return transporter.sendMail(mailOptions);
-}
-
-function enviarCodigoSms(telefono, codigo) {
-    console.log(
-        `SMS simulado para ${telefono}: Tu cÃ³digo de recuperaciÃ³n es ${codigo}`
-    );
-}
-
-app.post("/recuperar/codigo", (req, res) => {
-    const { correo } = req.body;
-
-    if (!correo) {
-        return res.status(400).json({
-            success: false,
-            message: "Debes enviar un correo vÃ¡lido."
-        });
-    }
-
-    const sqlBuscar = `
-        SELECT * FROM usuarios
-        WHERE correo = ?
-    `;
-
-    conexion.query(sqlBuscar, [correo], (error, resultado) => {
-        if (error) {
-            console.log(error);
-
-            return res.status(500).json({
-                success: false,
-                message: "Error interno del servidor."
-            });
-        }
-
-        if (resultado.length === 0) {
-            return res.status(404).json({
-                success: false,
-                message: "Ese correo no existe."
-            });
-        }
-
-        const usuario = resultado[0];
-
-        const codigo = Math.floor(
-            100000 + Math.random() * 900000
-        ).toString();
-
-        const expiracion = formatDateTime(
-            new Date(Date.now() + 15 * 60 * 1000)
-        );
-
-        const sqlInsert = `
-            INSERT INTO recuperacion_codes
-            (
-                correo,
-                codigo,
-                expiracion
-            )
-            VALUES (?, ?, ?)
-            ON DUPLICATE KEY UPDATE
-                codigo = ?,
-                expiracion = ?
-        `;
-
-        conexion.query(
-            sqlInsert,
-            [
-                correo,
-                codigo,
-                expiracion,
-                codigo,
-                expiracion
-            ],
-            (error) => {
-                if (error) {
-                    console.log(error);
-
-                    return res.status(500).json({
-                        success: false,
-                        message: "No se pudo guardar el cÃ³digo."
-                    });
-                }
-
-                enviarCodigoEmail(correo, codigo).catch((error) => {
-                    console.log(
-                        "Error enviando correo:",
-                        error
-                    );
-                });
-
-                let mensaje = `Se enviÃ³ el cÃ³digo al correo ${correo}.`;
-
-                if (usuario.numero_telefono) {
-                    enviarCodigoSms(
-                        usuario.numero_telefono,
-                        codigo
-                    );
-
-                    mensaje += ` TambiÃ©n se enviÃ³ al nÃºmero ${usuario.numero_telefono}.`;
-                }
-
-                return res.json({
-                    success: true,
-                    message: mensaje
-                });
-            }
-        );
-    });
-});
-
-app.post("/recuperar/cambiar", (req, res) => {
-    const {
-        correo,
-        codigo,
-        nuevaContrasena,
-        confirmarContrasena
-    } = req.body;
-
-    if (
-        !correo ||
-        !codigo ||
-        !nuevaContrasena ||
-        !confirmarContrasena
-    ) {
-        return res.status(400).json({
-            success: false,
-            message:
-                "Faltan datos para cambiar la contraseÃ±a."
-        });
-    }
-
-    if (nuevaContrasena !== confirmarContrasena) {
-        return res.status(400).json({
-            success: false,
-            message: "Las contraseÃ±as no coinciden."
-        });
-    }
-
-    const sqlCodigo = `
-        SELECT * FROM recuperacion_codes
-        WHERE correo = ?
-    `;
-
-    conexion.query(sqlCodigo, [correo], (error, resultado) => {
-        if (error) {
-            console.log(error);
-
-            return res.status(500).json({
-                success: false,
-                message: "Error interno del servidor."
-            });
-        }
-
-        if (resultado.length === 0) {
-            return res.status(400).json({
-                success: false,
-                message:
-                    "No hay un cÃ³digo activo para ese correo."
-            });
-        }
-
-        const registro = resultado[0];
-
-        const expiracion = new Date(
-            registro.expiracion
-        );
-
-        if (Date.now() > expiracion.getTime()) {
-            return res.status(400).json({
-                success: false,
-                message:
-                    "El cÃ³digo ha expirado. Solicita uno nuevo."
-            });
-        }
-
-        if (registro.codigo !== codigo) {
-            return res.status(400).json({
-                success: false,
-                message: "CÃ³digo incorrecto."
-            });
-        }
-
-        const sqlActualizar = `
-            UPDATE usuarios
-            SET contrasena = ?
-            WHERE correo = ?
-        `;
-
-        conexion.query(
-            sqlActualizar,
-            [nuevaContrasena, correo],
-            (error) => {
-                if (error) {
-                    console.log(error);
-
-                    return res.status(500).json({
-                        success: false,
-                        message:
-                            "Error actualizando la contraseÃ±a."
-                    });
-                }
-
-                const sqlEliminarCodigo = `
-                    DELETE FROM recuperacion_codes
-                    WHERE correo = ?
-                `;
-
-                conexion.query(
-                    sqlEliminarCodigo,
-                    [correo],
-                    (error) => {
-                        if (error) {
-                            console.log(
-                                "Error eliminando cÃ³digo:",
-                                error
-                            );
-                        }
-                    }
-                );
-
-                return res.json({
-                    success: true,
-                    message:
-                        "ContraseÃ±a actualizada correctamente."
-                });
-            }
-        );
-    });
-});
 
 app.post("/login", (req, res) => {
+
     const { correo, contrasena } = req.body;
 
     const sql = `
@@ -386,40 +127,37 @@ app.post("/login", (req, res) => {
         sql,
         [correo, contrasena],
         (error, resultado) => {
-            if (error) {
+
+            if(error){
+
                 console.log(error);
+
+                return res.status(500).json({
+                    success: false,
+                    message: "Error interno del servidor"
+                });
+
             }
-            if (resultado.length > 0) {
-                return res.json({ success: true, message: "Login correcto", usuario: resultado[0] });
-            
-            } else{
-                    res.json({
-                        success: false,
-                        return : res.status(500).json({
-                        success: false,
-                        message:
-                            "Error interno del servidor."
-                        })
-                    })
 
-                    if (resultado.length > 0) {
-                        return res.json({
-                        success: true,
-                        message: "Login correcto",
-                        usuario: resultado[0]
-                        });
-                    }
+            if(resultado.length > 0){
 
-                    return res.status(401).json({
-                        success: false,
-                        message:
-                        "Correo o contraseÃ±a incorrectos."
-                    });
-                }
+                return res.json({
+                    success: true,
+                    message: "Login correcto",
+                    usuario: resultado[0]
+                });
+
+            }
+
+            return res.status(401).json({
+                success: false,
+                message: "Correo o contraseña incorrectos"
+            });
+
         }
     );
-});
 
+});
 app.post("/registro", (req, res) => {
     const {
         nombre,
@@ -1128,6 +866,238 @@ app.get(
         );
     }
 );
+
+// OBTENER PRODUCTOS
+app.get("/obtener-productos", (req, res) => {
+    const sql = "SELECT * FROM productos";
+
+    conexion.query(sql, (error, resultado) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({
+                success: false,
+                message: "Error obteniendo productos"
+            });
+        }
+
+        res.json({
+            success: true,
+            productos: resultado || []
+        });
+    });
+});
+
+// AGREGAR PRODUCTO
+app.post("/agregar-producto", (req, res) => {
+    const { nombre, precio, stock } = req.body;
+
+    if (!nombre || !precio || stock === undefined) {
+        return res.status(400).json({
+            success: false,
+            message: "Faltan datos"
+        });
+    }
+
+    const sql = `
+        INSERT INTO productos (nombre, precio, stock)
+        VALUES (?, ?, ?)
+    `;
+
+    conexion.query(sql, [nombre, precio, stock], (error, resultado) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({
+                success: false,
+                message: "Error al agregar producto"
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "Producto agregado exitosamente",
+            id: resultado.insertId
+        });
+    });
+});
+
+// ACTUALIZAR PRODUCTO
+app.put("/actualizar-producto/:id", (req, res) => {
+    const { id } = req.params;
+    const { nombre, precio, stock } = req.body;
+
+    if (!nombre || !precio || stock === undefined) {
+        return res.status(400).json({
+            success: false,
+            message: "Faltan datos"
+        });
+    }
+
+    const sql = `
+        UPDATE productos 
+        SET nombre = ?, precio = ?, stock = ?
+        WHERE id = ?
+    `;
+
+    conexion.query(sql, [nombre, precio, stock, id], (error) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({
+                success: false,
+                message: "Error al actualizar producto"
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "Producto actualizado exitosamente"
+        });
+    });
+});
+
+// ELIMINAR PRODUCTO
+app.delete("/eliminar-producto/:id", (req, res) => {
+    const { id } = req.params;
+
+    const sql = "DELETE FROM productos WHERE id = ?";
+
+    conexion.query(sql, [id], (error) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({
+                success: false,
+                message: "Error al eliminar producto"
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "Producto eliminado exitosamente"
+        });
+    });
+});
+
+// OBTENER TOTAL GANANCIAS
+app.get("/admin/total-ganancias", (req, res) => {
+    const sql = "SELECT SUM(total) AS ganancias FROM ventas";
+
+    conexion.query(sql, (error, resultado) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({
+                success: false
+            });
+        }
+
+        res.json({
+            success: true,
+            ganancias: resultado[0].ganancias || 0
+        });
+    });
+});
+app.get("/admin/dashboard", (req, res) => {
+    const sql = `
+        SELECT
+            (SELECT COUNT(*) FROM productos) AS totalProductos,
+            (SELECT COUNT(*) FROM usuarios) AS totalUsuarios,
+            (SELECT COUNT(*) FROM ventas) AS totalPedidos,
+            (SELECT SUM(total) FROM ventas) AS ingresosGenerados,
+            (SELECT COUNT(*) FROM ventas WHERE fecha >= CURDATE()) AS ventasHoy,
+            (SELECT COUNT(*) FROM ventas WHERE fecha >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)) AS ventasSemana,
+            (SELECT COUNT(*) FROM ventas WHERE MONTH(fecha) = MONTH(CURDATE()) AND YEAR(fecha) = YEAR(CURDATE())) AS ventasMes,
+            (SELECT SUM(total) FROM ventas WHERE fecha >= CURDATE()) AS ingresosHoy,
+            (SELECT SUM(total) FROM ventas WHERE fecha >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)) AS ingresosSemana,
+            (SELECT SUM(total) FROM ventas WHERE MONTH(fecha) = MONTH(CURDATE()) AND YEAR(fecha) = YEAR(CURDATE())) AS ingresosMes,
+            (SELECT COUNT(*) FROM usuarios) AS clientesRegistrados
+    `;
+
+    const sqlTopProductos = `
+        SELECT
+            p.id,
+            p.nombre,
+            COALESCE(SUM(dv.cantidad), 0) AS cantidadVendida
+        FROM productos p
+        LEFT JOIN detalle_ventas dv ON dv.producto_id = p.id
+        GROUP BY p.id, p.nombre
+        ORDER BY cantidadVendida DESC
+        LIMIT 5
+    `;
+
+    conexion.query(sql, (error, resumen) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({ success: false, message: "Error obteniendo métricas de dashboard" });
+        }
+
+        conexion.query(sqlTopProductos, (error2, topProductos) => {
+            if (error2) {
+                console.log(error2);
+                return res.status(500).json({ success: false, message: "Error obteniendo productos más vendidos" });
+            }
+
+            const fila = resumen[0] || {};
+            res.json({
+                totalProductos: fila.totalProductos || 0,
+                totalUsuarios: fila.totalUsuarios || 0,
+                totalVentas: fila.totalPedidos || 0,
+                ganancias: fila.ingresosGenerados || 0,
+                totalVentasHoy: fila.ventasHoy || 0,
+                totalVentasSemana: fila.ventasSemana || 0,
+                totalVentasMes: fila.ventasMes || 0,
+                ingresosHoy: fila.ingresosHoy || 0,
+                ingresosSemana: fila.ingresosSemana || 0,
+                ingresosMes: fila.ingresosMes || 0,
+                totalPedidos: fila.totalPedidos || 0,
+                clientesRegistrados: fila.clientesRegistrados || 0,
+                productosMasVendidos: topProductos || []
+            });
+        });
+    });
+});
+
+app.get("/productos", (req, res) => {
+    const sql = "SELECT * FROM productos";
+
+    conexion.query(sql, (error, resultado) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({
+                success: false
+            });
+        }
+
+        res.json(resultado);
+    });
+});
+
+app.get("/admin/ventas", (req, res) => {
+    const sql = `
+        SELECT
+            v.id,
+            v.usuario_id,
+            u.nombre AS usuario,
+            v.total,
+            v.estado,
+            v.fecha
+        FROM ventas v
+        LEFT JOIN usuarios u ON u.id = v.usuario_id
+        ORDER BY v.fecha DESC
+    `;
+
+    conexion.query(sql, (error, resultado) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({
+                success: false,
+                message: "Error obteniendo ventas"
+            });
+        }
+
+        res.json({
+            success: true,
+            ventas: resultado || []
+        });
+    });
+});
 
 app.listen(3000, () => {
     console.log(
