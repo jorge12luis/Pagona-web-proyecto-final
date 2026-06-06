@@ -5,8 +5,9 @@ document.addEventListener("DOMContentLoaded", function () {
     mostrarOcultarPassword();
 
     iniciarSubidaFoto();
+
+    ActualizarDatos();
     
-    ActualizarDatos();// ✅ AQUÍ
 
 });
 
@@ -38,7 +39,7 @@ function cargarUsuarioDesdeBackend() {
             document.getElementById("inputNombre").value = u.nombre || "";
             document.getElementById("inputApellido").value = u.apellido || "";
             document.getElementById("inputemail").value = u.correo || "";
-            document.getElementById("inputcelular").value = u.numero_telefono || "";
+            document.getElementById("telefono").value = u.numero_telefono || "";
             document.getElementById("inputdate").value = u.fecha_nacimiento ? u.fecha_nacimiento.split("T")[0] : "";
             document.getElementById("inputpassword").value = u.contrasena || "";
 
