@@ -78,26 +78,31 @@ conexion.query(alterTableRol, (error) => {
         console.log("Columna rol verificada/creada en tabla usuarios");
     }
 });
-const storage = multer.diskStorage({
+// ==========================================
+// CONFIGURACIÓN DE MULTER (PERFILES Y PRODUCTOS)
+// ==========================================
 
+// 1. Almacenamiento para Fotos de Perfil
+const storagePerfiles = multer.diskStorage({
     destination: (req, file, cb) => {
-
         cb(null, "uploads/perfiles");
-
     },
-
     filename: (req, file, cb) => {
-
-        const nombreArchivo =
-        Date.now() + "-" + file.originalname;
-
-        cb(null, nombreArchivo);
-
+        cb(null, Date.now() + "-" + file.originalname);
     }
-
 });
+const upload = multer({ storage: storagePerfiles });
 
-const upload = multer({ storage });
+// 2. Almacenamiento para Fotos de Productos 
+const storageProductos = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "uploads/productos");
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + "-" + file.originalname);
+    }
+});
+const uploadProducto = multer({ storage: storageProductos });
 //////////////////////////////////////////
 app.use(
     "/uploads",
