@@ -1,4 +1,4 @@
-app.post("/agregar-resena", (req, res) => {
+exports.agregar_resena = (req, res) => {
 
     const {
         producto_id,
@@ -63,10 +63,9 @@ app.post("/agregar-resena", (req, res) => {
         }
     );
 
-});
+};
 
-app.get("/obtener-resenas/:productoId",
-    (req, res) => {
+exports.obtener_resena_producto_id = (req, res) => {
         const productoId =
             req.params.productoId;
 
@@ -97,5 +96,4 @@ app.get("/obtener-resenas/:productoId",
                 });
             }
         );
-    }
-);
+};

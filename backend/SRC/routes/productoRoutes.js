@@ -7,8 +7,12 @@ router.get("/obtener-productos" , productoController.obtenerproductos);
 
 router.get("/productos" , productoController.productos);
 
+router.post("/agregarproductos" , productoController.agregarproductos);
+
 router.post("/agregarproductos/:id" , productoController.agregarproductos_id );
 
-router.delete("/eliminarproducto/:id" , productoController.eliminarproducto);
+router.put("/actualizar-producto/:id" , productoController.actualizarproducto_id);
+
+router.delete("/eliminarproducto/:id" , productoController.eliminarproducto_id);
 
 module.exports = router;

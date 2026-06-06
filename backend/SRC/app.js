@@ -2,13 +2,13 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 
-const authRoutes = require("./routes/adminRoutes.js");
-const usuarioRoutes = require("./routes/authRoutes.js");
-const productoRoutes = require("./routes/pagoRoutes.js");
-const ventaRoutes = require("./routes/productoRoutes.js");
-const adminRoutes = require("./routes/resenaRoutes.js");
-const resenaRoutes = require("./routes/usuarioRoutes.js");
-const pagoRoutes = require("./routes/ventaRoutes.js");
+const authRoutes = require("./routes/authRoutes.js");
+const usuarioRoutes = require("./routes/usuarioRoutes.js");
+const productoRoutes = require("./routes/productoRoutes.js");
+const ventaRoutes = require("./routes/ventaRoutes.js");
+const adminRoutes = require("./routes/adminRoutes.js");
+const resenaRoutes = require("./routes/resenaRoutes.js");
+const pagoRoutes = require("./routes/pagoRoutes.js");
 
 const app = express();
 

@@ -97,7 +97,40 @@ exports.agregarproductos_id = (req, res) => {
     });
 };
 
-exports.eliminarproducto = (req, res) => {
+exports.actualizarproducto_id = (req, res) => {
+    const { id } = req.params;
+    const { nombre, precio, stock } = req.body;
+
+    if (!nombre || !precio || stock === undefined) {
+        return res.status(400).json({
+            success: false,
+            message: "Faltan datos"
+        });
+    }
+
+    const sql = `
+        UPDATE productos 
+        SET nombre = ?, precio = ?, stock = ?
+        WHERE id = ?
+    `;
+
+    conexion.query(sql, [nombre, precio, stock, id], (error) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({
+                success: false,
+                message: "Error al actualizar producto"
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "Producto actualizado exitosamente"
+        });
+    });
+};
+
+exports.eliminarproducto_id = (req, res) => {
     const { id } = req.params;
 
     const sql = "DELETE FROM productos WHERE id = ?";

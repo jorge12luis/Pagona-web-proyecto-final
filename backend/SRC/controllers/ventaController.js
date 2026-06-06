@@ -1,5 +1,5 @@
 
-app.get("/mis-compras/:usuarioId", (req, res) => {
+exports.miscompras_usuarioId = (req, res) => {
     const usuarioId = req.params.usuarioId;
 
    const sql = `
@@ -37,9 +37,9 @@ app.get("/mis-compras/:usuarioId", (req, res) => {
 
         res.json({ success: true, ventas: resultado || [] });
     });
-});
+}
 
-app.post("/guardar-compra", (req, res) => {
+exports.guardar_compra = (req, res) => {
 
     const { usuarioId, carrito, total } = req.body;
 
@@ -134,4 +134,4 @@ app.post("/guardar-compra", (req, res) => {
 
     );
 
-});
+}

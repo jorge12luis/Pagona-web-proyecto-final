@@ -1,4 +1,4 @@
-app.get("/admin/dashboard", (req, res) => {
+exports.admindashboard = (req, res) => {
     const sql = `
         SELECT
             (SELECT COUNT(*) FROM productos) AS totalProductos,
@@ -56,9 +56,9 @@ app.get("/admin/dashboard", (req, res) => {
             });
         });
     });
-});
+};
 
-app.get("/admin/ventas", (req, res) => {
+exports.adminventas = (req, res) => {
     const sql = `
         SELECT
             v.id,
@@ -86,9 +86,9 @@ app.get("/admin/ventas", (req, res) => {
             ventas: resultado || []
         });
     });
-});
+};
 
-app.get("/admin/ganancias", (req, res) => {
+exports.adminganancias = (req, res) => {
     const sql =
         "SELECT SUM(total) AS ganancias FROM ventas";
 
@@ -107,9 +107,9 @@ app.get("/admin/ganancias", (req, res) => {
                 resultado[0].ganancias || 0
         });
     });
-});
+};
 
-app.get("/admin/total-ventas", (req, res) => {
+exports.admintotalventas = (req, res) => {
     const sql =
         "SELECT COUNT(*) AS total FROM ventas";
 
@@ -127,9 +127,9 @@ app.get("/admin/total-ventas", (req, res) => {
             total: resultado[0].total
         });
     });
-});
+};
 
-app.get("/admin/total-ganancias", (req, res) => {
+exports.admintotalganancias = (req, res) => {
     const sql = "SELECT SUM(total) AS ganancias FROM ventas";
 
     conexion.query(sql, (error, resultado) => {
@@ -145,4 +145,4 @@ app.get("/admin/total-ganancias", (req, res) => {
             ganancias: resultado[0].ganancias || 0
         });
     });
-});
+};
