@@ -78,6 +78,20 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+
+// ==========================================
+// CÓDIGO: Multer para fotos de productos
+// ==========================================
+const storageProductos = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "uploads/productos");
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + "-producto-" + file.originalname);
+    }
+});
+const uploadProducto = multer({ storage: storageProductos });
+// ==========================================
 //////////////////////////////////////////
 app.use(
     "/uploads",
@@ -1120,3 +1134,67 @@ app.listen(3000, () => {
         "Servidor corriendo en puerto 3000"
     );
 });
+
+// ==========================================
+// CRUD DE PRODUCTOS
+// ==========================================
+
+// 1. Obtener todos los productos de la BD
+app.get("/api/productos", (req, res) => {
+    conexion.query("SELECT * FROM productos ORDER BY id DESC", (error, resultados) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({ success: false, message: "Error al obtener productos" });
+        }
+        res.json({ success: true, productos: resultados });
+    });
+});
+
+// 2. Crear un nuevo producto (Recibe texto e imagen)
+app.post("/api/productos", uploadProducto.single("imagen"), (req, res) => {
+    const { nombre, precio, stock, descripcion } = req.body;
+    const rutaImagen = req.file ? `uploads/productos/${req.file.filename}` : 'img/mochila.jpg';
+
+    const sql = `INSERT INTO productos (nombre, precio, stock, descripcion, imagen) VALUES (?, ?, ?, ?, ?)`;
+    conexion.query(sql, [nombre, precio, stock, descripcion || '', rutaImagen], (error, resultado) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({ success: false, message: "Error al insertar producto" });
+        }
+        res.json({ success: true, message: "Producto creado exitosamente", id: resultado.insertId });
+    });
+});
+
+// 3. Editar un producto existente
+app.put("/api/productos/:id", uploadProducto.single("imagen"), (req, res) => {
+    const { id } = req.params;
+    const { nombre, precio, stock } = req.body;
+
+    if (req.file) {
+        const rutaImagen = `uploads/productos/${req.file.filename}`;
+        const sql = `UPDATE productos SET nombre = ?, precio = ?, stock = ?, imagen = ? WHERE id = ?`;
+        conexion.query(sql, [nombre, precio, stock, rutaImagen, id], (error) => {
+            if (error) return res.status(500).json({ success: false });
+            res.json({ success: true, message: "Producto e imagen actualizados" });
+        });
+    } else {
+        const sql = `UPDATE productos SET nombre = ?, precio = ?, stock = ? WHERE id = ?`;
+        conexion.query(sql, [nombre, precio, stock, id], (error) => {
+            if (error) return res.status(500).json({ success: false });
+            res.json({ success: true, message: "Producto actualizado" });
+        });
+    }
+});
+
+// 4. Eliminar un producto
+app.delete("/api/productos/:id", (req, res) => {
+    const { id } = req.params;
+    conexion.query("DELETE FROM productos WHERE id = ?", [id], (error) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({ success: false, message: "Error al borrar" });
+        }
+        res.json({ success: true, message: "Producto eliminado correctamente" });
+    });
+});
+// ==========================================
