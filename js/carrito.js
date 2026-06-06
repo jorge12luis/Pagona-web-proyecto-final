@@ -13,25 +13,111 @@ const totalHTML = document.querySelector(".total h4");
 
 
 // ===============================
-// CARGAR DATOS DEL LOCALSTORAGE
+// CARGAR DATOS (LOCALSTORAGE O SERVIDOR)
 // ===============================
 
 // Variable principal del carrito
 let carrito = [];
 
-// Obtener información guardada
-let carritoGuardado = localStorage.getItem("carrito");
+// Si el usuario está logueado, preferir cargar el carrito desde el servidor
+const usuarioData = JSON.parse(localStorage.getItem("usuarioData"));
 
-// Verificar si existe información guardada
-if (carritoGuardado != null) {
+if (usuarioData && usuarioData.id) {
+    // Cargar desde backend
+    fetch(`http://localhost:3000/carrito/${usuarioData.id}`)
+        .then(res => res.json())
+        .then(data => {
+            console.log('GET /carrito response:', data);
+            // data debería ser un arreglo de items con propiedades: nombre, precio, imagen, cantidad
+            if (Array.isArray(data)) {
+                carrito = data.map(item => {
+                    // Resolver ruta de imagen usando nombre + color cuando sea posible
+                    let imagenUrl = '../img/bolso1.jpg';
+                    const nombre = item.nombre ? String(item.nombre).trim() : '';
+                    const nombreNorm = nombre.toLowerCase();
+                    const color = item.color ? String(item.color).trim() : '';
 
-    // Convertir el texto JSON a arreglo
-    carrito = JSON.parse(carritoGuardado);
+                    // normalizar color para formar nombres de archivo
+                    function normColor(c) {
+                        if (!c) return '';
+                        const m = c.toLowerCase();
+                        if (m.includes('marr')) return 'marron';
+                        if (m.includes('ros')) return 'rosado';
+                        if (m.includes('neg')) return 'negro';
+                        if (m.includes('blan')) return 'blanco';
+                        if (m.includes('beig')) return 'beige';
+                        return m.replace(/[^a-z0-9]/g, '');
+                    }
+
+                    const colorNorm = normColor(color);
+
+                    if (colorNorm) {
+                        if (nombreNorm.includes('manhattan')) {
+                            imagenUrl = `../img/manhattan-${colorNorm}.jpg`;
+                        } else if (nombreNorm.includes('mochila') || nombreNorm.includes('urban')) {
+                            imagenUrl = `../img/urban-${colorNorm}.jpg`;
+                        } else if (nombreNorm.includes('noche') || nombreNorm.includes('cartera')) {
+                            imagenUrl = `../img/noche-${colorNorm}.jpg`;
+                        } else {
+                            // si no coincide con reglas, intentar usar la ruta que viene en DB
+                            if (item.imagen) {
+                                const img = String(item.imagen || '').trim();
+                                if (img.startsWith('http') || img.startsWith('/')) {
+                                    imagenUrl = img;
+                                } else if (img.includes('img/')) {
+                                    imagenUrl = '../' + img;
+                                } else {
+                                    imagenUrl = '../img/' + img;
+                                }
+                            }
+                        }
+                    } else if (item.imagen) {
+                        const img = String(item.imagen || '').trim();
+                        if (img.startsWith('http') || img.startsWith('/')) {
+                            imagenUrl = img;
+                        } else if (img.includes('img/')) {
+                            imagenUrl = '../' + img;
+                        } else {
+                            imagenUrl = '../img/' + img;
+                        }
+                    }
+
+                    return {
+                        id: item.id,
+                        nombre: item.nombre,
+                        precio: Number(item.precio) || 0,
+                        imagen: imagenUrl,
+                        cantidad: item.cantidad || 1,
+                        color: item.color || null
+                    };
+                });
+            } else {
+                carrito = [];
+            }
+
+            renderizarCarrito();
+        })
+        .catch(err => {
+            console.log('Error cargando carrito desde servidor:', err);
+            // fallback a localStorage
+            const carritoGuardado = localStorage.getItem("carrito");
+            carrito = carritoGuardado ? JSON.parse(carritoGuardado) : [];
+            renderizarCarrito();
+        });
 
 } else {
+    // Obtener información guardada en localStorage (usuarios no logueados)
+    let carritoGuardado = localStorage.getItem("carrito");
 
-    // Si no hay datos, crear arreglo vacío
-    carrito = [];
+    // Verificar si existe información guardada
+    if (carritoGuardado != null) {
+        // Convertir el texto JSON a arreglo
+        carrito = JSON.parse(carritoGuardado);
+    } else {
+        // Si no hay datos, crear arreglo vacío
+        carrito = [];
+    }
+
 }
 
 
@@ -240,19 +326,21 @@ function disminuirCantidad(indiceProducto) {
 // FUNCIÓN ELIMINAR PRODUCTO
 // ===============================
 
-function eliminarProducto(indiceProducto) {
+async function eliminarProducto(indiceProducto){
 
-    // Eliminar producto
-    carrito.splice(indiceProducto, 1);
+    const item = carrito[indiceProducto];
 
-    // Guardar cambios
-    guardarCarrito();
+    await fetch(
+        `http://localhost:3000/carrito/${item.id}`,
+        {
+            method:"DELETE"
+        }
+    );
 
-    // Volver a mostrar carrito
+    carrito.splice(indiceProducto,1);
+
     renderizarCarrito();
 }
-
-renderizarCarrito();
 
 function agregarCarrito(){
 
