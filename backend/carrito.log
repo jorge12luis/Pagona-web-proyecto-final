@@ -24,3 +24,15 @@
 2026-06-06T19:37:02.476Z Carrito insertado id: 40
 2026-06-06T19:37:11.958Z Insertando en carrito: {"usuario_id":6,"producto_id":3,"color":"Marrón","cantidad":1}
 2026-06-06T19:37:11.960Z Carrito insertado id: 41
+2026-06-06T19:45:45.992Z Insertando en carrito: {"usuario_id":5,"producto_id":4,"color":"Negro","cantidad":1}
+2026-06-06T19:45:45.998Z Carrito insertado id: 42
+2026-06-06T19:52:47.944Z Insertando en carrito: {"usuario_id":5,"producto_id":3,"color":"Negro","cantidad":1}
+2026-06-06T19:52:47.947Z Carrito insertado id: 43
+2026-06-06T19:53:50.330Z Insertando en carrito: {"usuario_id":5,"producto_id":3,"color":"Negro","cantidad":1}
+2026-06-06T19:53:50.333Z Carrito insertado id: 44
+2026-06-06T19:54:00.780Z Insertando en carrito: {"usuario_id":5,"producto_id":3,"color":"Negro","cantidad":1}
+2026-06-06T19:54:00.783Z Carrito insertado id: 45
+2026-06-06T19:55:56.882Z Insertando en carrito: {"usuario_id":5,"producto_id":3,"color":"Negro","cantidad":1}
+2026-06-06T19:55:56.884Z Carrito insertado id: 46
+2026-06-06T19:56:28.323Z Insertando en carrito: {"usuario_id":5,"producto_id":3,"color":"Rosado","cantidad":1}
+2026-06-06T19:56:28.326Z Carrito insertado id: 47
