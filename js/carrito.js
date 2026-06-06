@@ -95,6 +95,8 @@ if (usuarioData && usuarioData.id) {
                 carrito = [];
             }
 
+            // Marcar que el carrito en localStorage (si existe) corresponde a este usuario
+            try{ localStorage.setItem('carritoOwner', usuarioData.id); }catch(e){}
             renderizarCarrito();
         })
         .catch(err => {
@@ -106,17 +108,27 @@ if (usuarioData && usuarioData.id) {
         });
 
 } else {
-    // Obtener información guardada en localStorage (usuarios no logueados)
-    let carritoGuardado = localStorage.getItem("carrito");
-
-    // Verificar si existe información guardada
-    if (carritoGuardado != null) {
-        // Convertir el texto JSON a arreglo
-        carrito = JSON.parse(carritoGuardado);
-    } else {
-        // Si no hay datos, crear arreglo vacío
-        carrito = [];
+    // Si hay un carrito asociado a un usuario previo en localStorage, eliminarlo
+    const carritoOwner = localStorage.getItem('carritoOwner');
+    if (carritoOwner) {
+        // El carrito guardado pertenece a un usuario; no mostrarlo a un invitado
+        localStorage.removeItem('carrito');
+        localStorage.removeItem('carritoOwner');
     }
+
+        // Usuario no logueado: asegurar que el carrito esté vacío para invitados
+        try {
+            localStorage.removeItem('carrito');
+            localStorage.removeItem('carritoOwner');
+        } catch (e) {
+            console.log('Error clearing localStorage for guest:', e);
+        }
+
+        carrito = [];
+
+        // Mostrar inmediatamente el carrito vacío
+        renderizarCarrito();
+
 
 }
 

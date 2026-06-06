@@ -90,15 +90,19 @@
 </div>
             <div class="acciones">
 
-<button class="btn-comprar" onclick="comprarAhora()">
-    Comprar ahora
-</button>            
-<button class="btn-carrito" onclick="agregarCarrito()">
-    Agregar al carrito
-</button>
+    <button class="btn-comprar" onclick="comprarAhora()">
+        Comprar ahora
+    </button>
 
-            </div>
-        </div>
+    <button class="btn-carrito" onclick="agregarCarrito()">
+        Agregar al carrito
+    </button>
+
+</div>
+
+<div id="mensajeCarrito" class="mensaje-carrito">
+    Producto agregado al carrito ✅
+</div>
 
     </section>
     <section class="resenas-container">
@@ -148,7 +152,7 @@
     <script src="../js/detalle_producto.js"></script>
     <script>
 
-let colorSeleccionado = "Negro"; 
+let colorSeleccionado = "Rosado"; 
 const imagenesProductos = {
 
     "Bolso Manhattan": {
@@ -297,7 +301,16 @@ async function agregarCarrito(){
 
         if(data.success){
 
-            alert("Producto agregado al carrito");
+            const mensaje =
+document.getElementById("mensajeCarrito");
+
+mensaje.style.display = "block";
+
+setTimeout(() => {
+
+    mensaje.style.display = "none";
+
+}, 3000);   
 
         }else{
 

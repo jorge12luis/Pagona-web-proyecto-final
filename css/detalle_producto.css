@@ -280,3 +280,19 @@ textarea{
     border:3px solid #000;
     transform:scale(1.15);
 }
+.mensaje-carrito{
+
+    margin-top: 15px;
+    padding: 12px;
+
+    background: #d4edda;
+    color: #155724;
+
+    border: 1px solid #c3e6cb;
+    border-radius: 8px;
+
+    display: none;
+
+    font-weight: bold;
+
+}
