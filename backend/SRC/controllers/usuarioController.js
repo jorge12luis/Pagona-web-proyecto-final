@@ -85,9 +85,6 @@ exports.usuarioperfil = (req, res) => {
 
     conexion.query(sql, [correo], (error, resultado) => {
 
-        console.log("Error:", error);
-        console.log("Resultado:", resultado);
-
         if (error) {
             return res.status(500).json({
                 success: false,

@@ -7,6 +7,10 @@
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
+CREATE DATABASE tienda_bolso;
+
+USE tienda_bolso;
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -129,7 +133,7 @@ CREATE TABLE `pedidos` (
 --
 
 CREATE TABLE `productos` (
-  `id` int(11) NOT NULL,
+  `id` INT NOT NULL PRIMARY KEY,
   `nombre` varchar(50) DEFAULT NULL,
   `precio` decimal(10,2) DEFAULT NULL,
   `imagen` varchar(255) DEFAULT NULL,
@@ -166,7 +170,7 @@ CREATE TABLE `recuperacion_codes` (
 --
 
 CREATE TABLE `usuarios` (
-  `id` int(11) NOT NULL,
+  `id` INT NOT NULL PRIMARY KEY,
   `nombre` varchar(100) DEFAULT NULL,
   `apellido` varchar(50) DEFAULT NULL,
   `correo` varchar(100) DEFAULT NULL,
