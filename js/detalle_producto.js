@@ -1,3 +1,4 @@
+
 const productos = {
 
     "bolso-manhattan": {
@@ -12,9 +13,8 @@ const productos = {
     },
 
     "mochila-urban": {
-        id: 1, 
         title: "Mochila Urban",
-        image: "../img/bolso4.webp",
+        image: "../img/mochila.jpg",
         description: "Mochila práctica y con estilo, ideal para el día a día y viajes cortos.",
         price: "$145.000",
         extra: "Incluye garantía de calidad",
@@ -23,7 +23,6 @@ const productos = {
     },
 
     "cartera-noche": {
-        id: 7,
         title: "Cartera Noche",
         image: "../img/bolso2.webp",
         description: "Cartera de noche sofisticada con diseño minimalista y cierre seguro.",
@@ -34,7 +33,6 @@ const productos = {
     },
 
     "bolso-noir": {
-        id: 10,
         title: "Bolso Noir",
         image: "../img/bolso10.jpg",
         description: "Bolso exclusivo con líneas modernas y tejido premium.",
@@ -45,7 +43,6 @@ const productos = {
     },
 
     "bolso-aurora": {
-        id: 20,
         title: "Bolso Aurora",
         image: "../img/bolso10.jpg",
         description: "Diseño luminoso con detalles cuidados, pensado para looks frescos.",
@@ -56,7 +53,6 @@ const productos = {
     },
 
     "bolso-elegance": {
-        id: 15,
         title: "Bolso Elegance",
         image: "../img/bolso2.webp",
         description: "Diseño minimalista de líneas puras y materiales suaves.",
@@ -67,7 +63,6 @@ const productos = {
     },
 
     "bolso-soft-beige": {
-        id: 12,
         title: "Bolso Soft Beige",
         image: "../img/bolso6.webp",
         description: "Bolso con tonos suaves y un estilo natural que combina con todo.",
@@ -78,7 +73,6 @@ const productos = {
     },
 
     "golden-edition": {
-        id: 18,
         title: "Golden Edition",
         image: "../img/banner1.jpg",
         description: "Edición exclusiva con detalles dorados y acabado premium.",
@@ -89,7 +83,6 @@ const productos = {
     },
 
     "black-luxe": {
-        id: 22,
         title: "Black Luxe",
         image: "../img/bolso9.jpg",
         description: "Bolso de diseño oscuro y sofisticado para un estilo nocturno impecable.",
@@ -100,7 +93,6 @@ const productos = {
     },
 
     "velvet-night": {
-        id: 25,
         title: "Velvet Night",
         image: "../img/bolso10.jpg",
         description: "Bolso con textura aterciopelada y un acabado de lujo.",
@@ -111,7 +103,6 @@ const productos = {
     },
 
     "ivory-luxe": {
-        id: 30,
         title: "Ivory Luxe",
         image: "../img/bolso4.webp",
         description: "Bolso exclusivo en tonos marfil con estilo atemporal.",
@@ -362,3 +353,7 @@ async function cargarResenas(){
 }
 
 cargarResenas();
+
+// Exponer variables al ámbito global para que scripts inline las puedan usar
+window.producto = producto;
+window.productoId = productoId;

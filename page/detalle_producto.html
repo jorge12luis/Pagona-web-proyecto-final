@@ -42,7 +42,7 @@
         </div>
         <div class="producto-info">
             <span id="productoEstado" class="estado">Nuevo</span>
-            <h1 id="productoTitulo">Bolso Elegante DUNAKA</h1>
+            <h1 id="productoTitulo" data-id="1">Bolso Elegante DUNAKA</h1>
             <p id="productoDescripcion" class="descripcion">Diseño exclusivo, elaborado con materiales de alta calidad. Perfecto para mujeres auténticas que buscan elegancia.</p>
             <div class="precio">
                 <h2 id="productoPrecio">$150.000</h2>
@@ -90,15 +90,19 @@
 </div>
             <div class="acciones">
 
-<button class="btn-comprar" onclick="comprarAhora()">
-    Comprar ahora
-</button>            
-<button class="btn-carrito" onclick="agregarCarrito()">
-    Agregar al carrito
-</button>
+    <button class="btn-comprar" onclick="comprarAhora()">
+        Comprar ahora
+    </button>
 
-            </div>
-        </div>
+    <button class="btn-carrito" onclick="agregarCarrito()">
+        Agregar al carrito
+    </button>
+
+</div>
+
+<div id="mensajeCarrito" class="mensaje-carrito">
+    Producto agregado al carrito ✅
+</div>
 
     </section>
     <section class="resenas-container">
@@ -146,9 +150,9 @@
         </div>
     </footer>
     <script src="../js/detalle_producto.js"></script>
-    <script src="../js/carrito.js"></script>
     <script>
-        
+
+let colorSeleccionado = "Rosado"; 
 const imagenesProductos = {
 
     "Bolso Manhattan": {
@@ -257,47 +261,76 @@ function comprarAhora() {
 </script>
 <script>
 
-function agregarCarrito(){
+async function agregarCarrito(){
 
-   const producto = {
+    const usuario =
+    JSON.parse(localStorage.getItem("usuarioData"));
 
-    nombre: document.getElementById("productoTitulo").textContent,
+    if(!usuario){
 
-    precio: parseInt(
-        document.getElementById("productoPrecio")
-        .textContent
-        .replace("$","")
-        .replace(/\./g,"")
-    ),
-
-    imagen: document.getElementById("productoImagen").src,
-
-    color: colorSeleccionado,
-
-    cantidad: 1
-};
-    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-
-    const existe = carrito.find(item => item.nombre === producto.nombre);
-
-    if(existe){
-
-        existe.cantidad++;
-
-    }else{
-
-        carrito.push(producto);
+        alert("Debes iniciar sesión");
+        return;
     }
 
-    localStorage.setItem("carrito", JSON.stringify(carrito));
+    try{
 
-    alert("Producto agregado al carrito");
+        const respuesta = await fetch(
+            "http://localhost:3000/carrito",
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+                body: JSON.stringify({
+
+                    usuario_id: usuario.id,
+
+                    producto_id: producto.id,
+
+                    color: colorSeleccionado,
+
+                    cantidad: 1
+
+                })
+            }
+        );
+
+        const data = await respuesta.json();
+
+        if(data.success){
+
+            const mensaje =
+document.getElementById("mensajeCarrito");
+
+mensaje.style.display = "block";
+
+setTimeout(() => {
+
+    mensaje.style.display = "none";
+
+}, 3000);   
+
+        }else{
+
+            alert(data.message);
+        }
+
+    }catch(error){
+
+        console.log(error);
+
+        alert("Error del servidor");
+    }
 }
-
 </script>
 <script>
 
-document.getElementById("formRegistro").addEventListener("submit", function(e){
+const formRegistro = document.getElementById("formRegistro");
+
+if (formRegistro) {
+    formRegistro.addEventListener("submit", function(e){    
 
     e.preventDefault();
 
@@ -326,7 +359,8 @@ document.getElementById("formRegistro").addEventListener("submit", function(e){
     window.location.href =
     `https://checkout.wompi.co/p/?public-key=pub_test_TMtzLyFRKH2u1wbO8kRGX9ajyXvQ0pAG&currency=COP&amount-in-cents=${total * 100}&reference=DUNAKA${Date.now()}`;
 
-});
+    });
+}
 
 </script>
  

@@ -42,6 +42,27 @@ conexion.query(createRecoveryTable, (error) => {
     }
 });
 
+const createResenasTable = `
+CREATE TABLE IF NOT EXISTS resenas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    producto_id INT NOT NULL,
+    usuario_nombre VARCHAR(150),
+    comentario TEXT,
+    calificacion INT,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (producto_id) REFERENCES productos(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+`;
+
+conexion.query(createResenasTable, (error) => {
+    if (error) {
+        console.log("Error creando tabla resenas:", error);
+    }
+});
+
+const fs = require('fs');
+const logPath = path.join(__dirname, 'carrito.log');
+
 const alterTableRol = `
 ALTER TABLE usuarios 
 ADD COLUMN IF NOT EXISTS rol ENUM('usuario', 'admin') DEFAULT 'usuario';
@@ -159,60 +180,49 @@ app.post("/login", (req, res) => {
 
 });
 app.post("/registro", (req, res) => {
-    const {
-        nombre,
-        apellido,
-        correo,
-        contrasena,
-        telefono,
-        fechaNacimiento
-    } = req.body;
+    const { nombre, apellido, correo, contrasena, telefono, fechaNacimiento } = req.body;
 
-    if (
-        !correo ||
-        !correo.toLowerCase().endsWith("@gmail.com")
-    ) {
-        return res
-            .status(400)
-            .send("El correo debe terminar en @gmail.com");
+    if (!nombre || !correo || !contrasena) {
+        return res.status(400).json({ success: false, message: "Faltan datos" });
     }
 
-    const sql = `
-        INSERT INTO usuarios
-        (
-            nombre,
-            apellido,
-            correo,
-            contrasena,
-            numero_telefono,
-            fecha_nacimiento,
-            rol
-        )
-        VALUES (?, ?, ?, ?, ?, ?, 'usuario')
-    `;
+    const sqlBuscar = `SELECT id FROM usuarios WHERE correo = ?`;
 
-    conexion.query(
-        sql,
-        [
-            nombre,
-            apellido,
-            correo,
-            contrasena,
-            telefono,
-            fechaNacimiento
-        ],
-        (error) => {
-            if (error) {
-                console.log(error);
-
-                return res
-                    .status(500)
-                    .send("Error registrando usuario");
-            }
-
-            res.send("Usuario registrado");
+    conexion.query(sqlBuscar, [correo], (err, resultado) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ success: false, message: "Error registrando usuario" });
         }
-    );
+
+        if (resultado.length > 0) {
+            return res.status(400).json({ success: false, message: "Correo ya registrado" });
+        }
+
+        const sqlInsert = `
+            INSERT INTO usuarios (nombre, apellido, correo, contrasena, numero_telefono, fecha_nacimiento)
+            VALUES (?, ?, ?, ?, ?, ?)
+        `;
+
+        conexion.query(
+            sqlInsert,
+            [nombre, apellido || null, correo, contrasena, telefono || null, fechaNacimiento || null],
+            (err2) => {
+                if (err2) {
+                    console.log(err2);
+                    return res.status(500).json({ success: false, message: "Error guardando usuario" });
+                }
+
+                conexion.query(sqlBuscar, [correo], (err3, rows) => {
+                    if (err3) {
+                        console.log(err3);
+                        return res.status(500).json({ success: false, message: "Error recuperando usuario" });
+                    }
+
+                    res.json({ success: true, message: "Usuario registrado", usuario: rows[0] });
+                });
+            }
+        );
+    });
 });
 
 app.post("/cambiar-rol", (req, res) => {
@@ -1098,7 +1108,122 @@ app.get("/admin/ventas", (req, res) => {
         });
     });
 });
+app.post("/carrito", (req, res) => {
 
+    const { usuario_id, producto_id, color, cantidad } = req.body;
+
+    console.log("POST /carrito recibido desde", req.ip, "body:", req.body);
+
+    if (!usuario_id || !producto_id) {
+        return res.status(400).json({ success: false, message: "Faltan datos: usuario_id o producto_id" });
+    }
+
+    // verificar usuario
+    conexion.query("SELECT id FROM usuarios WHERE id = ?", [usuario_id], (errUser, userResult) => {
+        if (errUser) {
+            console.log(errUser);
+            return res.status(500).json({ success: false, message: "Error verificando usuario" });
+        }
+
+        console.log('userResult:', userResult && userResult.length);
+        if (!userResult || userResult.length === 0) {
+            console.log('Usuario no encontrado:', usuario_id);
+            return res.status(400).json({ success: false, message: "Usuario no encontrado" });
+        }
+
+        // verificar producto
+        conexion.query("SELECT id FROM productos WHERE id = ?", [producto_id], (errProd, prodResult) => {
+            if (errProd) {
+                console.log('Error en SELECT producto:', errProd);
+                return res.status(500).json({ success: false, message: "Error verificando producto" });
+            }
+
+            console.log('prodResult length:', prodResult && prodResult.length);
+            if (!prodResult || prodResult.length === 0) {
+                console.log('Producto no encontrado:', producto_id);
+                return res.status(400).json({ success: false, message: "Producto no encontrado" });
+            }
+
+            const sqlInsert = `INSERT INTO carrito (usuario_id, producto_id, color, cantidad) VALUES (?, ?, ?, ?)`;
+                const insertInfo = `Insertando en carrito: ${JSON.stringify({ usuario_id, producto_id, color, cantidad })}`;
+                console.log(insertInfo);
+                try{ fs.appendFileSync(logPath, new Date().toISOString() + ' ' + insertInfo + '\n'); }catch(e){console.log('Log write error', e.message);}            
+
+            conexion.query(sqlInsert, [usuario_id, producto_id, color, cantidad || 1], (error, resultado) => {
+                if (error) {
+                        const errMsg = 'Error insert carrito: ' + (error && error.message);
+                        console.log(errMsg, error);
+                        try{ fs.appendFileSync(logPath, new Date().toISOString() + ' ' + errMsg + '\n' + JSON.stringify(error) + '\n'); }catch(e){console.log('Log write error', e.message);}            
+                        return res.status(500).json({ success: false, message: "Error guardando carrito" });
+                }
+
+                    const okMsg = 'Carrito insertado id: ' + (resultado && resultado.insertId);
+                    console.log(okMsg);
+                    try{ fs.appendFileSync(logPath, new Date().toISOString() + ' ' + okMsg + '\n'); }catch(e){console.log('Log write error', e.message);}            
+                res.json({ success: true });
+            });
+
+        });
+
+    });
+
+});
+app.get("/carrito/:usuarioId", (req,res)=>{
+
+    const usuarioId = req.params.usuarioId;
+
+    const sql = `
+        SELECT
+            c.id,
+            c.color,
+            c.cantidad,
+            p.nombre,
+            p.precio,
+            p.imagen
+        FROM carrito c
+        INNER JOIN productos p
+        ON c.producto_id = p.id
+        WHERE c.usuario_id = ?
+    `;
+
+    conexion.query(
+        sql,
+        [usuarioId],
+        (error, resultado)=>{
+
+            if(error){
+
+                return res.status(500).json(error);
+
+            }
+
+            res.json(resultado);
+
+        }
+    );
+
+});
+app.delete("/carrito/:id", (req,res)=>{
+
+    conexion.query(
+        "DELETE FROM carrito WHERE id=?",
+        [req.params.id],
+        (error)=>{
+
+            if(error){
+
+                return res.status(500).json(error);
+
+            }
+
+            res.json({
+                success:true
+            });
+
+        }
+    );
+
+});
 app.listen(3000, () => {
     console.log(
         "Servidor corriendo en puerto 3000"
