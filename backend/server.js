@@ -311,13 +311,27 @@ app.post("/obtener-usuario", (req, res) => {
     });
 });
 
-app.get("/obtener-productos", (req, res) => {
-    const sql = "SELECT * FROM productos";
-    conexion.query(sql, (error, resultados) => {
+// OBTENER TODOS LOS USUARIOS (Para el panel de administración)
+app.get("/obtener-usuarios", (req, res) => {
+    const sql = `
+        SELECT id, nombre, apellido, correo, rol
+        FROM usuarios
+        ORDER BY nombre ASC
+    `;
+
+    conexion.query(sql, (error, resultado) => {
         if (error) {
-            return res.status(500).json({ success: false, message: "Error al obtener productos" });
+            console.log(error);
+            return res.status(500).json({
+                success: false,
+                message: "Error obteniendo usuarios"
+            });
         }
-        res.json({ success: true, productos: resultados });
+
+        return res.json({
+            success: true,
+            usuarios: resultado || []
+        });
     });
 });
 
