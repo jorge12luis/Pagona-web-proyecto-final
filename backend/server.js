@@ -311,30 +311,15 @@ app.post("/obtener-usuario", (req, res) => {
     });
 });
 
-app.get("/obtener-usuarios", (req, res) => {
-    const sql = `
-        SELECT id, nombre, apellido, correo, rol
-        FROM usuarios
-        ORDER BY nombre ASC
-    `;
-
-    conexion.query(sql, (error, resultado) => {
+app.get("/obtener-productos", (req, res) => {
+    const sql = "SELECT * FROM productos";
+    conexion.query(sql, (error, resultados) => {
         if (error) {
-            console.log(error);
-
-            return res.status(500).json({
-                success: false,
-                message: "Error obteniendo usuarios"
-            });
+            return res.status(500).json({ success: false, message: "Error al obtener productos" });
         }
-
-        res.json({
-            success: true,
-            usuarios: resultado
-        });
+        res.json({ success: true, productos: resultados });
     });
 });
-
 
 
 app.post("/crear-pago", async (req, res) => {
@@ -902,37 +887,46 @@ app.get("/obtener-productos", (req, res) => {
     });
 });
 
-// AGREGAR PRODUCTO
-app.post("/agregar-producto", (req, res) => {
-    const { nombre, precio, stock } = req.body;
+
+// AGREGAR PRODUCTO (Actualizada para recibir imagen y descripción)
+app.post("/agregar-producto", uploadProducto.single("imagen"), (req, res) => {
+    // Los textos llegan en req.body
+    const { nombre, precio, stock, descripcion, categoria_id, estado } = req.body;
+    
+    // Multer guarda el archivo en req.file si el usuario subió una foto
+    const imagen = req.file ? `uploads/productos/${req.file.filename}` : null;
 
     if (!nombre || !precio || stock === undefined) {
         return res.status(400).json({
             success: false,
-            message: "Faltan datos"
+            message: "Faltan datos obligatorios"
         });
     }
 
     const sql = `
-        INSERT INTO productos (nombre, precio, stock)
-        VALUES (?, ?, ?)
+        INSERT INTO productos (nombre, precio, stock, imagen, descripcion, categoria_id, estado)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
 
-    conexion.query(sql, [nombre, precio, stock], (error, resultado) => {
-        if (error) {
-            console.log(error);
-            return res.status(500).json({
-                success: false,
-                message: "Error al agregar producto"
+    conexion.query(
+        sql, 
+        [nombre, precio, stock, imagen, descripcion || null, categoria_id || null, estado || null], 
+        (error, resultado) => {
+            if (error) {
+                console.log(error);
+                return res.status(500).json({
+                    success: false,
+                    message: "Error al agregar producto"
+                });
+            }
+
+            res.json({
+                success: true,
+                message: "Producto agregado exitosamente",
+                id: resultado.insertId
             });
         }
-
-        res.json({
-            success: true,
-            message: "Producto agregado exitosamente",
-            id: resultado.insertId
-        });
-    });
+    );
 });
 
 // ACTUALIZAR PRODUCTO
@@ -969,18 +963,25 @@ app.put("/actualizar-producto/:id", (req, res) => {
     });
 });
 
-// ELIMINAR PRODUCTO
+// ELIMINAR PRODUCTO POR ID
 app.delete("/eliminar-producto/:id", (req, res) => {
     const { id } = req.params;
 
     const sql = "DELETE FROM productos WHERE id = ?";
 
-    conexion.query(sql, [id], (error) => {
+    conexion.query(sql, [id], (error, resultado) => {
         if (error) {
             console.log(error);
             return res.status(500).json({
                 success: false,
-                message: "Error al eliminar producto"
+                message: "Error al eliminar el producto"
+            });
+        }
+
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Producto no encontrado"
             });
         }
 
@@ -1229,70 +1230,186 @@ app.delete("/carrito/:id", (req,res)=>{
     );
 
 });
-app.listen(3000, () => {
-    console.log(
-        "Servidor corriendo en puerto 3000"
-    );
-});
 
-// ==========================================
-// CRUD DE PRODUCTOS
-// ==========================================
+// =========================================================================
+// MÉTODOS DE PAGO (TARJETAS Y BILLETERAS DIGITALES)
+// =========================================================================
 
-// 1. Obtener todos los productos de la BD
-app.get("/api/productos", (req, res) => {
-    conexion.query("SELECT * FROM productos ORDER BY id DESC", (error, resultados) => {
-        if (error) {
-            console.log(error);
-            return res.status(500).json({ success: false, message: "Error al obtener productos" });
-        }
-        res.json({ success: true, productos: resultados });
-    });
-});
+// 1. Obtener métodos de pago vinculados a un correo
+app.get("/api/obtener-metodos", (req, res) => {
+    const { correo } = req.query;
 
-// 2. Crear un nuevo producto (Recibe texto e imagen)
-app.post("/api/productos", uploadProducto.single("imagen"), (req, res) => {
-    const { nombre, precio, stock, descripcion } = req.body;
-    const rutaImagen = req.file ? `uploads/productos/${req.file.filename}` : 'img/mochila.jpg';
-
-    const sql = `INSERT INTO productos (nombre, precio, stock, descripcion, imagen) VALUES (?, ?, ?, ?, ?)`;
-    conexion.query(sql, [nombre, precio, stock, descripcion || '', rutaImagen], (error, resultado) => {
-        if (error) {
-            console.log(error);
-            return res.status(500).json({ success: false, message: "Error al insertar producto" });
-        }
-        res.json({ success: true, message: "Producto creado exitosamente", id: resultado.insertId });
-    });
-});
-
-// 3. Editar un producto existente
-app.put("/api/productos/:id", uploadProducto.single("imagen"), (req, res) => {
-    const { id } = req.params;
-    const { nombre, precio, stock } = req.body;
-
-    if (req.file) {
-        const rutaImagen = `uploads/productos/${req.file.filename}`;
-        const sql = `UPDATE productos SET nombre = ?, precio = ?, stock = ?, imagen = ? WHERE id = ?`;
-        conexion.query(sql, [nombre, precio, stock, rutaImagen, id], (error) => {
-            if (error) return res.status(500).json({ success: false });
-            res.json({ success: true, message: "Producto e imagen actualizados" });
-        });
-    } else {
-        const sql = `UPDATE productos SET nombre = ?, precio = ?, stock = ? WHERE id = ?`;
-        conexion.query(sql, [nombre, precio, stock, id], (error) => {
-            if (error) return res.status(500).json({ success: false });
-            res.json({ success: true, message: "Producto actualizado" });
-        });
+    if (!correo) {
+        return res.status(400).json({ success: false, message: "Correo requerido" });
     }
+
+    const sql = "SELECT id, tipo, numero, expiracion FROM metodos_pago WHERE correo_usuario = ? ORDER BY id DESC";
+    conexion.query(sql, [correo], (error, resultados) => {
+        if (error) {
+            console.log("Error al obtener métodos de pago:", error);
+            return res.status(500).json({ success: false, message: "Error en el servidor" });
+        }
+        res.json({ success: true, tarjetas: resultados });
+    });
 });
 
-// 4. Eliminar un producto
-app.delete("/api/productos/:id", (req, res) => {
+// 2. Insertar un nuevo método de pago (¡BLINDADO CONTRA DUPLICADOS Y TRIPLICADOS!)
+app.post("/api/guardar-metodo", (req, res) => {
+    const { correo, tipo, numero, titular, expiracion, cvv } = req.body;
+
+    console.log(`\n[Petición Recibida] Intentando guardar método para: ${correo} - Número: ${numero}`);
+
+    // Validación básica de campos vacíos
+    if (!correo || !tipo || !numero) {
+        console.log("❌ Rechazado: Faltan datos obligatorios");
+        return res.status(400).json({ success: false, message: "Datos obligatorios incompletos" });
+    }
+
+    // Limpiar espacios en blanco por si el frontend los envía con espacios
+    const numeroLimpio = String(numero).replace(/\s+/g, '');
+    const correoLimpio = String(correo).trim();
+
+    // Normalizar campos opcionales
+    const titularFinal = titular ? titular.trim() : "Billetera Digital";
+    const expiracionFinal = expiracion ? expiracion.trim() : "N/A";
+    const cvvFinal = cvv ? cvv.trim() : "000";
+
+    // PASO 1: Verificar en la BD si YA EXISTE ese número de tarjeta para ese correo
+    const sqlVerificar = "SELECT id FROM metodos_pago WHERE correo_usuario = ? AND numero = ?";
+    
+    conexion.query(sqlVerificar, [correoLimpio, numeroLimpio], (errorVerificar, filas) => {
+        if (errorVerificar) {
+            console.log("❌ Error en la verificación de duplicados:", errorVerificar);
+            return res.status(500).json({ success: false, message: "Error interno del servidor" });
+        }
+
+        // Si la consulta arroja resultados, significa que la ráfaga intentó meter la misma tarjeta
+        if (filas.length > 0) {
+            console.log(`⚠️ Clonación bloqueada: El método ${numeroLimpio} ya existía para ${correoLimpio}.`);
+            // Retornamos un 200 o 400 pero frenamos el proceso para que el frontend no rompa
+            return res.status(400).json({ 
+                success: false, 
+                message: "Este método de pago ya se encuentra registrado." 
+            });
+        }
+
+        // PASO 2: Si está limpio, procedemos con la inserción segura
+        const sqlInsertar = `
+            INSERT INTO metodos_pago (correo_usuario, tipo, numero, titular, expiracion, cvv) 
+            VALUES (?, ?, ?, ?, ?, ?)
+        `;
+
+        conexion.query(
+            sqlInsertar, 
+            [correoLimpio, tipo, numeroLimpio, titularFinal, expiracionFinal, cvvFinal], 
+            (errorInsertar, resultado) => {
+                if (errorInsertar) {
+                    console.log("❌ Error al insertar en la base de datos:", errorInsertar);
+                    return res.status(500).json({ success: false, message: "No se pudo registrar en la base de datos" });
+                }
+                
+                console.log(`✅ Éxito: Método guardado correctamente con ID: ${resultado.insertId}`);
+                return res.json({ 
+                    success: true, 
+                    message: "Método de pago guardado exitosamente", 
+                    id: resultado.insertId 
+                });
+            }
+        );
+    });
+});
+
+// 3. Eliminar un método de pago por su ID
+app.delete("/api/eliminar-metodo/:id", (req, res) => {
     const { id } = req.params;
-    conexion.query("DELETE FROM productos WHERE id = ?", [id], (error) => {
+
+    const sql = "DELETE FROM metodos_pago WHERE id = ?";
+    conexion.query(sql, [id], (error) => {
         if (error) {
-            console.log(error);
-            return res.status(500).json({ success: false, message: "Error al borrar" });
+            console.log("Error al eliminar método de pago:", error);
+            return res.status(500).json({ success: false, message: "Error al eliminar de la base de datos" });
+        }
+        res.json({ success: true, message: "Método de pago eliminado de forma correcta" });
+    });
+});
+
+
+// AL FINAL DE TU ARCHIVO ASEGÚRATE DE QUE ESTÉ EL ESCUCHADOR DEL PUERTO
+app.listen(3000, () => {
+    console.log("Servidor corriendo en el puerto 3000");
+});
+
+// ==========================================
+// CRUD REAL DE PRODUCTOS (MAPEADO A TU TABLA)
+// ==========================================
+
+// 1. OBTENER TODOS LOS PRODUCTOS
+app.get("/api/obtener-productos", (req, res) => {
+    const sql = "SELECT * FROM productos ORDER BY id DESC";
+    conexion.query(sql, (error, resultado) => {
+        if (error) {
+            console.error("Error al traer productos:", error);
+            return res.status(500).json({ success: false, message: "Error al traer productos" });
+        }
+        res.json({ success: true, productos: resultado });
+    });
+});
+
+// 2. CREAR UN PRODUCTO NUEVO (CON TU ESTRUCTURA)
+app.post("/api/guardar-producto", uploadProducto.single("imagen"), (req, res) => {
+    const { nombre, precio, stock, descripcion } = req.body;
+    // Si subieron foto guardamos la ruta, si no, dejamos null o una por defecto
+    const imagenRuta = req.file ? `/uploads/productos/${req.file.filename}` : null;
+    
+    // Asignamos valores por defecto para los campos que tiene tu tabla pero no el formulario
+    const categoria_id = 1; 
+    const estado = 'Activo';
+
+    const sql = `
+        INSERT INTO productos (nombre, precio, imagen, descripcion, stock, categoria_id, estado) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
+    
+    conexion.query(sql, [nombre, precio, imagenRuta, descripcion, stock, categoria_id, estado], (error, resultado) => {
+        if (error) {
+            console.error("Error al insertar en la BD:", error);
+            return res.status(500).json({ success: false, message: "Error al guardar en la base de datos" });
+        }
+        res.json({ success: true, message: "¡Producto creado con éxito!", id: resultado.insertId });
+    });
+});
+
+// 3. EDITAR UN PRODUCTO EXISTENTE
+app.put("/api/actualizar-producto/:id", uploadProducto.single("imagen"), (req, res) => {
+    const { id } = req.params;
+    const { nombre, precio, stock, descripcion } = req.body;
+    
+    let sql = "UPDATE productos SET nombre = ?, precio = ?, stock = ?, descripcion = ? WHERE id = ?";
+    let parametros = [nombre, precio, stock, descripcion, id];
+
+    // Si el administrador subió una foto nueva al editar, cambiamos el campo 'imagen'
+    if (req.file) {
+        sql = "UPDATE productos SET nombre = ?, precio = ?, stock = ?, descripcion = ?, imagen = ? WHERE id = ?";
+        parametros = [nombre, precio, stock, descripcion, `/uploads/productos/${req.file.filename}`, id];
+    }
+
+    conexion.query(sql, parametros, (error) => {
+        if (error) {
+            console.error("Error al actualizar la BD:", error);
+            return res.status(500).json({ success: false, message: "Error al actualizar el producto" });
+        }
+        res.json({ success: true, message: "¡Producto actualizado con éxito!" });
+    });
+});
+
+// 4. ELIMINAR UN PRODUCTO
+app.delete("/api/eliminar-producto/:id", (req, res) => {
+    const { id } = req.params;
+    const sql = "DELETE FROM productos WHERE id = ?";
+    conexion.query(sql, [id], (error) => {
+        if (error) {
+            console.error("Error al eliminar de la BD:", error);
+            return res.status(500).json({ success: false, message: "Error al eliminar el producto" });
         }
         res.json({ success: true, message: "Producto eliminado correctamente" });
     });

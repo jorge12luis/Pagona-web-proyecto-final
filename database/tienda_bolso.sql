@@ -208,6 +208,18 @@ CREATE TABLE `ventas` (
   `fecha` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+
+CREATE TABLE IF NOT EXISTS metodos_pago (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    correo_usuario VARCHAR(255) NOT NULL,
+    tipo ENUM('Tarjeta', 'Nequi', 'Daviplata', 'Transfiya') NOT NULL,
+    numero VARCHAR(50) NOT NULL,
+    titular VARCHAR(150) NULL,
+    expiracion VARCHAR(10) NULL,
+    cvv VARCHAR(10) NULL,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 --
 -- Índices para tablas volcadas
 --

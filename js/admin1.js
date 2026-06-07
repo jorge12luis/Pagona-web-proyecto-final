@@ -1,21 +1,27 @@
-let productos = [
-    {
-        id: 1,
-        nombre: "Bolso Manhattan",
-        precio: 120000,
-        stock: 15,
-        descripcion: "Material premium con acabados de lujo."
-    },
-    {
-        id: 2,
-        nombre: "Mochila Urban",
-        precio: 145000,
-        stock: 8,
-        descripcion: "Ideal para el día a día, impermeable."
-    }
-];
+// URL Base de tu API
+const API_URL = "http://localhost:3000";
 
-// 1. RENDERIZAR TABLA DE PRODUCTOS
+// Array global que ahora se llenará con los datos de la Base de Datos
+let productos = [];
+
+// 1. CARGAR PRODUCTOS DESDE EL SERVIDOR (REAL)
+async function cargarProductos() {
+    try {
+        const respuesta = await fetch(`${API_URL}/obtener-productos`);
+        const data = await respuesta.json();
+        
+        if (data.success) {
+            productos = data.productos;
+            renderProductos();
+        } else {
+            console.error("Error al obtener productos del servidor");
+        }
+    } catch (error) {
+        console.error("Error de conexión:", error);
+    }
+}
+
+// 2. RENDERIZAR TABLA DE PRODUCTOS
 function renderProductos(){
     const tabla = document.getElementById("tablaProductos");
     if (!tabla) return;
@@ -23,11 +29,19 @@ function renderProductos(){
     tabla.innerHTML = "";
 
     productos.forEach((producto, index) => {
+        // Validar si trae imagen, de lo contrario poner una por defecto
+        const urlImagen = producto.imagen ? `${API_URL}/${producto.imagen}` : 'img/default-product.png';
+
         tabla.innerHTML += `
         <tr>
             <td>${producto.id}</td>
-            <td>${producto.nombre}</td>
-            <td>$${producto.precio.toLocaleString()}</td>
+            <td>
+                <div class="d-flex align-items-center gap-2">
+                    <img src="${urlImagen}" alt="${producto.nombre}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">
+                    <span>${producto.nombre}</span>
+                </div>
+            </td>
+            <td>$${Number(producto.precio).toLocaleString()}</td>
             <td>${producto.stock}</td>
             <td>
                 <button 
@@ -38,7 +52,7 @@ function renderProductos(){
                 </button>
                 <button 
                     class="btn btn-danger btn-sm fw-bold"
-                    onclick="eliminarProducto(${index})"
+                    onclick="eliminarProductoReal(${producto.id})"
                 >
                     <i class="fa-solid fa-trash"></i> Eliminar
                 </button>
@@ -50,110 +64,121 @@ function renderProductos(){
     actualizarCards();
 }
 
-// 2. ACTUALIZAR INDICADORES SUPERIORES
+// 3. ACTUALIZAR INDICADORES SUPERIORES
 function actualizarCards(){
     if(document.getElementById("totalProductos")) {
         document.getElementById("totalProductos").textContent = productos.length;
     }
-    if(document.getElementById("totalUsuarios")) {
-        document.getElementById("totalUsuarios").textContent = 3;
-    }
-    if(document.getElementById("totalVentas")) {
-        document.getElementById("totalVentas").textContent = 0;
-    }
-    if(document.getElementById("ganancias")) {
-        document.getElementById("ganancias").textContent = "$0";
-    }
+    // Nota: Los indicadores de usuarios se manejan desde tu admin.js original
 }
 
-// 3. CONTROL DE APERTURA DEL MODAL PREMIUM
+// 4. CONTROL DE APERTURA DEL MODAL
 function abrirModal() {
-    // Reseteamos el formulario limpio
     document.getElementById("formProducto").reset();
-    
-    // El input oculto que guarda el index lo dejamos vacío (significa que es un NUEVO producto)
     document.getElementById("productoIndex").value = ""; 
-    
-    // Cambiamos textos para modo "Agregar"
     document.getElementById("modalTitulo").innerHTML = '<i class="fa-solid fa-box-open"></i> Agregar Nuevo Producto';
     document.getElementById("btnGuardarTexto").textContent = "Guardar Producto";
-    
-    // Abrimos usando tu clase CSS cambiando el display a flex
     document.getElementById("modalProducto").style.display = "flex";
 }
 
 function cerrarModal() {
-    // Cerramos el modal poniéndolo en none
     document.getElementById("modalProducto").style.display = "none";
 }
 
-// 4. FUNCION UNIFICADA PARA GUARDAR (AGREGAR / EDITAR)
-function guardarProducto(event) {
-    event.preventDefault(); // Evita que la página se recargue
+// 5. ENVIAR DATOS AL SERVIDOR (AGREGAR PRODUCTO CON IMAGEN)
+async function guardarProducto(event) {
+    event.preventDefault(); 
 
-    // Capturamos los datos del modal premium
-    const index = document.getElementById("productoIndex").value;
-    const nombre = document.getElementById("prodNombre").value;
-    const precio = Number(document.getElementById("prodPrecio").value);
-    const stock = Number(document.getElementById("prodStock").value);
-    const descripcion = document.getElementById("prodDescripcion").value;
-
-    if (index === "") {
-        // MODO AGREGAR: Creamos un id nuevo basado en el id más alto existente
-        const nuevoId = productos.length > 0 ? Math.max(...productos.map(p => p.id)) + 1 : 1;
-        
-        const nuevoProducto = {
-            id: nuevoId,
-            nombre: nombre,
-            precio: precio,
-            stock: stock,
-            descripcion: descripcion
-        };
-        
-        productos.push(nuevoProducto);
-    } else {
-        // MODO EDITAR: Actualizamos el producto existente usando su index
-        const idx = Number(index);
-        productos[idx].nombre = nombre;
-        productos[idx].precio = precio;
-        productos[idx].stock = stock;
-        productos[idx].descripcion = descripcion;
+    const idExistente = document.getElementById("productoIndex").value;
+    
+    // !!! DETALLE CLAVE !!!
+    // Como enviamos una IMAGEN (archivo), no podemos usar JSON.stringify.
+    // Debemos usar FormData de manera obligatoria para que Multer lo entienda en el backend.
+    const formData = new FormData();
+    formData.append("nombre", document.getElementById("prodNombre").value);
+    formData.append("precio", document.getElementById("prodPrecio").value);
+    formData.append("stock", document.getElementById("prodStock").value);
+    formData.append("descripcion", document.getElementById("prodDescripcion").value);
+    
+    // Capturar el archivo de la imagen si fue seleccionado
+    const inputImagen = document.getElementById("prodImagen");
+    if (inputImagen.files.length > 0) {
+        formData.append("imagen", inputImagen.files[0]);
     }
 
-    // Actualizar interfaz y cerrar el modal
-    renderProductos();
-    cerrarModal();
+    try {
+        let url = `${API_URL}/agregar-producto`;
+        let method = "POST";
+
+        // Si el idExistente no está vacío, significa que vas a editar
+        if (idExistente !== "") {
+            url = `${API_URL}/editar-producto/${idExistente}`;
+            method = "PUT"; // O lo puedes manejar como gusten en su equipo
+        }
+
+        // Enviamos la petición
+        const respuesta = await fetch(url, {
+            method: method,
+            body: formData // NOTA: No agregues 'Content-Type', el navegador lo configura solo automáticamente al ver un FormData
+        });
+
+        const data = await respuesta.json();
+
+        if (data.success) {
+            alert(data.message);
+            cerrarModal();
+            cargarProductos(); // Recargamos la lista actualizada desde la BD
+        } else {
+            alert("Error: " + data.message);
+        }
+
+    } catch (error) {
+        console.error("Error al guardar:", error);
+        alert("Error de conexión con el servidor");
+    }
 }
 
-// 5. CARGAR DATOS EN EL MODAL PARA EDITAR
+// 6. CARGAR DATOS EN EL MODAL PARA EDITAR
 function editarProducto(index){
     const producto = productos[index];
 
-    // Llenamos el formulario con los datos actuales del producto
-    document.getElementById("productoIndex").value = index; // Guardamos el index en el input oculto
+    // Llenamos el formulario con los datos de la BD
+    document.getElementById("productoIndex").value = producto.id; // Guardamos el ID real de la BD
     document.getElementById("prodNombre").value = producto.nombre;
     document.getElementById("prodPrecio").value = producto.precio;
     document.getElementById("prodStock").value = producto.stock;
     document.getElementById("prodDescripcion").value = producto.descripcion || "";
 
-    // Cambiamos títulos del modal premium para reflejar la edición
     document.getElementById("modalTitulo").innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Editar Producto';
     document.getElementById("btnGuardarTexto").textContent = "Actualizar Cambios";
-
-    // Mostramos el modal
     document.getElementById("modalProducto").style.display = "flex";
 }
 
-// 6. ELIMINAR PRODUCTO
-function eliminarProducto(index){
-    const confirmar = confirm("¿Seguro que deseas eliminar este producto?");
-    if(confirmar){
-        productos.splice(index, 1);
-        renderProductos();
+// 7. ELIMINAR PRODUCTO REAL DE LA BASE DE DATOS
+async function eliminarProductoReal(id) {
+    const confirmar = confirm("¿Seguro que deseas eliminar definitivamente este producto de la base de datos?");
+    if (!confirmar) return;
+
+    try {
+        const respuesta = await fetch(`${API_URL}/eliminar-producto/${id}`, {
+            method: "DELETE"
+        });
+
+        const data = await respuesta.json();
+
+        if (data.success) {
+            alert(data.message);
+            cargarProductos(); // Volver a consultar la BD para refrescar la tabla
+        } else {
+            alert("No se pudo eliminar: " + data.message);
+        }
+    } catch (error) {
+        console.error("Error al eliminar:", error);
+        alert("Error de comunicación con el servidor");
     }
 }
 
-// 7. CERRAR SESIÓN
+// 8. CERRAR SESIÓN
 function cerrarSesion(){
     const confirmar = confirm("¿Seguro que deseas cerrar sesión?");
     if(confirmar){
@@ -162,5 +187,5 @@ function cerrarSesion(){
     }
 }
 
-// Inicializamos la tabla al cargar la vista
-renderProductos();
+// Inicializamos la tabla trayendo los datos del servidor al cargar la vista
+document.addEventListener("DOMContentLoaded", cargarProductos);
