@@ -15,6 +15,9 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
+CREATE DATABASE tienda_bolso;
+
+USE tienda_bolso;
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -30,17 +33,6 @@ SET time_zone = "+00:00";
 --
 -- Estructura de tabla para la tabla `carrito`
 --
-
-CREATE TABLE carrito (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario_id INT NOT NULL,
-    producto_id INT NOT NULL,
-    color VARCHAR(50),
-    cantidad INT DEFAULT 1,
-    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
-    FOREIGN KEY (producto_id) REFERENCES productos(id)
-); ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -133,7 +125,7 @@ CREATE TABLE `pedidos` (
 --
 
 CREATE TABLE `productos` (
-  `id` INT NOT NULL PRIMARY KEY,
+  `id` INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
   `nombre` varchar(50) DEFAULT NULL,
   `precio` decimal(10,2) DEFAULT NULL,
   `imagen` varchar(255) DEFAULT NULL,
@@ -170,7 +162,7 @@ CREATE TABLE `recuperacion_codes` (
 --
 
 CREATE TABLE `usuarios` (
-  `id` INT NOT NULL PRIMARY KEY,
+  `id` INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
   `nombre` varchar(100) DEFAULT NULL,
   `apellido` varchar(50) DEFAULT NULL,
   `correo` varchar(100) DEFAULT NULL,
@@ -203,26 +195,32 @@ CREATE TABLE `ventas` (
   `fecha` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Índices para tablas volcadas
---
+CREATE TABLE carrito (
 
---
--- Indices de la tabla `carrito`
---
-ALTER TABLE `carrito`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `usuario_id` (`usuario_id`);
+    id INT AUTO_INCREMENT PRIMARY KEY,
 
---
--- Indices de la tabla `categorias`
---
+    usuario_id INT NOT NULL,
+
+    producto_id INT NOT NULL,
+
+    color VARCHAR(50),
+
+    cantidad INT DEFAULT 1,
+
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+
+    FOREIGN KEY (producto_id) REFERENCES productos(id)
+
+); ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;  
+
+
+
+
 ALTER TABLE `categorias`
   ADD PRIMARY KEY (`id`);
 
---
--- Indices de la tabla `detalle_pedidos`
---
 ALTER TABLE `detalle_pedidos`
   ADD PRIMARY KEY (`id`),
   ADD KEY `pedido_id` (`pedido_id`),
@@ -290,9 +288,6 @@ ALTER TABLE `ventas`
 --
 -- AUTO_INCREMENT de la tabla `carrito`
 --
-ALTER TABLE `carrito`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `categorias`
 --
@@ -354,8 +349,7 @@ ALTER TABLE `ventas`
 --
 -- Filtros para la tabla `carrito`
 --
-ALTER TABLE `carrito`
-  ADD CONSTRAINT `carrito_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
+
 
 --
 -- Filtros para la tabla `detalle_pedidos`
