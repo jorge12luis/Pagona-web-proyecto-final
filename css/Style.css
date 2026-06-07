@@ -9,7 +9,7 @@
 
 body.cuerpo{
     font-family:'Montserrat', sans-serif;
-    background:#faf8f4;
+    background:#e2d4b9;
     color:#222;
 }
 
@@ -17,7 +17,7 @@ body.cuerpo{
     position:fixed;
     top:0;
     width:100%;
-    background:rgb(245, 240, 240);
+    background:#787f56;
     z-index:999;
     border-bottom:1px solid #eee;
     padding:25px 5%;
@@ -49,7 +49,7 @@ body.cuerpo{
     font-size:16px;  
     font-weight:100;
 
-    color:#222;
+    color:#e2d4b9;
 
     text-transform:uppercase;
 
@@ -121,7 +121,7 @@ a{
 
 .nav-icons-section a,
 .user-name{
-    color:#333;
+    color:#e2d4b9;
     font-size:25px;
     transition:.3s;
 
@@ -228,6 +228,7 @@ a{
     font-weight:500;
     margin-top:120px;
     letter-spacing:2px;
+    color: #787f56;
 }
 
 .hero-slider{
@@ -397,7 +398,7 @@ a{
 
     margin-top:100px;
 
-    background:#f5f0f0;
+    background:#787f56;
 
     padding:80px 20px;
 
@@ -414,12 +415,14 @@ a{
     margin-bottom:10px;
 
     letter-spacing:4px;
+
+    color: #e2d4b9;
 }
 
 
 .footer-dunaka p{
 
-    color:#666;
+    color:#e2d4b9;
 
     font-size:14px;
 }
@@ -437,7 +440,7 @@ a{
 
 .redes-sociales a{
 
-    color:#222;
+    color:#e2d4b9;
 
     font-size:28px;
 
@@ -457,7 +460,7 @@ a{
 
     font-size:13px;
 
-    color:#999;
+    color:#eee9e9;
 }
 
 
@@ -516,7 +519,7 @@ a{
 
     text-transform:uppercase;
 
-    color:#999;
+    color:#787f56;
 }
 
 
@@ -527,6 +530,8 @@ a{
     font-size:55px;
 
     margin:15px 0 25px 0;
+
+    color: #787f56;
 }
 
 
@@ -549,7 +554,7 @@ a{
 
     padding:14px 35px;
 
-    border:1px solid black;
+    border:1px solid #787f56;
 
     color:black;
 
@@ -564,7 +569,7 @@ a{
 
 .btn-dunaka:hover{
 
-    background:black;
+    background:#787f56;
 
     color:white;
 }
