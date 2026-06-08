@@ -15,9 +15,6 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-CREATE DATABASE tienda_bolso;
-
-USE tienda_bolso;
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -155,45 +152,32 @@ CREATE TABLE `recuperacion_codes` (
   `expiracion` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `usuarios`
---
 
 CREATE TABLE `usuarios` (
   `id` INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-  `nombre` varchar(100) DEFAULT NULL,
-  `apellido` varchar(50) DEFAULT NULL,
-  `correo` varchar(100) DEFAULT NULL,
-  `contrasena` varchar(100) DEFAULT NULL,
-  `rol` enum('admin','usuario') DEFAULT 'usuario',
-  `numero_telefono` char(10) DEFAULT NULL,
-  `fecha_nacimiento` date DEFAULT NULL,
-  `direccion` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `nombre` varchar(100) NOT NULL,
+  `apellido` varchar(50) NOT NULL,
+  `correo` varchar(100) NOT NULL,
+  `contrasena` varchar(100) NOT NULL,
+  `rol` enum('admin','usuario') NOT NULL DEFAULT 'usuario',
+  `numero_telefono` char(10) NOT NULL,
+  `fecha_nacimiento` date NOT NULL,
+  `direccion` varchar(100) NOT NULL DEFAULT "No ingreso Direccion",
+  `imagen` varchar(255)
+);
 
---
--- Volcado de datos para la tabla `usuarios`
---
+INSERT INTO `usuarios` ( `nombre` , `apellido`, `correo`, `contrasena`, `rol`, `numero_telefono`, `fecha_nacimiento`, `direccion`) VALUES
+('jorge', "Apellido", 'jorge@gmail', '123456', 'admin', '0000000000', '0000-00-00', "CALLE 30"),
+('julio', 'Martinez', 'julio763284@gmail', '12345', 'admin', '3017794660', '0000-00-00', "CALLE 30"),
+('julio', 'Martinez', 'snack@gmail.com', '12345', 'usuario', '1234567890', '0000-00-00', "CALLE 30");
 
-INSERT INTO `usuarios` (`id`, `nombre`, `apellido`, `correo`, `contrasena`, `rol`, `numero_telefono`, `fecha_nacimiento`, `direccion`) VALUES
-(1, 'jorge', NULL, 'jorge@gmail', '123456', 'admin', NULL, NULL, NULL),
-(4, 'luiis', NULL, 'luis@gmail.com', '1122', 'admin', NULL, NULL, NULL),
-(5, 'jorge', 'pinto', 'pintojorge@gmail', '111111', 'usuario', '123123', '0000-00-00', NULL);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `ventas`
---
 
 CREATE TABLE `ventas` (
   `id` int(11) NOT NULL,
   `usuario_id` int(11) DEFAULT NULL,
   `total` decimal(10,2) DEFAULT NULL,
   `fecha` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+)
 
 CREATE TABLE carrito (
 

@@ -212,37 +212,39 @@ exports.cambiarrol = (req, res) => {
 
 exports.subirfoto = (req, res) => {
 
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
+    console.log(req.file);
+
     const { correo } = req.body;
+
+    if (!req.file) {
+        return res.json({
+            success: false,
+            message: "No se subió archivo"
+        });
+    }
 
     const nombreArchivo = req.file.filename;
 
     const sql = `
         UPDATE usuarios
-        SET imagenes = ?
+        SET imagen = ?
         WHERE correo = ?
     `;
 
-    conexion.query(
-        sql,
-        [nombreArchivo, correo],
-        (error) => {
+    conexion.query(sql, [nombreArchivo, correo], (error) => {
 
-            if (error) {
-
-                console.log(error);
-
-                return res.json({
-                    success: false
-                });
-
-            }
-
-            res.json({
-                success: true,
-                foto: nombreArchivo
-            });
-
+        if (error) {
+            console.log(error);
+            return res.json({ success: false });
         }
-    );
 
+        res.json({
+            success: true,
+            ruta: "/uploads/perfiles/" + nombreArchivo
+        });
+
+    });
+    console.log(req.file);
 };

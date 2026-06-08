@@ -21,10 +21,8 @@ app.use(
     )
 );
 
-app.use(
-    "/uploads",
-    express.static("uploads")
-);
+console.log("RUTA ABSOLUTA QUE EXPRESA ESTÁ BUSCANDO:", path.join(__dirname, "config","uploads"));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use(authRoutes);
 app.use(usuarioRoutes);
