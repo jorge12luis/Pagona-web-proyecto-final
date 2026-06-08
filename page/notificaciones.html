@@ -4,33 +4,109 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-    content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet"
-    href="../css/Style.css">
+    <link rel="stylesheet" href="../css/Style.css">
+    <link rel="stylesheet" href="../css/notificaciones.css">
 
-    <title>Información</title>
+    <title>Notificaciones</title>
 
 </head>
 
-<body>
+<body class="cuerpo">
 
-<div class="vista-simple">
+<div class="notificaciones-container">
 
-    <h1>Información personal</h1>
+    <h1 class="titulo-notificaciones">
+        Notificaciones
+    </h1>
 
-    <p>
-        Administra tu información.
+    <p class="subtitulo-notificaciones">
+        Mantente informado sobre tus compras, envíos y novedades.
     </p>
 
-    <a href="../perfil.html">
+    <div class="contador-box">
 
+        <span id="contador-notificaciones"></span>
+
+    </div>
+
+    <div class="filtros-notificaciones">
+
+        <button class="activo">Todas</button>
+        <button>Pedidos</button>
+        <button>Promociones</button>
+        <button>Sistema</button>
+
+    </div>
+
+    <div class="notificacion no-leida"
+         data-categoria="Pedidos">
+
+        <h3>🔔 Pedido confirmado</h3>
+
+        <p>
+            Tu compra fue registrada correctamente.
+        </p>
+
+        <span class="fecha">
+            Hace 2 horas
+        </span>
+
+    </div>
+
+    <div class="notificacion no-leida"
+         data-categoria="Pedidos">
+
+        <h3>🚚 Pedido enviado</h3>
+
+        <p>
+            Tu pedido está en camino.
+        </p>
+
+        <span class="fecha">
+            Hace 1 día
+        </span>
+
+    </div>
+
+    <div class="notificacion"
+         data-categoria="Promociones">
+
+        <h3>🏷️ Nueva colección</h3>
+
+        <p>
+            Ya está disponible la colección Manhattan.
+        </p>
+
+        <span class="fecha">
+            Hace 3 días
+        </span>
+
+    </div>
+
+    <div class="notificacion"
+         data-categoria="Sistema">
+
+        <h3>⚙️ Actualización de cuenta</h3>
+
+        <p>
+            Tus datos de perfil fueron actualizados correctamente.
+        </p>
+
+        <span class="fecha">
+            Hace 1 semana
+        </span>
+
+    </div>
+
+    <a href="../perfil.html" class="btn-volver">
         Volver al perfil
-
     </a>
 
 </div>
+
+<script src="../js/notificaciones.js"></script>
 
 </body>
 </html>
