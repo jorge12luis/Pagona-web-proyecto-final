@@ -7,6 +7,10 @@
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
+CREATE DATABASE tienda_bolso;
+
+USE tienda_bolso;
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -26,17 +30,6 @@ SET time_zone = "+00:00";
 --
 -- Estructura de tabla para la tabla `carrito`
 --
-
-CREATE TABLE carrito (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario_id INT NOT NULL,
-    producto_id INT NOT NULL,
-    color VARCHAR(50),
-    cantidad INT DEFAULT 1,
-    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
-    FOREIGN KEY (producto_id) REFERENCES productos(id)
-); ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -129,7 +122,7 @@ CREATE TABLE `pedidos` (
 --
 
 CREATE TABLE `productos` (
-  `id` int(11) NOT NULL,
+  `id` INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
   `nombre` varchar(50) DEFAULT NULL,
   `precio` decimal(10,2) DEFAULT NULL,
   `imagen` varchar(255) DEFAULT NULL,
@@ -159,11 +152,6 @@ CREATE TABLE `recuperacion_codes` (
   `expiracion` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `usuarios`
---
 
 CREATE TABLE `usuarios` (
   `id` int(11) NOT NULL,
@@ -177,29 +165,15 @@ CREATE TABLE `usuarios` (
   `direccion` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `resenas` (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    producto_id VARCHAR(100) NOT NULL,
-    usuario_nombre VARCHAR(100) NOT NULL,
-    comentario TEXT NOT NULL,
-    calificacion INT NOT NULL,
-    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `nombre`, `apellido`, `correo`, `contrasena`, `rol`, `numero_telefono`, `fecha_nacimiento`, `direccion`) VALUES
-(1, 'jorge', NULL, 'jorge@gmail', '123456', 'admin', NULL, NULL, NULL),
-(4, 'luiis', NULL, 'luis@gmail.com', '1122', 'admin', NULL, NULL, NULL),
-(5, 'jorge', 'pinto', 'pintojorge@gmail', '111111', 'usuario', '123123', '0000-00-00', NULL);
+INSERT INTO `usuarios` ( `nombre` , `apellido`, `correo`, `contrasena`, `rol`, `numero_telefono`, `fecha_nacimiento`, `direccion`) VALUES
+('jorge', "Apellido", 'jorge@gmail', '123456', 'admin', '0000000000', '0000-00-00', "CALLE 30"),
+('julio', 'Martinez', 'julio763284@gmail', '12345', 'admin', '3017794660', '0000-00-00', "CALLE 30"),
+('julio', 'Martinez', 'snack@gmail.com', '12345', 'usuario', '1234567890', '0000-00-00', "CALLE 30");
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `ventas`
---
 
 CREATE TABLE `ventas` (
   `id` int(11) NOT NULL,
@@ -207,18 +181,6 @@ CREATE TABLE `ventas` (
   `total` decimal(10,2) DEFAULT NULL,
   `fecha` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
-CREATE TABLE IF NOT EXISTS metodos_pago (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    correo_usuario VARCHAR(255) NOT NULL,
-    tipo ENUM('Tarjeta', 'Nequi', 'Daviplata', 'Transfiya') NOT NULL,
-    numero VARCHAR(50) NOT NULL,
-    titular VARCHAR(150) NULL,
-    expiracion VARCHAR(10) NULL,
-    cvv VARCHAR(10) NULL,
-    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Índices para tablas volcadas
@@ -237,9 +199,6 @@ ALTER TABLE `carrito`
 ALTER TABLE `categorias`
   ADD PRIMARY KEY (`id`);
 
---
--- Indices de la tabla `detalle_pedidos`
---
 ALTER TABLE `detalle_pedidos`
   ADD PRIMARY KEY (`id`),
   ADD KEY `pedido_id` (`pedido_id`),
@@ -307,9 +266,6 @@ ALTER TABLE `ventas`
 --
 -- AUTO_INCREMENT de la tabla `carrito`
 --
-ALTER TABLE `carrito`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `categorias`
 --
@@ -371,8 +327,7 @@ ALTER TABLE `ventas`
 --
 -- Filtros para la tabla `carrito`
 --
-ALTER TABLE `carrito`
-  ADD CONSTRAINT `carrito_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
+
 
 --
 -- Filtros para la tabla `detalle_pedidos`

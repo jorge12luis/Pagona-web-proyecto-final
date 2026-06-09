@@ -1,0 +1,15 @@
+1. usuario entra a visualizar detalle de producto
+2. presiona el boton de agregar al carrito
+el fronted envia al backend la info del bolso
+3. el backend recibe la peticion
+4. Verificar si el producto ya existe en el carrito
+si no existe (
+Insertar en la base de datos
+)
+5. Si existe actualizar la cantidad
+Actualizar la info de la base de datos
+6 despues debe hacer una consulta para verificar los bolsos guardados en el carrito
+-cuando el usuario visualize el carrito 
+controllers hace la consulta envia informacion a routes y routes al fronted y el fronted muestra los resultados ,
+7 y tengo una duda de hacer, eliminar datos de la base de datos  cuando el usuario pague o elimine objetos del carrito o salga de la cuenta
+

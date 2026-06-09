@@ -2,11 +2,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     cargarUsuarioDesdeBackend();
 
+    iniciarSubidaFoto();
+
     mostrarOcultarPassword();
 
-    iniciarSubidaFoto();
+
+   
+
+    ActualizarDatos();
     
-    ActualizarDatos();// ✅ AQUÍ
 
 });
 
@@ -33,14 +37,29 @@ function cargarUsuarioDesdeBackend() {
     .then(data => {
 
         if (data.success) {
-
             let u = data.usuario;
             document.getElementById("inputNombre").value = u.nombre || "";
             document.getElementById("inputApellido").value = u.apellido || "";
             document.getElementById("inputemail").value = u.correo || "";
-            document.getElementById("inputcelular").value = u.numero_telefono || "";
+            document.getElementById("telefono").value = u.numero_telefono || "";
             document.getElementById("inputdate").value = u.fecha_nacimiento ? u.fecha_nacimiento.split("T")[0] : "";
             document.getElementById("inputpassword").value = u.contrasena || "";
+            
+            // 🔥 AQUÍ CONCATENAMOS LA RUTA INTERMEDIA MANUALMENTE
+            if (u.imagen) {
+                const imagenes = document.querySelectorAll(".fotoPerfil");
+                
+                imagenes.forEach(img => {
+                    // Le sumamos /uploads/perfiles/ antes del nombre del archivo
+                    img.src = `http://localhost:3000/SRC/config/uploads/perfiles/${u.imagen}`;
+                    img.style.display = "block"; // Nos aseguramos de que sea visible
+                });
+
+                // Ocultamos el icono gris por defecto de FontAwesome
+                document.querySelectorAll(".iconoUsuario").forEach(icono => {
+                    icono.style.display = "none";
+                });
+            }
 
         } else {
             console.log("No se encontró usuario");
@@ -78,6 +97,7 @@ function mostrarOcultarPassword(){
 }
 
 function mostrarFotoPerfil(){
+    
 }
 
 function ActualizarDatos() {
@@ -147,17 +167,60 @@ function ActualizarDatos() {
     });
 }
 
-function Subir_Foto_de_perfil(e) {
 
-    const archivo = e.target.files[0];
+let archivoSeleccionado = null;
 
-    if (!archivo) return;
+function iniciarSubidaFoto() {
+
+    const btnEditarFoto =
+        document.getElementById("btnEditarFoto");
+
+    const inputFoto =
+        document.getElementById("inputFoto");
+
+    const btnGuardarFoto =
+        document.getElementById("btnGuardarFoto");
+
+    // abrir selector
+    btnEditarFoto.addEventListener("click", () => {
+        inputFoto.click();
+    });
+
+    // seleccionar imagen (preview)
+    inputFoto.addEventListener("change", (e) => {
+
+    archivoSeleccionado = e.target.files[0];
+
+    if (!archivoSeleccionado) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(event){
+
+        document.querySelectorAll(".fotoPerfil").forEach(img => {
+            img.src = event.target.result;
+        });
+
+    };
+
+    reader.readAsDataURL(archivoSeleccionado);
+
+    // 🔥 SUBE AUTOMÁTICAMENTE
+    Subir_Foto_de_perfil();
+});
+}
+
+
+// funcion para enviar imagen al backend //
+function Subir_Foto_de_perfil() {
+
+    if (!archivoSeleccionado) return;
 
     const usuario = JSON.parse(localStorage.getItem("usuarioData"));
 
     const formData = new FormData();
 
-    formData.append("foto", archivo);
+    formData.append("foto", archivoSeleccionado);
     formData.append("correo", usuario.correo);
 
     fetch("http://localhost:3000/subir-foto", {
@@ -171,9 +234,8 @@ function Subir_Foto_de_perfil(e) {
 
             alert("Foto actualizada");
 
-            // 🔥 actualizar preview en pantalla
             document.querySelectorAll(".fotoPerfil").forEach(img => {
-                img.src = "http://localhost:3000" + data.ruta;
+                img.src = `http://localhost:3000/SRC/config/uploads/perfiles/${u.imagen}`;
                 img.style.display = "block";
             });
 
@@ -188,53 +250,3 @@ function Subir_Foto_de_perfil(e) {
     })
     .catch(err => console.log(err));
 }
-
-function iniciarSubidaFoto() {
-        const btnEditarFoto =
-    document.getElementById("btnEditarFoto");
-
-    const inputFoto =
-    document.getElementById("inputFoto");
-
-    btnEditarFoto.addEventListener("click", () => {
-
-        inputFoto.click();
-
-    });
-
-    inputFoto.addEventListener("change", (e) => {
-
-        const archivo = e.target.files[0];
-
-        if(!archivo) return;
-
-        const reader = new FileReader();
-
-        reader.onload = function(event){
-
-            const imagenes =
-            document.querySelectorAll(".fotoPerfil");
-
-            const iconos =
-            document.querySelectorAll(".iconoUsuario");
-
-            imagenes.forEach(img => {
-
-                img.src = event.target.result;
-                img.style.display = "block";
-
-            });
-
-            iconos.forEach(icono => {
-
-                icono.style.display = "none";
-
-            });
-
-        };
-
-        reader.readAsDataURL(archivo);
-
-    });
-}
-

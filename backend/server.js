@@ -1,67 +1,4 @@
-const express = require("express");
-const mysql = require("mysql2");
-const cors = require("cors");
-const nodemailer = require("nodemailer");
-const path = require("path");
-const axios = require("axios");
-const multer = require("multer");
-
-
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-app.use(express.static(path.join(__dirname, "..")));
-
-const conexion = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "tienda_bolso"
-});
-
-conexion.connect((error) => {
-    if (error) {
-        console.log(error);
-    } else {
-        console.log("MySQL conectado");
-    }
-});
-
-const createRecoveryTable = `
-CREATE TABLE IF NOT EXISTS recuperacion_codes (
-    correo VARCHAR(255) PRIMARY KEY,
-    codigo VARCHAR(10),
-    expiracion DATETIME
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-`;
-
-conexion.query(createRecoveryTable, (error) => {
-    if (error) {
-        console.log("Error creando tabla de recuperaciÃ³n:", error);
-    }
-});
-
-const createResenasTable = `
-CREATE TABLE IF NOT EXISTS resenas (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    producto_id INT NOT NULL,
-    usuario_nombre VARCHAR(150),
-    comentario TEXT,
-    calificacion INT,
-    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (producto_id) REFERENCES productos(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-`;
-
-conexion.query(createResenasTable, (error) => {
-    if (error) {
-        console.log("Error creando tabla resenas:", error);
-    }
-});
-
-const fs = require('fs');
-const logPath = path.join(__dirname, 'carrito.log');
+require("dotenv").config();
 
 const alterTableRol = `
 ALTER TABLE usuarios 
@@ -78,32 +15,26 @@ conexion.query(alterTableRol, (error) => {
         console.log("Columna rol verificada/creada en tabla usuarios");
     }
 });
-// ==========================================
-// CONFIGURACIÓN DE MULTER (PERFILES Y PRODUCTOS)
-// ==========================================
+const storage = multer.diskStorage({
 
-// 1. Almacenamiento para Fotos de Perfil
-const storagePerfiles = multer.diskStorage({
     destination: (req, file, cb) => {
+
         cb(null, "uploads/perfiles");
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + "-" + file.originalname);
-    }
-});
-const upload = multer({ storage: storagePerfiles });
 
-// 2. Almacenamiento para Fotos de Productos 
-const storageProductos = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "uploads/productos");
     },
+
     filename: (req, file, cb) => {
-        cb(null, Date.now() + "-" + file.originalname);
+
+        const nombreArchivo =
+        Date.now() + "-" + file.originalname;
+
+        cb(null, nombreArchivo);
+
     }
+
 });
-const uploadProducto = multer({ storage: storageProductos });
-//////////////////////////////////////////
+
+const upload = multer({ storage });
 app.use(
     "/uploads",
     express.static("uploads")
@@ -311,7 +242,6 @@ app.post("/obtener-usuario", (req, res) => {
     });
 });
 
-// OBTENER TODOS LOS USUARIOS (Para el panel de administración)
 app.get("/obtener-usuarios", (req, res) => {
     const sql = `
         SELECT id, nombre, apellido, correo, rol
@@ -322,18 +252,20 @@ app.get("/obtener-usuarios", (req, res) => {
     conexion.query(sql, (error, resultado) => {
         if (error) {
             console.log(error);
+
             return res.status(500).json({
                 success: false,
                 message: "Error obteniendo usuarios"
             });
         }
 
-        return res.json({
+        res.json({
             success: true,
-            usuarios: resultado || []
+            usuarios: resultado
         });
     });
 });
+
 
 
 app.post("/crear-pago", async (req, res) => {
@@ -422,7 +354,7 @@ app.get("/admin/ganancias", (req, res) => {
     });
 });
 
-// AGREGAR RESEÑA
+// AGREGAR RESEÃ‘A
 app.post("/agregar-resena", (req, res) => {
 
     const {
@@ -475,14 +407,14 @@ app.post("/agregar-resena", (req, res) => {
 
                 return res.status(500).json({
                     success: false,
-                    message: "Error guardando resena"
+                    message: "Error guardando reseÃ±a"
                 });
 
             }
 
             res.json({
                 success: true,
-                message: "Resena guardada correctamente"
+                message: "ReseÃ±a guardada correctamente"
             });
 
         }
@@ -607,7 +539,7 @@ app.post("/guardar-compra", (req, res) => {
         return res.json({
 
             success: false,
-            message: "Carrito vaci­o"
+            message: "Carrito vacÃ­o"
 
         });
 
@@ -672,7 +604,7 @@ app.post("/guardar-compra", (req, res) => {
                     [
 
                         ventaId,
-                        producto.producto_id || null,
+                        producto.id,
                         producto.precio,
                         producto.cantidad,
                         subtotal
@@ -901,46 +833,37 @@ app.get("/obtener-productos", (req, res) => {
     });
 });
 
-
-// AGREGAR PRODUCTO (Actualizada para recibir imagen y descripción)
-app.post("/agregar-producto", uploadProducto.single("imagen"), (req, res) => {
-    // Los textos llegan en req.body
-    const { nombre, precio, stock, descripcion, categoria_id, estado } = req.body;
-    
-    // Multer guarda el archivo en req.file si el usuario subió una foto
-    const imagen = req.file ? `uploads/productos/${req.file.filename}` : null;
+// AGREGAR PRODUCTO
+app.post("/agregar-producto", (req, res) => {
+    const { nombre, precio, stock } = req.body;
 
     if (!nombre || !precio || stock === undefined) {
         return res.status(400).json({
             success: false,
-            message: "Faltan datos obligatorios"
+            message: "Faltan datos"
         });
     }
 
     const sql = `
-        INSERT INTO productos (nombre, precio, stock, imagen, descripcion, categoria_id, estado)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO productos (nombre, precio, stock)
+        VALUES (?, ?, ?)
     `;
 
-    conexion.query(
-        sql, 
-        [nombre, precio, stock, imagen, descripcion || null, categoria_id || null, estado || null], 
-        (error, resultado) => {
-            if (error) {
-                console.log(error);
-                return res.status(500).json({
-                    success: false,
-                    message: "Error al agregar producto"
-                });
-            }
-
-            res.json({
-                success: true,
-                message: "Producto agregado exitosamente",
-                id: resultado.insertId
+    conexion.query(sql, [nombre, precio, stock], (error, resultado) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({
+                success: false,
+                message: "Error al agregar producto"
             });
         }
-    );
+
+        res.json({
+            success: true,
+            message: "Producto agregado exitosamente",
+            id: resultado.insertId
+        });
+    });
 });
 
 // ACTUALIZAR PRODUCTO
@@ -977,25 +900,18 @@ app.put("/actualizar-producto/:id", (req, res) => {
     });
 });
 
-// ELIMINAR PRODUCTO POR ID
+// ELIMINAR PRODUCTO
 app.delete("/eliminar-producto/:id", (req, res) => {
     const { id } = req.params;
 
     const sql = "DELETE FROM productos WHERE id = ?";
 
-    conexion.query(sql, [id], (error, resultado) => {
+    conexion.query(sql, [id], (error) => {
         if (error) {
             console.log(error);
             return res.status(500).json({
                 success: false,
-                message: "Error al eliminar el producto"
-            });
-        }
-
-        if (resultado.affectedRows === 0) {
-            return res.status(404).json({
-                success: false,
-                message: "Producto no encontrado"
+                message: "Error al eliminar producto"
             });
         }
 
@@ -1244,188 +1160,8 @@ app.delete("/carrito/:id", (req,res)=>{
     );
 
 });
-
-// =========================================================================
-// MÉTODOS DE PAGO (TARJETAS Y BILLETERAS DIGITALES)
-// =========================================================================
-
-// 1. Obtener métodos de pago vinculados a un correo
-app.get("/api/obtener-metodos", (req, res) => {
-    const { correo } = req.query;
-
-    if (!correo) {
-        return res.status(400).json({ success: false, message: "Correo requerido" });
-    }
-
-    const sql = "SELECT id, tipo, numero, expiracion FROM metodos_pago WHERE correo_usuario = ? ORDER BY id DESC";
-    conexion.query(sql, [correo], (error, resultados) => {
-        if (error) {
-            console.log("Error al obtener métodos de pago:", error);
-            return res.status(500).json({ success: false, message: "Error en el servidor" });
-        }
-        res.json({ success: true, tarjetas: resultados });
-    });
-});
-
-// 2. Insertar un nuevo método de pago (¡BLINDADO CONTRA DUPLICADOS Y TRIPLICADOS!)
-app.post("/api/guardar-metodo", (req, res) => {
-    const { correo, tipo, numero, titular, expiracion, cvv } = req.body;
-
-    console.log(`\n[Petición Recibida] Intentando guardar método para: ${correo} - Número: ${numero}`);
-
-    // Validación básica de campos vacíos
-    if (!correo || !tipo || !numero) {
-        console.log("❌ Rechazado: Faltan datos obligatorios");
-        return res.status(400).json({ success: false, message: "Datos obligatorios incompletos" });
-    }
-
-    // Limpiar espacios en blanco por si el frontend los envía con espacios
-    const numeroLimpio = String(numero).replace(/\s+/g, '');
-    const correoLimpio = String(correo).trim();
-
-    // Normalizar campos opcionales
-    const titularFinal = titular ? titular.trim() : "Billetera Digital";
-    const expiracionFinal = expiracion ? expiracion.trim() : "N/A";
-    const cvvFinal = cvv ? cvv.trim() : "000";
-
-    // PASO 1: Verificar en la BD si YA EXISTE ese número de tarjeta para ese correo
-    const sqlVerificar = "SELECT id FROM metodos_pago WHERE correo_usuario = ? AND numero = ?";
-    
-    conexion.query(sqlVerificar, [correoLimpio, numeroLimpio], (errorVerificar, filas) => {
-        if (errorVerificar) {
-            console.log("❌ Error en la verificación de duplicados:", errorVerificar);
-            return res.status(500).json({ success: false, message: "Error interno del servidor" });
-        }
-
-        // Si la consulta arroja resultados, significa que la ráfaga intentó meter la misma tarjeta
-        if (filas.length > 0) {
-            console.log(`⚠️ Clonación bloqueada: El método ${numeroLimpio} ya existía para ${correoLimpio}.`);
-            // Retornamos un 200 o 400 pero frenamos el proceso para que el frontend no rompa
-            return res.status(400).json({ 
-                success: false, 
-                message: "Este método de pago ya se encuentra registrado." 
-            });
-        }
-
-        // PASO 2: Si está limpio, procedemos con la inserción segura
-        const sqlInsertar = `
-            INSERT INTO metodos_pago (correo_usuario, tipo, numero, titular, expiracion, cvv) 
-            VALUES (?, ?, ?, ?, ?, ?)
-        `;
-
-        conexion.query(
-            sqlInsertar, 
-            [correoLimpio, tipo, numeroLimpio, titularFinal, expiracionFinal, cvvFinal], 
-            (errorInsertar, resultado) => {
-                if (errorInsertar) {
-                    console.log("❌ Error al insertar en la base de datos:", errorInsertar);
-                    return res.status(500).json({ success: false, message: "No se pudo registrar en la base de datos" });
-                }
-                
-                console.log(`✅ Éxito: Método guardado correctamente con ID: ${resultado.insertId}`);
-                return res.json({ 
-                    success: true, 
-                    message: "Método de pago guardado exitosamente", 
-                    id: resultado.insertId 
-                });
-            }
-        );
-    });
-});
-
-// 3. Eliminar un método de pago por su ID
-app.delete("/api/eliminar-metodo/:id", (req, res) => {
-    const { id } = req.params;
-
-    const sql = "DELETE FROM metodos_pago WHERE id = ?";
-    conexion.query(sql, [id], (error) => {
-        if (error) {
-            console.log("Error al eliminar método de pago:", error);
-            return res.status(500).json({ success: false, message: "Error al eliminar de la base de datos" });
-        }
-        res.json({ success: true, message: "Método de pago eliminado de forma correcta" });
-    });
-});
-
-
-// AL FINAL DE TU ARCHIVO ASEGÚRATE DE QUE ESTÉ EL ESCUCHADOR DEL PUERTO
 app.listen(3000, () => {
-    console.log("Servidor corriendo en el puerto 3000");
+    console.log(
+        "Servidor corriendo en puerto 3000"
+    );
 });
-
-// ==========================================
-// CRUD REAL DE PRODUCTOS (MAPEADO A TU TABLA)
-// ==========================================
-
-// 1. OBTENER TODOS LOS PRODUCTOS
-app.get("/api/obtener-productos", (req, res) => {
-    const sql = "SELECT * FROM productos ORDER BY id DESC";
-    conexion.query(sql, (error, resultado) => {
-        if (error) {
-            console.error("Error al traer productos:", error);
-            return res.status(500).json({ success: false, message: "Error al traer productos" });
-        }
-        res.json({ success: true, productos: resultado });
-    });
-});
-
-// 2. CREAR UN PRODUCTO NUEVO (CON TU ESTRUCTURA)
-app.post("/api/guardar-producto", uploadProducto.single("imagen"), (req, res) => {
-    const { nombre, precio, stock, descripcion } = req.body;
-    // Si subieron foto guardamos la ruta, si no, dejamos null o una por defecto
-    const imagenRuta = req.file ? `/uploads/productos/${req.file.filename}` : null;
-    
-    // Asignamos valores por defecto para los campos que tiene tu tabla pero no el formulario
-    const categoria_id = 1; 
-    const estado = 'Activo';
-
-    const sql = `
-        INSERT INTO productos (nombre, precio, imagen, descripcion, stock, categoria_id, estado) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    `;
-    
-    conexion.query(sql, [nombre, precio, imagenRuta, descripcion, stock, categoria_id, estado], (error, resultado) => {
-        if (error) {
-            console.error("Error al insertar en la BD:", error);
-            return res.status(500).json({ success: false, message: "Error al guardar en la base de datos" });
-        }
-        res.json({ success: true, message: "¡Producto creado con éxito!", id: resultado.insertId });
-    });
-});
-
-// 3. EDITAR UN PRODUCTO EXISTENTE
-app.put("/api/actualizar-producto/:id", uploadProducto.single("imagen"), (req, res) => {
-    const { id } = req.params;
-    const { nombre, precio, stock, descripcion } = req.body;
-    
-    let sql = "UPDATE productos SET nombre = ?, precio = ?, stock = ?, descripcion = ? WHERE id = ?";
-    let parametros = [nombre, precio, stock, descripcion, id];
-
-    // Si el administrador subió una foto nueva al editar, cambiamos el campo 'imagen'
-    if (req.file) {
-        sql = "UPDATE productos SET nombre = ?, precio = ?, stock = ?, descripcion = ?, imagen = ? WHERE id = ?";
-        parametros = [nombre, precio, stock, descripcion, `/uploads/productos/${req.file.filename}`, id];
-    }
-
-    conexion.query(sql, parametros, (error) => {
-        if (error) {
-            console.error("Error al actualizar la BD:", error);
-            return res.status(500).json({ success: false, message: "Error al actualizar el producto" });
-        }
-        res.json({ success: true, message: "¡Producto actualizado con éxito!" });
-    });
-});
-
-// 4. ELIMINAR UN PRODUCTO
-app.delete("/api/eliminar-producto/:id", (req, res) => {
-    const { id } = req.params;
-    const sql = "DELETE FROM productos WHERE id = ?";
-    conexion.query(sql, [id], (error) => {
-        if (error) {
-            console.error("Error al eliminar de la BD:", error);
-            return res.status(500).json({ success: false, message: "Error al eliminar el producto" });
-        }
-        res.json({ success: true, message: "Producto eliminado correctamente" });
-    });
-});
-// ==========================================
