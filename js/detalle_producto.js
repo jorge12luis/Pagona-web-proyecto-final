@@ -263,7 +263,7 @@ window.agregarResena = async function(){
 
                 body:JSON.stringify({
 
-                    producto_id: productoId,
+                    producto_id: producto.id,
 
                     usuario_correo: usuario.correo,
 
@@ -313,7 +313,7 @@ async function cargarResenas(){
     try{
 
         const respuesta = await fetch(
-            `http://localhost:3000/obtener-resenas/${productoId}`
+            `http://localhost:3000/obtener-resenas/${producto.id}`
         );
 
         const data =
