@@ -36,5 +36,3 @@
 2026-06-06T19:55:56.884Z Carrito insertado id: 46
 2026-06-06T19:56:28.323Z Insertando en carrito: {"usuario_id":5,"producto_id":3,"color":"Rosado","cantidad":1}
 2026-06-06T19:56:28.326Z Carrito insertado id: 47
-2026-06-07T21:57:04.888Z Insertando en carrito: {"usuario_id":5,"producto_id":4,"color":"Rosado","cantidad":1}
-2026-06-07T21:57:04.965Z Carrito insertado id: 1

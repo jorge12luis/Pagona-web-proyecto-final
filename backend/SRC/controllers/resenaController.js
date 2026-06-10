@@ -1,3 +1,5 @@
+const conexion = require("../config/database.js");
+
 exports.agregar_resena = (req, res) => {
 
     const {

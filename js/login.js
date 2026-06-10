@@ -28,7 +28,7 @@ formulario.addEventListener("submit", async (e) => {
 
         const data = await respuesta.json();
 
-        console.log(data);
+localStorage.setItem("usuarioData", JSON.stringify(data.usuario));
 
         if(data.success){
 
