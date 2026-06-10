@@ -17,10 +17,21 @@ async function cargarProducto() {
         producto = data.producto;
         window.producto = producto;
 
-const rutaImagen = producto.imagen?.startsWith("../") 
-    ? producto.imagen 
-    : `../${producto.imagen}`;
-document.getElementById("productoImagen").src = rutaImagen || "../img/bolso10.jpg";        document.getElementById("productoImagen").alt = producto.nombre;
+        const rutaImagen = producto.imagen?.startsWith("../")
+            ? producto.imagen
+            : `../${producto.imagen}`;
+
+        // Mostrar imagen de Negro solo si el producto tiene colores en la BD
+        if (producto.colores &&
+            window.imagenesProductos &&
+            window.imagenesProductos[producto.nombre] &&
+            window.imagenesProductos[producto.nombre]["Negro"]) {
+            document.getElementById("productoImagen").src = window.imagenesProductos[producto.nombre]["Negro"];
+        } else {
+            document.getElementById("productoImagen").src = rutaImagen || "../img/bolso10.jpg";
+        }
+
+        document.getElementById("productoImagen").alt = producto.nombre;
         document.getElementById("productoTitulo").textContent = producto.nombre;
         document.getElementById("productoDescripcion").textContent = producto.descripcion || "";
         document.getElementById("productoPrecio").textContent = `$${Number(producto.precio).toLocaleString("es-CO")}`;
@@ -34,6 +45,18 @@ document.getElementById("productoImagen").src = rutaImagen || "../img/bolso10.jp
             botonComprar.textContent = "Agotado";
             botonComprar.style.opacity = "0.6";
             botonComprar.style.cursor = "not-allowed";
+        }
+
+        // Manejo de colores
+        const selectorColor = document.querySelector(".selector-color");
+        if (!producto.colores) {
+            selectorColor.style.display = "none";
+        } else {
+            selectorColor.style.display = "block";
+            const coloresDisponibles = producto.colores.split(",").map(c => c.trim());
+            document.querySelectorAll(".color").forEach(span => {
+                span.style.display = coloresDisponibles.includes(span.dataset.color) ? "inline-block" : "none";
+            });
         }
 
         cargarResenas();
@@ -58,166 +81,87 @@ cargarProducto();
 
 let calificacionSeleccionada = 0;
 
-window.seleccionarEstrella = function(valor){
-
+window.seleccionarEstrella = function(valor) {
     calificacionSeleccionada = valor;
-
-    const estrellas =
-    document.querySelectorAll(".estrellas span");
-
-    estrellas.forEach((estrella,index)=>{
-
-        estrella.style.opacity =
-        index < valor ? "1" : "0.3";
-
+    document.querySelectorAll(".estrellas span").forEach((estrella, index) => {
+        estrella.style.opacity = index < valor ? "1" : "0.3";
     });
+};
 
-}
+window.agregarResena = async function() {
+    const comentario = document.getElementById("comentario").value;
 
-window.agregarResena = async function(){
-
-    const comentario =
-    document.getElementById("comentario").value;
-
-    if(calificacionSeleccionada === 0){
-
+    if (calificacionSeleccionada === 0) {
         alert("Selecciona una calificación");
-
         return;
     }
 
-    if(comentario.trim() === ""){
-
+    if (comentario.trim() === "") {
         alert("Escribe una reseña");
-
         return;
     }
 
-    const usuario =
-    JSON.parse(localStorage.getItem("usuarioData"))
-    ||
-    JSON.parse(localStorage.getItem("usuario"));
+    const usuario = JSON.parse(localStorage.getItem("usuarioData")) || JSON.parse(localStorage.getItem("usuario"));
 
-    if(!usuario){
-
+    if (!usuario) {
         alert("Debes iniciar sesión");
-
         return;
     }
 
-    try{
+    try {
+        const respuesta = await fetch("http://localhost:3000/agregar-resena", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                producto_id: producto.id,
+                usuario_correo: usuario.correo,
+                usuario_nombre: usuario.nombre,
+                comentario: comentario,
+                calificacion: calificacionSeleccionada
+            })
+        });
 
-        const respuesta = await fetch(
-            "http://localhost:3000/agregar-resena",
-            {
-                method:"POST",
-
-                headers:{
-                    "Content-Type":"application/json"
-                },
-
-                body:JSON.stringify({
-
-                    producto_id: producto.id,
-
-                    usuario_correo: usuario.correo,
-
-                    usuario_nombre: usuario.nombre,
-
-                    comentario: comentario,
-
-                    calificacion: calificacionSeleccionada
-
-                })
-            }
-        );
-
-        const data =
-        await respuesta.json();
-
+        const data = await respuesta.json();
         alert(data.message);
 
-        document.getElementById(
-            "comentario"
-        ).value = "";
-
+        document.getElementById("comentario").value = "";
         calificacionSeleccionada = 0;
-
-        document
-        .querySelectorAll(".estrellas span")
-        .forEach(estrella => {
-
+        document.querySelectorAll(".estrellas span").forEach(estrella => {
             estrella.style.opacity = "1";
-
         });
 
         cargarResenas();
 
-    }catch(error){
-
+    } catch (error) {
         console.log(error);
-
         alert("Error guardando reseña");
-
     }
+};
 
-}
-
-async function cargarResenas(){
-
-    try{
-
-        const respuesta = await fetch(
-            `http://localhost:3000/obtener-resenas/${producto.id}`
-        );
-
-        const data =
-        await respuesta.json();
-
-        const lista =
-        document.getElementById("listaResenas");
-
+async function cargarResenas() {
+    try {
+        const respuesta = await fetch(`http://localhost:3000/obtener-resenas/${producto.id}`);
+        const data = await respuesta.json();
+        const lista = document.getElementById("listaResenas");
         lista.innerHTML = "";
 
-        if(!data.resenas) return;
+        if (!data.resenas) return;
 
-        data.resenas.forEach(resena=>{
-
+        data.resenas.forEach(resena => {
             lista.innerHTML += `
-
                 <div class="resena-item">
-
-                    <strong>
-                        ${resena.usuario_nombre}
-                    </strong>
-
-                    <p>
-                        ${"⭐".repeat(
-                            resena.calificacion
-                        )}
-                    </p>
-
-                    <p>
-                        ${resena.comentario}
-                    </p>
-
+                    <strong>${resena.usuario_nombre}</strong>
+                    <p>${"⭐".repeat(resena.calificacion)}</p>
+                    <p>${resena.comentario}</p>
                     <hr>
-
                 </div>
-
             `;
-
         });
 
-    }catch(error){
-
+    } catch (error) {
         console.log(error);
-
     }
-
 }
 
-
-// Exponer variables al ámbito global para que scripts inline las puedan usar
 window.producto = producto;
-window.productoId = productoId;
+window.productoId = productoSlug;

@@ -1,3 +1,4 @@
+const conexion = require("../config/database.js");
 
 exports.miscompras_usuarioId = (req, res) => {
     const usuarioId = req.params.usuarioId;

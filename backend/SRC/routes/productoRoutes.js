@@ -2,8 +2,6 @@ const express = require("express");
 const router = express.Router();
 
 const productoController = require("../controllers/productoController.js");
-console.log("Funciones", Object.keys(productoController)); // 👈 agrega esto
-
 
 router.get("/obtener-productos" , productoController.obtenerproductos);
 
