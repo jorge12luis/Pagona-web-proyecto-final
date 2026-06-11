@@ -7,6 +7,7 @@ let productos = [];
 // 1. CARGAR PRODUCTOS DESDE EL SERVIDOR (REAL)
 async function cargarProductos() {
     try {
+        // CORREGIDO: Ajustado a tu endpoint real en backend
         const respuesta = await fetch(`${API_URL}/obtener-productos`);
         const data = await respuesta.json();
         
@@ -30,7 +31,7 @@ function renderProductos(){
 
     productos.forEach((producto, index) => {
         // Validar si trae imagen, de lo contrario poner una por defecto
-        const urlImagen = producto.imagen ? `${API_URL}/${producto.imagen}` : 'img/default-product.png';
+        const urlImagen = producto.imagen ? `${API_URL}${producto.imagen}` : 'img/default-product.png';
 
         tabla.innerHTML += `
         <tr>
@@ -69,7 +70,6 @@ function actualizarCards(){
     if(document.getElementById("totalProductos")) {
         document.getElementById("totalProductos").textContent = productos.length;
     }
-    // Nota: Los indicadores de usuarios se manejan desde tu admin.js original
 }
 
 // 4. CONTROL DE APERTURA DEL MODAL
@@ -91,41 +91,37 @@ async function guardarProducto(event) {
 
     const idExistente = document.getElementById("productoIndex").value;
     
-    // !!! DETALLE CLAVE !!!
-    // Como enviamos una IMAGEN (archivo), no podemos usar JSON.stringify.
-    // Debemos usar FormData de manera obligatoria para que Multer lo entienda en el backend.
     const formData = new FormData();
     formData.append("nombre", document.getElementById("prodNombre").value);
     formData.append("precio", document.getElementById("prodPrecio").value);
     formData.append("stock", document.getElementById("prodStock").value);
     formData.append("descripcion", document.getElementById("prodDescripcion").value);
     
-    // Capturar el archivo de la imagen si fue seleccionado
     const inputImagen = document.getElementById("prodImagen");
     if (inputImagen.files.length > 0) {
         formData.append("imagen", inputImagen.files[0]);
     }
 
     try {
-        let url = `${API_URL}/agregar-producto`;
+        // CORREGIDO: Ajustado a las rutas reales del backend de tu equipo
+        let url = `${API_URL}/agregarproductos`;
         let method = "POST";
 
-        // Si el idExistente no está vacío, significa que vas a editar
+        // Si idExistente contiene datos, disparamos la actualización
         if (idExistente !== "") {
-            url = `${API_URL}/editar-producto/${idExistente}`;
-            method = "PUT"; // O lo puedes manejar como gusten en su equipo
+            url = `${API_URL}/actualizar-producto/${idExistente}`;
+            method = "PUT"; 
         }
 
-        // Enviamos la petición
         const respuesta = await fetch(url, {
             method: method,
-            body: formData // NOTA: No agregues 'Content-Type', el navegador lo configura solo automáticamente al ver un FormData
+            body: formData 
         });
 
         const data = await respuesta.json();
 
         if (data.success) {
-            alert(data.message);
+            alert(data.message || "¡Operación realizada con éxito!");
             cerrarModal();
             cargarProductos(); // Recargamos la lista actualizada desde la BD
         } else {
@@ -134,7 +130,7 @@ async function guardarProducto(event) {
 
     } catch (error) {
         console.error("Error al guardar:", error);
-        alert("Error de conexión con el servidor");
+        alert("Error de conexión con el servidor al intentar guardar");
     }
 }
 
@@ -142,8 +138,7 @@ async function guardarProducto(event) {
 function editarProducto(index){
     const producto = productos[index];
 
-    // Llenamos el formulario con los datos de la BD
-    document.getElementById("productoIndex").value = producto.id; // Guardamos el ID real de la BD
+    document.getElementById("productoIndex").value = producto.id; 
     document.getElementById("prodNombre").value = producto.nombre;
     document.getElementById("prodPrecio").value = producto.precio;
     document.getElementById("prodStock").value = producto.stock;
@@ -160,15 +155,16 @@ async function eliminarProductoReal(id) {
     if (!confirmar) return;
 
     try {
-        const respuesta = await fetch(`${API_URL}/eliminar-producto/${id}`, {
+        // CORREGIDO: Ajustado a la ruta real de borrado del backend
+        const respuesta = await fetch(`${API_URL}/eliminarproducto/${id}`, {
             method: "DELETE"
         });
 
         const data = await respuesta.json();
 
         if (data.success) {
-            alert(data.message);
-            cargarProductos(); // Volver a consultar la BD para refrescar la tabla
+            alert(data.message || "Producto eliminado correctamente");
+            cargarProductos(); 
         } else {
             alert("No se pudo eliminar: " + data.message);
         }
