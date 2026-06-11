@@ -152,7 +152,7 @@
     <script src="../js/detalle_producto.js"></script>
     <script>
 
-let colorSeleccionado = "Rosado"; 
+let colorSeleccionado = "Negro"; 
 const imagenesProductos = {
 
     "Bolso Manhattan": {
@@ -180,7 +180,64 @@ const imagenesProductos = {
         Beige: "../img/noche-beige.jpg",
         Marrón: "../img/noche-marron.jpg",
         Rosado: "../img/noche-rosado.jpg"
-    }
+    },
+
+    "Bolso Noir": {
+    Negro: "../img/noir-negro.jpg",
+    Blanco: "../img/noir-blanco.jpg",
+    Beige: "../img/bolso11.jpg",
+    Marrón: "../img/noir-marron.jpg",
+    Rosado: "../img/noir-rosado.jpg"
+},
+"Bolso Aurora": {
+    Negro: "../img/aurora-negro.jpg",
+    Blanco: "../img/aurora-blanco.jpg",
+    Beige: "../img/aurora-beige.jpg",
+    Marrón: "../img/aurora-marron.jpg",
+    Rosado: "../img/aurora-rosado.jpg"
+},
+"Bolso Elegance": {
+    Negro: "../img/elegance-negro.jpg",
+    Blanco: "../img/elegance-blanco.jpg",
+    Beige: "../img/elegance-beige.jpg",
+    Marrón: "../img/elegance-marron.jpg",
+    Rosado: "../img/elegance-rosado.jpg"
+},
+"Bolso Soft Beige": {
+    Negro: "../img/softbeige-negro.jpg",
+    Blanco: "../img/softbeige-blanco.jpg",
+    Beige: "../img/softbeige-beige.jpg",
+    Marrón: "../img/softbeige-marron.jpg",
+    Rosado: "../img/softbeige-rosado.jpg"
+},
+"Golden Edition": {
+    Negro: "../img/golden-negro.jpg",
+    Blanco: "../img/golden-blanco.jpg",
+    Beige: "../img/golden-beige.jpg",
+    Marrón: "../img/golden-marron.jpg",
+    Rosado: "../img/golden-rosado.jpg"
+},
+"Black Luxe": {
+    Negro: "../img/blackluxe-negro.jpg",
+    Blanco: "../img/blackluxe-blanco.jpg",
+    Beige: "../img/blackluxe-beige.jpg",
+    Marrón: "../img/blackluxe-marron.jpg",
+    Rosado: "../img/blackluxe-rosado.jpg"
+},
+"Velvet Night": {
+    Negro: "../img/velvet-negro.jpg",
+    Blanco: "../img/velvet-blanco.jpg",
+    Beige: "../img/velvet-beige.jpg",
+    Marrón: "../img/velvet-marron.jpg",
+    Rosado: "../img/velvet-rosado.jpg"
+},
+"Ivory Luxe": {
+    Negro: "../img/ivory-negro.jpg",
+    Blanco: "../img/ivory-blanco.jpg",
+    Beige: "../img/ivory-beige.jpg",
+    Marrón: "../img/ivory-marron.jpg",
+    Rosado: "../img/ivory-rosado.jpg"
+}
 
 };
 
@@ -202,6 +259,8 @@ function seleccionarColor(elemento){
     document.getElementById("productoTitulo")
     .textContent
     .trim();
+     console.log("Nombre leído:", nombreProducto); // 👈
+    console.log("Existe en imagenesProductos:", !!imagenesProductos[nombreProducto]); // 👈
 
     const imagen =
     document.getElementById("productoImagen");
@@ -261,67 +320,54 @@ function comprarAhora() {
 </script>
 <script>
 
-async function agregarCarrito(){
+async function agregarCarrito() {
 
-    const usuario =
-    JSON.parse(localStorage.getItem("usuarioData"));
+    if (!producto) {
+        alert("Espera a que el producto cargue");
+        return;
+    }
 
-    if(!usuario){
+    const usuario = JSON.parse(localStorage.getItem("usuarioData"));
 
+    if (!usuario) {
         alert("Debes iniciar sesión");
         return;
     }
 
-    try{
-
+    try {
         const respuesta = await fetch(
             "http://localhost:3000/carrito",
             {
-                method:"POST",
-
-                headers:{
-                    "Content-Type":"application/json"
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
                 },
-
                 body: JSON.stringify({
-
                     usuario_id: usuario.id,
-
                     producto_id: producto.id,
-
                     color: colorSeleccionado,
-
                     cantidad: 1
-
                 })
             }
         );
+
         console.log("Status:", respuesta.status);
 
         const data = await respuesta.json();
 
-        if(data.success){
-
-            const mensaje =
-document.getElementById("mensajeCarrito");
-
-mensaje.style.display = "block";
-
-setTimeout(() => {
-
-    mensaje.style.display = "none";
-
-}, 3000);   
-
-        }else{
-
+        if (data.success) {
+            const mensaje = document.getElementById("mensajeCarrito");
+            mensaje.style.display = "block";
+            setTimeout(() => {
+                mensaje.style.display = "none";
+            }, 3000);
+        } else {
             alert(data.message);
         }
 
-    }catch(error){
+    } catch (error) {
         console.error("Error completo:", error);
         alert(error.message);
-
     }
 }
 </script>

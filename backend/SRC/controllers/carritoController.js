@@ -2,6 +2,8 @@ const conexion = require("../config/database.js");
 
 exports.obtenerCarritoPorUsuario = (req, res) => {
     const usuarioId = req.params.usuarioId;
+        console.log("usuarioId recibido:", usuarioId); // 👈 agrega esto
+
 
     if (!usuarioId) {
         return res.status(400).json({ success: false, message: "Falta el id de usuario" });

@@ -13,6 +13,7 @@ const productos = {
     },
 
     "mochila-urban": {
+        id: 3,
         title: "Mochila Urban",
         image: "../img/mochila.jpg",
         description: "Mochila práctica y con estilo, ideal para el día a día y viajes cortos.",
@@ -23,6 +24,7 @@ const productos = {
     },
 
     "cartera-noche": {
+        id: 3,
         title: "Cartera Noche",
         image: "../img/bolso2.webp",
         description: "Cartera de noche sofisticada con diseño minimalista y cierre seguro.",
@@ -33,6 +35,7 @@ const productos = {
     },
 
     "bolso-noir": {
+        id: 4,
         title: "Bolso Noir",
         image: "../img/bolso10.jpg",
         description: "Bolso exclusivo con líneas modernas y tejido premium.",
@@ -43,6 +46,7 @@ const productos = {
     },
 
     "bolso-aurora": {
+        id: 5,
         title: "Bolso Aurora",
         image: "../img/bolso10.jpg",
         description: "Diseño luminoso con detalles cuidados, pensado para looks frescos.",
@@ -53,6 +57,7 @@ const productos = {
     },
 
     "bolso-elegance": {
+        id: 6,
         title: "Bolso Elegance",
         image: "../img/bolso2.webp",
         description: "Diseño minimalista de líneas puras y materiales suaves.",
@@ -63,6 +68,7 @@ const productos = {
     },
 
     "bolso-soft-beige": {
+        id: 7,
         title: "Bolso Soft Beige",
         image: "../img/bolso6.webp",
         description: "Bolso con tonos suaves y un estilo natural que combina con todo.",
@@ -73,6 +79,7 @@ const productos = {
     },
 
     "golden-edition": {
+        id: 8,
         title: "Golden Edition",
         image: "../img/banner1.jpg",
         description: "Edición exclusiva con detalles dorados y acabado premium.",
@@ -83,6 +90,7 @@ const productos = {
     },
 
     "black-luxe": {
+        id: 9,
         title: "Black Luxe",
         image: "../img/bolso9.jpg",
         description: "Bolso de diseño oscuro y sofisticado para un estilo nocturno impecable.",
@@ -93,6 +101,7 @@ const productos = {
     },
 
     "velvet-night": {
+        id: 10,
         title: "Velvet Night",
         image: "../img/bolso10.jpg",
         description: "Bolso con textura aterciopelada y un acabado de lujo.",
@@ -103,6 +112,7 @@ const productos = {
     },
 
     "ivory-luxe": {
+        id: 11,
         title: "Ivory Luxe",
         image: "../img/bolso4.webp",
         description: "Bolso exclusivo en tonos marfil con estilo atemporal.",
@@ -114,82 +124,62 @@ const productos = {
 };
 
 const params = new URLSearchParams(window.location.search);
-
-const productoId = params.get("producto");
-
-const producto = productos[productoId];
-
+const productoSlug = params.get("producto");
 const botonComprar = document.querySelector(".btn-comprar");
 
-if (!producto) {
+let producto = null;
 
-    document.getElementById("productoTitulo").textContent =
-        "Producto no encontrado";
+async function cargarProducto() {
+    try {
+        const respuesta = await fetch(`http://localhost:3000/producto/${productoSlug}`);
+        const data = await respuesta.json();
 
-    document.getElementById("productoDescripcion").textContent =
-        "No se encontró la información de este producto. Regresa a la colección y selecciona otro.";
+        if (!data.success) {
+            mostrarProductoNoEncontrado();
+            return;
+        }
 
-    document.getElementById("productoImagen").src =
-        "../img/bolso10.jpg";
+        producto = data.producto;
+        window.producto = producto;
 
-    document.getElementById("productoImagen").alt =
-        "Producto no encontrado";
+const rutaImagen = producto.imagen?.startsWith("../") 
+    ? producto.imagen 
+    : `../${producto.imagen}`;
+document.getElementById("productoImagen").src = rutaImagen || "../img/bolso10.jpg";        document.getElementById("productoImagen").alt = producto.nombre;
+        document.getElementById("productoTitulo").textContent = producto.nombre;
+        document.getElementById("productoDescripcion").textContent = producto.descripcion || "";
+        document.getElementById("productoPrecio").textContent = `$${Number(producto.precio).toLocaleString("es-CO")}`;
+        document.getElementById("productoExtra").textContent = producto.estado || "";
+        document.getElementById("productoEstado").textContent = producto.estado || "";
+        document.getElementById("productoStock").textContent =
+            producto.stock > 0 ? `Stock disponible (${producto.stock})` : "Agotado";
 
-    document.getElementById("productoStock").textContent =
-        "No disponible";
+        if (producto.stock <= 0 && botonComprar) {
+            botonComprar.disabled = true;
+            botonComprar.textContent = "Agotado";
+            botonComprar.style.opacity = "0.6";
+            botonComprar.style.cursor = "not-allowed";
+        }
 
-    document.getElementById("productoEstado").textContent =
-        "No encontrado";
+        cargarResenas();
 
-    document.getElementById("productoPrecio").textContent =
-        "-";
-
-    document.getElementById("productoExtra").textContent =
-        "";
-
-} else {
-
-    document.getElementById("productoImagen").src =
-        producto.image;
-
-    document.getElementById("productoImagen").alt =
-        producto.title;
-
-    document.getElementById("productoEstado").textContent =
-        producto.label;
-
-    document.getElementById("productoTitulo").textContent =
-        producto.title;
-
-    document.getElementById("productoDescripcion").textContent =
-        producto.description;
-
-    document.getElementById("productoPrecio").textContent =
-        producto.price;
-
-    document.getElementById("productoExtra").textContent =
-        producto.extra;
-
-    document.getElementById("productoStock").textContent =
-        producto.stock > 0
-            ? `Stock disponible (${producto.stock})`
-            : "Agotado";
-
-    if (producto.stock <= 0 && botonComprar) {
-
-        botonComprar.disabled = true;
-
-        botonComprar.textContent = "Agotado";
-
-        botonComprar.style.opacity = "0.6";
-
-        botonComprar.style.cursor = "not-allowed";
+    } catch (error) {
+        console.log(error);
+        mostrarProductoNoEncontrado();
     }
 }
 
-// ====================
-// SISTEMA DE RESEÑAS
-// ====================
+function mostrarProductoNoEncontrado() {
+    document.getElementById("productoTitulo").textContent = "Producto no encontrado";
+    document.getElementById("productoDescripcion").textContent = "Regresa a la colección y selecciona otro.";
+    document.getElementById("productoImagen").src = "../img/bolso10.jpg";
+    document.getElementById("productoStock").textContent = "No disponible";
+    document.getElementById("productoEstado").textContent = "No encontrado";
+    document.getElementById("productoPrecio").textContent = "-";
+    document.getElementById("productoExtra").textContent = "";
+}
+
+cargarProducto();
 
 let calificacionSeleccionada = 0;
 
@@ -352,7 +342,6 @@ async function cargarResenas(){
 
 }
 
-cargarResenas();
 
 // Exponer variables al ámbito global para que scripts inline las puedan usar
 window.producto = producto;

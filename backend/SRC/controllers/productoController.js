@@ -1,3 +1,5 @@
+const conexion = require("../config/database.js");
+
 exports.obtenerproductos = (req, res) => {
     const sql = "SELECT * FROM productos";
 
@@ -149,4 +151,28 @@ exports.eliminarproducto_id = (req, res) => {
             message: "Producto eliminado exitosamente"
         });
     });
+};
+
+exports.obtenerProductoPorSlug = (req, res) => {
+    const { slug } = req.params;
+
+    conexion.query(
+        "SELECT * FROM productos WHERE slug = ?",
+        [slug],
+        (error, resultado) => {
+            if (error) return res.status(500).json({ success: false });
+            if (resultado.length === 0) return res.status(404).json({ success: false, message: "Producto no encontrado" });
+            res.json({ success: true, producto: resultado[0] });
+        }
+    );
+};
+
+exports.obtenerProductosConSlug = (req, res) => {
+    conexion.query(
+        "SELECT id, nombre, precio, imagen, descripcion, stock, slug, estado FROM productos",
+        (error, resultado) => {
+            if (error) return res.status(500).json({ success: false });
+            res.json({ success: true, productos: resultado });
+        }
+    );
 };
