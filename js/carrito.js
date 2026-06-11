@@ -181,3 +181,40 @@ async function eliminarProducto(indiceProducto) {
     carrito.splice(indiceProducto, 1);
     renderizarCarrito();
 }
+
+function agregarCarrito(){
+
+    const producto = {
+
+        nombre: document.getElementById("productoTitulo").textContent,
+
+        precio: parseInt(
+            document.getElementById("productoPrecio")
+            .textContent
+            .replace("$","")
+            .replace(/\./g,"")
+        ),
+
+        imagen: document.getElementById("productoImagen").src,
+
+        cantidad: 1
+    };
+
+    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+    const existe = carrito.find(item => item.nombre === producto.nombre);
+
+    if(existe){
+
+        existe.cantidad++;
+
+    }else{
+
+        carrito.push(producto);
+    }
+
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+
+    alert("Producto agregado al carrito");
+}
+

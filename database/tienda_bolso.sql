@@ -154,17 +154,20 @@ CREATE TABLE `recuperacion_codes` (
 
 
 CREATE TABLE `usuarios` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-  `nombre` varchar(100) NOT NULL,
-  `apellido` varchar(50) NOT NULL,
-  `correo` varchar(100) NOT NULL,
-  `contrasena` varchar(100) NOT NULL,
-  `rol` enum('admin','usuario') NOT NULL DEFAULT 'usuario',
-  `numero_telefono` char(10) NOT NULL,
-  `fecha_nacimiento` date NOT NULL,
-  `direccion` varchar(100) NOT NULL DEFAULT "No ingreso Direccion",
-  `imagen` varchar(255)
-);
+  `id` int(11) NOT NULL,
+  `nombre` varchar(100) DEFAULT NULL,
+  `apellido` varchar(50) DEFAULT NULL,
+  `correo` varchar(100) DEFAULT NULL,
+  `contrasena` varchar(100) DEFAULT NULL,
+  `rol` enum('admin','usuario') DEFAULT 'usuario',
+  `numero_telefono` char(10) DEFAULT NULL,
+  `fecha_nacimiento` date DEFAULT NULL,
+  `direccion` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
 
 INSERT INTO `usuarios` ( `nombre` , `apellido`, `correo`, `contrasena`, `rol`, `numero_telefono`, `fecha_nacimiento`, `direccion`) VALUES
 ('jorge', "Apellido", 'jorge@gmail', '123456', 'admin', '0000000000', '0000-00-00', "CALLE 30"),
@@ -177,31 +180,22 @@ CREATE TABLE `ventas` (
   `usuario_id` int(11) DEFAULT NULL,
   `total` decimal(10,2) DEFAULT NULL,
   `fecha` timestamp NOT NULL DEFAULT current_timestamp()
-)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE carrito (
+--
+-- Índices para tablas volcadas
+--
 
-    id INT AUTO_INCREMENT PRIMARY KEY,
+--
+-- Indices de la tabla `carrito`
+--
+ALTER TABLE `carrito`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `usuario_id` (`usuario_id`);
 
-    usuario_id INT NOT NULL,
-
-    producto_id INT NOT NULL,
-
-    color VARCHAR(50),
-
-    cantidad INT DEFAULT 1,
-
-    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
-
-    FOREIGN KEY (producto_id) REFERENCES productos(id)
-
-); ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;  
-
-
-
-
+--
+-- Indices de la tabla `categorias`
+--
 ALTER TABLE `categorias`
   ADD PRIMARY KEY (`id`);
 
@@ -379,6 +373,10 @@ ALTER TABLE `productos`
 ALTER TABLE `ventas`
   ADD CONSTRAINT `ventas_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
 COMMIT;
+
+ALTER TABLE usuarios
+ADD COLUMN imagen VARCHAR(255);
+
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

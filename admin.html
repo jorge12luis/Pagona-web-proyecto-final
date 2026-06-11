@@ -1,226 +1,78 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="/favicon_io (1)/favicon.ico">
-
-    <title>Dunaka Admin</title>
-
+    <title>Panel de Administración - DUNAKA</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
     <link rel="stylesheet" href="css/Style.css">
-
     <link rel="stylesheet" href="css/admin.css">
 </head>
-
 <body>
 
-<script>
-
-const rol = localStorage.getItem("rolUsuario");
-
-if(rol !== "admin"){
-
-    alert("No tienes permisos");
-
-    window.location.href = "index.html";
-}
-
-</script>
+    <script>
+        const rol = localStorage.getItem("rolUsuario");
+        if(rol !== "admin"){
+            alert("No tienes permisos");
+            window.location.href = "index.html";
+        }
+    </script>
 
 <div class="admin-container">
 
-    <!-- SIDEBAR -->
-
     <div class="sidebar">
-
         <h2>
             <i class="fa-solid fa-user-shield"></i>
             Admin
         </h2>
-
-        <a href="#" onclick="mostrarDashboard()">
-            <i class="fa-solid fa-chart-line"></i>
-            Dashboard
-        </a>
-
-        <a href="#" onclick="mostrarProductos()">
-            <i class="fa-solid fa-box"></i>
-            Productos
-        </a>
-
-        <a href="#" onclick="mostrarUsuarios()">
-            <i class="fa-solid fa-users"></i>
-            Usuarios
-        </a>
-
-        <a href="#" onclick="mostrarVentas()">
-            <i class="fa-solid fa-cart-shopping"></i>
-            Ventas
-        </a>
-
-        <a href="#" onclick="mostrarEstadisticas()">
-            <i class="fa-solid fa-chart-pie"></i>
-            Estadísticas
-        </a>
-
+        <a href="#"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="#"><i class="fa-solid fa-box"></i> Productos</a>
+        <a href="#"><i class="fa-solid fa-users"></i> Usuarios</a>
+        <a href="#"><i class="fa-solid fa-cart-shopping"></i> Ventas</a>
+        <a href="#"><i class="fa-solid fa-chart-pie"></i> Estadísticas</a>
         <a href="javascript:void(0)" onclick="cerrarSesion()">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            Cerrar sesión
+            <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
         </a>
-
     </div>
 
-    <!-- CONTENIDO -->
-
     <div class="main-content">
-
-        <h1>
-            Panel de Administración
-        </h1>
-
-        <p>
-            Bienvenido administrador de DUNAKA
-        </p>
-
-        <!-- CARDS -->
+        <h1>Panel de Administración</h1>
+        <p>Bienvenido administrador de DUNAKA</p>
 
         <div class="cards">
-
             <div class="card-admin">
-
                 <i class="fa-solid fa-box"></i>
-
-                <h3 id="totalProductos">
-                    0
-                </h3>
-
-                <p>
-                    Productos
-                </p>
-
+                <h3 id="totalProductos">0</h3>
+                <p>Productos</p>
             </div>
-
             <div class="card-admin">
-
                 <i class="fa-solid fa-users"></i>
-
-                <h3 id="totalUsuarios">
-                    0
-                </h3>
-
-                <p>
-                    Usuarios
-                </p>
-
+                <h3 id="totalUsuarios">3</h3>
+                <p>Usuarios</p>
             </div>
-
             <div class="card-admin">
-
                 <i class="fa-solid fa-cart-shopping"></i>
-
-                <h3 id="totalVentas">
-                    0
-                </h3>
-
-                <p>
-                    Ventas
-                </p>
-
+                <h3 id="totalVentas">0</h3>
+                <p>Ventas</p>
             </div>
-
             <div class="card-admin">
-
                 <i class="fa-solid fa-dollar-sign"></i>
-
-                <h3 id="ganancias">
-                    $0
-                </h3>
-
-                <p>
-                    Ganancias
-                </p>
-
-            </div>
-
-        </div>
-
-        <!-- DASHBOARD SECTION -->
-
-        <div id="dashboardSection" class="tabla">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h3>Resumen del Dashboard</h3>
-            </div>
-
-            <div class="row mb-4">
-                <div class="col-12 col-md-6 col-xl-3 mb-3">
-                    <div class="card-admin p-3">
-                        <h5>Ventas hoy</h5>
-                        <p id="totalVentasHoy">0</p>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-xl-3 mb-3">
-                    <div class="card-admin p-3">
-                        <h5>Ventas semana</h5>
-                        <p id="totalVentasSemana">0</p>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-xl-3 mb-3">
-                    <div class="card-admin p-3">
-                        <h5>Ventas mes</h5>
-                        <p id="totalVentasMes">0</p>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-xl-3 mb-3">
-                    <div class="card-admin p-3">
-                        <h5>Pedidos realizados</h5>
-                        <p id="totalPedidos">0</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row mb-4">
-                <div class="col-12 col-md-6 mb-3">
-                    <div class="card-admin p-3">
-                        <h5>Ingresos generados</h5>
-                        <p id="ingresosGenerados">$0</p>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 mb-3">
-                    <div class="card-admin p-3">
-                        <h5>Clientes registrados</h5>
-                        <p id="clientesRegistrados">0</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mb-4">
-                <h5>Productos más vendidos</h5>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Producto</th>
-                            <th>Cantidad vendida</th>
-                        </tr>
-                    </thead>
-                    <tbody id="productosMasVendidos"></tbody>
-                </table>
+                <h3 id="ganancias">$0</h3>
+                <p>Ganancias</p>
             </div>
         </div>
 
-        <!-- PRODUCTOS -->
-
-        <div id="productosSection" class="tabla" style="display: none;">
+        <div class="tabla">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h3>CRUD Productos</h3>
-                <button class="btn-admin" onclick="agregarProducto()">
-                    <i class="fa-solid fa-plus"></i>
-                    Agregar producto
+                <button class="btn-admin" onclick="abrirModal()">
+                    <i class="fa-solid fa-plus"></i> Agregar producto
                 </button>
             </div>
+
             <table class="table">
                 <thead>
                     <tr>
@@ -231,88 +83,57 @@ if(rol !== "admin"){
                         <th>Acciones</th>
                     </tr>
                 </thead>
-                <tbody id="tablaProductos"></tbody>
+                <tbody id="tablaProductos">
+                    </tbody>
             </table>
         </div>
-
-        <!-- USUARIOS -->
-
-        <div id="usuariosSection" class="tabla" style="display: none;">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h3>Usuarios</h3>
-            </div>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Correo</th>
-                        <th>Rol</th>
-                    </tr>
-                </thead>
-                <tbody id="tablaUsuarios"></tbody>
-            </table>
-        </div>
-
-        <!-- VENTAS -->
-
-        <div id="ventasSection" class="tabla" style="display: none;">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h3>Ventas</h3>
-            </div>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Usuario</th>
-                        <th>Total</th>
-                        <th>Estado</th>
-                        <th>Fecha</th>
-                    </tr>
-                </thead>
-                <tbody id="tablaVentas"></tbody>
-            </table>
-        </div>
-
-        <!-- ESTADÍSTICAS -->
-
-        <div id="estadisticasSection" class="tabla" style="display: none;">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h3>Estadísticas</h3>
-            </div>
-            <div class="row">
-                <div class="col-12 col-md-6 mb-3">
-                    <div class="card-admin p-3">
-                        <h5>Total de productos</h5>
-                        <p id="estadisticasProductos">0</p>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 mb-3">
-                    <div class="card-admin p-3">
-                        <h5>Total de usuarios</h5>
-                        <p id="estadisticasUsuarios">0</p>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 mb-3">
-                    <div class="card-admin p-3">
-                        <h5>Total de ventas</h5>
-                        <p id="estadisticasVentas">0</p>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 mb-3">
-                    <div class="card-admin p-3">
-                        <h5>Ganancias</h5>
-                        <p id="estadisticasGanancias">$0</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
-
 </div>
 
-<script src="js/admin1.js"></script>
+<div id="modalProducto" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitulo"><i class="fa-solid fa-box-open"></i> Agregar Nuevo Producto</h3>
+            <button class="close-btn" onclick="cerrarModal()">&times;</button>
+        </div>
+        
+        <form id="formProducto" onsubmit="guardarProducto(event)">
+            <input type="hidden" id="productoIndex" value="">
 
+            <div class="form-group">
+                <label>Nombre del Producto</label>
+                <input type="text" id="prodNombre" class="form-input" placeholder="Ej. Bolso Manhattan" required>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Precio ($)</label>
+                    <input type="number" id="prodPrecio" class="form-input" value="0" required>
+                </div>
+                <div class="form-group">
+                    <label>Stock Inicial</label>
+                    <input type="number" id="prodStock" class="form-input" value="0" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Descripción / Material</label>
+                <textarea id="prodDescripcion" class="form-input" rows="3" placeholder="Detalles del material, tamaño, etc."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Imagen del Producto</label>
+                <input type="file" id="prodImagen" class="form-input" accept="image/*">
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+                <button type="submit" class="btn-guardar" id="btnGuardarTexto">Guardar Producto</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+    <script src="js/admin1.js"></script>
 </body>
 </html>

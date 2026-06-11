@@ -34,9 +34,14 @@ exports.productos = (req, res) => {
     });
 };
 
+// =========================================================================
+// CORREGIDO: AGREGAR PRODUCTO CON SOPORTE PARA IMÁGENES Y TODAS LAS COLUMNAS
+// =========================================================================
 exports.agregarproductos = (req, res) => {
-    const { nombre, precio, stock } = req.body;
+    // Los campos de texto vienen en req.body
+    const { nombre, precio, stock, descripcion, categoria_id, estado } = req.body;
 
+    // Validación básica original respetada
     if (!nombre || !precio || stock === undefined) {
         return res.status(400).json({
             success: false,
@@ -44,14 +49,32 @@ exports.agregarproductos = (req, res) => {
         });
     }
 
+    // Capturamos el archivo procesado por Multer desde req.file
+    let imagenPath = null;
+    if (req.file) {
+        // Guarda la ruta pública relativa de la imagen para que el frontend la lea
+        imagenPath = `/uploads/productos/${req.file.filename}`;
+    }
+
+    // SQL completo con todas las columnas presentes en tu base de datos
     const sql = `
-        INSERT INTO productos (nombre, precio, stock)
-        VALUES (?, ?, ?)
+        INSERT INTO productos (nombre, precio, stock, imagen, descripcion, categoria_id, estado)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
 
-    conexion.query(sql, [nombre, precio, stock], (error, resultado) => {
+    const valores = [
+        nombre, 
+        precio, 
+        stock, 
+        imagenPath, 
+        descripcion || '', 
+        categoria_id || null, 
+        estado || 'activo'
+    ];
+
+    conexion.query(sql, valores, (error, resultado) => {
         if (error) {
-            console.log(error);
+            console.log("Error SQL al insertar producto:", error);
             return res.status(500).json({
                 success: false,
                 message: "Error al agregar producto"
@@ -66,9 +89,12 @@ exports.agregarproductos = (req, res) => {
     });
 };
 
+// =========================================================================
+// CORREGIDO: ACTUALIZAR PRODUCTOS CON SOPORTE PARA NUEVAS IMÁGENES
+// =========================================================================
 exports.agregarproductos_id = (req, res) => {
     const { id } = req.params;
-    const { nombre, precio, stock } = req.body;
+    const { nombre, precio, stock, descripcion, categoria_id, estado } = req.body;
 
     if (!nombre || !precio || stock === undefined) {
         return res.status(400).json({
@@ -77,13 +103,22 @@ exports.agregarproductos_id = (req, res) => {
         });
     }
 
-    const sql = `
+    // Construimos la actualización dinámica para respetar si suben o no una nueva foto
+    let sql = `
         UPDATE productos 
-        SET nombre = ?, precio = ?, stock = ?
-        WHERE id = ?
+        SET nombre = ?, precio = ?, stock = ?, descripcion = ?, categoria_id = ?, estado = ?
     `;
+    let valores = [nombre, precio, stock, descripcion || '', categoria_id || null, estado || 'activo'];
 
-    conexion.query(sql, [nombre, precio, stock, id], (error) => {
+    if (req.file) {
+        sql += `, imagen = ?`;
+        valores.push(`/uploads/productos/${req.file.filename}`);
+    }
+
+    sql += ` WHERE id = ?`;
+    valores.push(id);
+
+    conexion.query(sql, valores, (error) => {
         if (error) {
             console.log(error);
             return res.status(500).json({
@@ -101,7 +136,7 @@ exports.agregarproductos_id = (req, res) => {
 
 exports.actualizarproducto_id = (req, res) => {
     const { id } = req.params;
-    const { nombre, precio, stock } = req.body;
+    const { nombre, precio, stock, descripcion, categoria_id, estado } = req.body;
 
     if (!nombre || !precio || stock === undefined) {
         return res.status(400).json({
@@ -110,13 +145,21 @@ exports.actualizarproducto_id = (req, res) => {
         });
     }
 
-    const sql = `
+    let sql = `
         UPDATE productos 
-        SET nombre = ?, precio = ?, stock = ?
-        WHERE id = ?
+        SET nombre = ?, precio = ?, stock = ?, descripcion = ?, categoria_id = ?, estado = ?
     `;
+    let valores = [nombre, precio, stock, descripcion || '', categoria_id || null, estado || 'activo'];
 
-    conexion.query(sql, [nombre, precio, stock, id], (error) => {
+    if (req.file) {
+        sql += `, imagen = ?`;
+        valores.push(`/uploads/productos/${req.file.filename}`);
+    }
+
+    sql += ` WHERE id = ?`;
+    valores.push(id);
+
+    conexion.query(sql, valores, (error) => {
         if (error) {
             console.log(error);
             return res.status(500).json({

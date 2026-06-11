@@ -10,27 +10,102 @@
     <link rel="stylesheet"
     href="../css/Style.css">
 
-    <title>Información</title>
+    <link rel="stylesheet"
+    href="../css/preferencias.css">
+
+    <title>Preferencias</title>
 
 </head>
 
-<body>
+<body class="cuerpo">
 
-<div class="vista-simple">
+    <div class="preferencias-container">
 
-    <h1>Información personal</h1>
+        <h1>Preferencias</h1>
 
-    <p>
-        Administra tu información.
-    </p>
+        <p>
+            Personaliza tu experiencia dentro de Dunaka.
+        </p>
 
-    <a href="../perfil.html">
+        <!-- COMUNICACIÓN -->
+        <div class="seccion">
 
-        Volver al perfil
+            <h2>Comunicación</h2>
 
-    </a>
+            <label>
+                <input type="checkbox" id="promociones">
+                Recibir promociones y descuentos
+            </label>
 
-</div>
+            <label>
+                <input type="checkbox" id="novedades">
+                Recibir novedades de productos
+            </label>
+
+            <label>
+                <input type="checkbox" id="compras">
+                Alertas de compra
+            </label>
+
+            <label>
+                <input type="checkbox" id="envios">
+                Alertas de envío
+            </label>
+
+        </div>
+
+        <!-- EXPERIENCIA -->
+        <div class="seccion">
+
+            <h2>Experiencia de usuario</h2>
+
+            <label>
+                <input type="checkbox" id="recomendados">
+                Mostrar productos recomendados
+            </label>
+
+            <label>
+                <input type="checkbox" id="busquedas">
+                Recordar últimas búsquedas
+            </label>
+
+            <label>
+                <input type="checkbox" id="personalizacion">
+                Personalizar contenido
+            </label>
+
+        </div>
+
+        <!-- PRIVACIDAD -->
+        <div class="seccion">
+
+            <h2>Privacidad</h2>
+
+            <label>
+                <input type="checkbox" id="intereses">
+                Permitir personalización basada en preferencias
+            </label>
+
+            <label>
+                <input type="checkbox" id="contenido">
+                Mostrar contenido relacionado con intereses
+            </label>
+
+        </div>
+
+        <button class="btn-guardar">
+            Guardar preferencias
+        </button>
+
+        <p id="mensajePreferencias"></p>
+
+        <a href="../perfil.html" class="btn-volver">
+            Volver al perfil
+        </a>
+
+    </div>
+
+    <script src="../js/preferencias.js"></script>
 
 </body>
 </html>

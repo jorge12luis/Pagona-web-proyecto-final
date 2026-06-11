@@ -1,3 +1,128 @@
+
+const productos = {
+
+    "bolso-manhattan": {
+        id: 4,
+        title: "Bolso Manhattan",
+        image: "../img/bolso1.webp",
+        description: "Bolso de mano elegante con acabado en cuero sintético y herrajes dorados.",
+        price: "$120.000",
+        extra: "o 3 cuotas sin interés",
+        stock: 10,
+        label: "Bolsos"
+    },
+
+    "mochila-urban": {
+        id: 3,
+        title: "Mochila Urban",
+        image: "../img/mochila.jpg",
+        description: "Mochila práctica y con estilo, ideal para el día a día y viajes cortos.",
+        price: "$145.000",
+        extra: "Incluye garantía de calidad",
+        stock: 7,
+        label: "Mochilas"
+    },
+
+    "cartera-noche": {
+        id: 3,
+        title: "Cartera Noche",
+        image: "../img/bolso2.webp",
+        description: "Cartera de noche sofisticada con diseño minimalista y cierre seguro.",
+        price: "$150.000",
+        extra: "Perfecta para eventos especiales",
+        stock: 5,
+        label: "Carteras"
+    },
+
+    "bolso-noir": {
+        id: 4,
+        title: "Bolso Noir",
+        image: "../img/bolso10.jpg",
+        description: "Bolso exclusivo con líneas modernas y tejido premium.",
+        price: "$160.000",
+        extra: "Edición especial",
+        stock: 2,
+        label: "Edición limitada"
+    },
+
+    "bolso-aurora": {
+        id: 5,
+        title: "Bolso Aurora",
+        image: "../img/bolso10.jpg",
+        description: "Diseño luminoso con detalles cuidados, pensado para looks frescos.",
+        price: "$120.000",
+        extra: "Colección Primavera 2026",
+        stock: 8,
+        label: "Nuevas Colecciones"
+    },
+
+    "bolso-elegance": {
+        id: 6,
+        title: "Bolso Elegance",
+        image: "../img/bolso2.webp",
+        description: "Diseño minimalista de líneas puras y materiales suaves.",
+        price: "$145.000",
+        extra: "Look sofisticado",
+        stock: 6,
+        label: "Nuevas Colecciones"
+    },
+
+    "bolso-soft-beige": {
+        id: 7,
+        title: "Bolso Soft Beige",
+        image: "../img/bolso6.webp",
+        description: "Bolso con tonos suaves y un estilo natural que combina con todo.",
+        price: "$135.000",
+        extra: "Elegancia natural",
+        stock: 4,
+        label: "Nuevas Colecciones"
+    },
+
+    "golden-edition": {
+        id: 8,
+        title: "Golden Edition",
+        image: "../img/banner1.jpg",
+        description: "Edición exclusiva con detalles dorados y acabado premium.",
+        price: "$210.000",
+        extra: "Unidades limitadas",
+        stock: 1,
+        label: "Edición limitada"
+    },
+
+    "black-luxe": {
+        id: 9,
+        title: "Black Luxe",
+        image: "../img/bolso9.jpg",
+        description: "Bolso de diseño oscuro y sofisticado para un estilo nocturno impecable.",
+        price: "$250.000",
+        extra: "Diseño premium",
+        stock: 3,
+        label: "Edición limitada"
+    },
+
+    "velvet-night": {
+        id: 10,
+        title: "Velvet Night",
+        image: "../img/bolso10.jpg",
+        description: "Bolso con textura aterciopelada y un acabado de lujo.",
+        price: "$230.000",
+        extra: "Serie numerada",
+        stock: 0,
+        label: "Edición limitada"
+    },
+
+    "ivory-luxe": {
+        id: 11,
+        title: "Ivory Luxe",
+        image: "../img/bolso4.webp",
+        description: "Bolso exclusivo en tonos marfil con estilo atemporal.",
+        price: "$275.000",
+        extra: "Últimas unidades",
+        stock: 2,
+        label: "Edición limitada"
+    }
+};
+
 const params = new URLSearchParams(window.location.search);
 const productoSlug = params.get("producto");
 const botonComprar = document.querySelector(".btn-comprar");
