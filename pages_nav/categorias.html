@@ -53,22 +53,16 @@
 </section>
 
 <section class="filtros-categorias">
-
-    <button>Todas</button>
-
-    <button>Bolsos</button>
-
-    <button>Mochilas</button>
-
-    <button>Carteras</button>
-
-    <button>Edición limitada</button>
-
+    <button class="activo" onclick="filtrar('todas', this)">Todas</button>
+    <button onclick="filtrar('bolsos', this)">Bolsos</button>
+    <button onclick="filtrar('mochilas', this)">Mochilas</button>
+    <button onclick="filtrar('carteras', this)">Carteras</button>
+    <button onclick="filtrar('edicion-limitada', this)">Edición limitada</button>
 </section>
 
 <section class="contenedor-categorias">
 
-   <div class="categoria-card">
+   <div class="categoria-card" data-categoria="bolsos">
 
     <div class="favorito"
     onclick="agregarFavorito('bolso-manhattan')">
@@ -92,7 +86,7 @@
 
 </div>
 
-    <div class="categoria-card">
+    <div class="categoria-card"data-categoria="mochilas">
     
     <div class="favorito"
     onclick="agregarFavorito('mochila-urban')">
@@ -119,7 +113,7 @@
 
     </div>
 
-    <div class="categoria-card">
+    <div class="categoria-card" data-categoria="carteras">
         
     <div class="favorito"
     onclick="agregarFavorito('cartera-noche')">
@@ -146,7 +140,7 @@
 
     </div>
 
-    <div class="categoria-card">
+    <div class="categoria-card" data-categoria="edicion-limitada  ">
         
     <div class="favorito"
     onclick="agregarFavorito('edicion-limitada')">

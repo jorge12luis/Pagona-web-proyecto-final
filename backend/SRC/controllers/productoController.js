@@ -34,14 +34,9 @@ exports.productos = (req, res) => {
     });
 };
 
-// =========================================================================
-// CORREGIDO: AGREGAR PRODUCTO CON SOPORTE PARA IMÁGENES Y TODAS LAS COLUMNAS
-// =========================================================================
 exports.agregarproductos = (req, res) => {
-    // Los campos de texto vienen en req.body
     const { nombre, precio, stock, descripcion, categoria_id, estado } = req.body;
 
-    // Validación básica original respetada
     if (!nombre || !precio || stock === undefined) {
         return res.status(400).json({
             success: false,
@@ -49,26 +44,23 @@ exports.agregarproductos = (req, res) => {
         });
     }
 
-    // Capturamos el archivo procesado por Multer desde req.file
     let imagenPath = null;
     if (req.file) {
-        // Guarda la ruta pública relativa de la imagen para que el frontend la lea
         imagenPath = `/uploads/productos/${req.file.filename}`;
     }
 
-    // SQL completo con todas las columnas presentes en tu base de datos
     const sql = `
         INSERT INTO productos (nombre, precio, stock, imagen, descripcion, categoria_id, estado)
         VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
 
     const valores = [
-        nombre, 
-        precio, 
-        stock, 
-        imagenPath, 
-        descripcion || '', 
-        categoria_id || null, 
+        nombre,
+        precio,
+        stock,
+        imagenPath,
+        descripcion || '',
+        categoria_id || null,
         estado || 'activo'
     ];
 
@@ -89,9 +81,6 @@ exports.agregarproductos = (req, res) => {
     });
 };
 
-// =========================================================================
-// CORREGIDO: ACTUALIZAR PRODUCTOS CON SOPORTE PARA NUEVAS IMÁGENES
-// =========================================================================
 exports.agregarproductos_id = (req, res) => {
     const { id } = req.params;
     const { nombre, precio, stock, descripcion, categoria_id, estado } = req.body;
@@ -103,7 +92,6 @@ exports.agregarproductos_id = (req, res) => {
         });
     }
 
-    // Construimos la actualización dinámica para respetar si suben o no una nueva foto
     let sql = `
         UPDATE productos 
         SET nombre = ?, precio = ?, stock = ?, descripcion = ?, categoria_id = ?, estado = ?
@@ -211,11 +199,27 @@ exports.obtenerProductoPorSlug = (req, res) => {
 };
 
 exports.obtenerProductosConSlug = (req, res) => {
-    conexion.query(
-        "SELECT id, nombre, precio, imagen, descripcion, stock, slug, estado FROM productos",
-        (error, resultado) => {
-            if (error) return res.status(500).json({ success: false });
-            res.json({ success: true, productos: resultado });
+    const sql = `
+        SELECT 
+            p.id,
+            p.nombre,
+            p.precio,
+            p.imagen,
+            p.descripcion,
+            p.stock,
+            p.slug,
+            p.estado,
+            p.categoria_id,
+            c.nombre AS categoria_nombre
+        FROM productos p
+        LEFT JOIN categorias c ON p.categoria_id = c.id
+    `;
+
+    conexion.query(sql, (error, resultado) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({ success: false });
         }
-    );
+        res.json({ success: true, productos: resultado });
+    });
 };
