@@ -1,120 +1,63 @@
+document.addEventListener('DOMContentLoaded', function() {
+    // Intentar obtener sesión desde MySQL o Google
+    let usuarioData = localStorage.getItem('usuarioData');
+    let usuarioGoogle = localStorage.getItem('usuarioGoogle');
 
-document.addEventListener(
-    'DOMContentLoaded',
-    function() {
-
-    // MYSQL
-    let usuarioData =
-    localStorage.getItem('usuarioData');
-
-    // GOOGLE
-    let usuarioGoogle =
-    localStorage.getItem('usuarioGoogle');
-
-    // SI NO HAY NINGUNO
-    if(!usuarioData && !usuarioGoogle){
-
-        alert(
-            'Por favor inicia sesión primero'
-        );
-
-        window.location.href =
-        'login.html';
-
+    // SI NO HAY NINGUNA SESIÓN ACTIVA, MANDAR AL LOGIN
+    if (!usuarioData && !usuarioGoogle) {
+        alert('Por favor inicia sesión primero');
+        window.location.href = 'login.html';
         return;
     }
 
-    try{
-
+    try {
         let usuario;
 
-        // SI ES GOOGLE
-        if(usuarioGoogle){
-
-            usuario =
-            JSON.parse(usuarioGoogle);
-
-        }else{
-
-            usuario =
-            JSON.parse(usuarioData);
-
+        // Validar qué tipo de sesión está activa
+        if (usuarioGoogle) {
+            usuario = JSON.parse(usuarioGoogle);
+        } else {
+            usuario = JSON.parse(usuarioData);
         }
 
-        // NOMBRE
-        document.getElementById(
-            'nombreUsuario'
-        ).textContent =
-        usuario.nombre || 'Sin nombre';
+        // Pintar Nombre y Correo en la interfaz
+        document.getElementById('nombreUsuario').textContent = usuario.nombre || 'Sin nombre';
+        document.getElementById('correoUsuario').textContent = usuario.correo || 'Sin correo';
 
-        // CORREO
-        document.getElementById(
-            'correoUsuario'
-        ).textContent =
-        usuario.correo || 'Sin correo';
+        // Generar Iniciales del Avatar de manera dinámica
+        if (usuario.nombre) {
+            const iniciales = usuario.nombre
+                .trim()
+                .split(' ')
+                .map(palabra => palabra[0])
+                .join('')
+                .toUpperCase()
+                .substring(0, 2); // Tomar máximo 2 letras
+            
+            document.getElementById('avatarInicial').textContent = iniciales;
+        } else {
+            document.getElementById('avatarInicial').textContent = 'UN';
+        }
 
-        // INICIALES
-        const iniciales =
-        usuario.nombre
-        .split(' ')
-        .map(palabra => palabra[0])
-        .join('')
-        .toUpperCase();
-
-        document.getElementById(
-            'avatarInicial'
-        ).textContent =
-        iniciales;
-
-    }catch(error){
-
-        console.log(error);
-
-        document.getElementById(
-            'nombreUsuario'
-        ).textContent =
-        'Error al cargar';
-
+    } catch (error) {
+        console.error("Error al procesar los datos de sesión:", error);
+        document.getElementById('nombreUsuario').textContent = 'Error al cargar';
     }
-
 });
 
+// FUNCIÓN PARA CERRAR SESIÓN
+function cerrarSesion() {
+    const confirmar = confirm("¿Estás seguro que deseas cerrar sesión?");
+    if (confirmar) {
+        // Limpiar llaves de MySQL
+        localStorage.removeItem("usuarioData");
+        localStorage.removeItem("correoUsuario");
+        localStorage.removeItem("rolUsuario");
+        
+        // Limpiar llaves de Google
+        localStorage.removeItem("usuarioGoogle");
 
-// CERRAR SESIÓN
-function cerrarSesion(){
-
-    const confirmar = confirm(
-        "¿Estás seguro que deseas cerrar sesión?"
-    );
-
-    if(confirmar){
-
-        // MYSQL
-        localStorage.removeItem(
-            "usuarioData"
-        );
-
-        localStorage.removeItem(
-            "correoUsuario"
-        );
-
-        localStorage.removeItem(
-            "rolUsuario"
-        );
-
-        // GOOGLE
-        localStorage.removeItem(
-            "usuarioGoogle"
-        );
-
-        alert(
-            "Sesión cerrada correctamente"
-        );
-
-        window.location.href =
-        "login.html";
-
+        alert("Sesión cerrada correctamente");
+        window.location.href = "login.html";
     }
-
 }
-

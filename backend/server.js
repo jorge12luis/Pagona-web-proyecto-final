@@ -1,67 +1,26 @@
+require("dotenv").config();
+
 const express = require("express");
-const mysql = require("mysql2");
-const cors = require("cors");
-const nodemailer = require("nodemailer");
-const path = require("path");
-const axios = require("axios");
-const multer = require("multer");
-
-
+const cors = require('cors');
+const pagoRoutes = require('./SRC/routes/pagoRoutes');
 const app = express();
+const path = require('path');
 
-app.use(cors());
-app.use(express.json());
-app.use(express.static(path.join(__dirname, "..")));
+app.use(cors()); 
+app.use('/api', pagoRoutes);
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true }));
 
-const conexion = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "tienda_bolso"
-});
+app.use('/uploads', express.static(path.join(__dirname, 'SRC/uploads')));
 
-conexion.connect((error) => {
-    if (error) {
-        console.log(error);
-    } else {
-        console.log("MySQL conectado");
-    }
-});
+// Importar Base de Datos y Módulos
+const conexion = require("./SRC/config/database");
+const multer = require("multer");
+const nodemailer = require("nodemailer");
+const axios = require("axios");
+const fs = require("fs"); // Se añade de forma segura para evitar que la lógica de logs del carrito falle
 
-const createRecoveryTable = `
-CREATE TABLE IF NOT EXISTS recuperacion_codes (
-    correo VARCHAR(255) PRIMARY KEY,
-    codigo VARCHAR(10),
-    expiracion DATETIME
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-`;
-
-conexion.query(createRecoveryTable, (error) => {
-    if (error) {
-        console.log("Error creando tabla de recuperaciÃ³n:", error);
-    }
-});
-
-const createResenasTable = `
-CREATE TABLE IF NOT EXISTS resenas (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    producto_id INT NOT NULL,
-    usuario_nombre VARCHAR(150),
-    comentario TEXT,
-    calificacion INT,
-    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (producto_id) REFERENCES productos(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-`;
-
-conexion.query(createResenasTable, (error) => {
-    if (error) {
-        console.log("Error creando tabla resenas:", error);
-    }
-});
-
-const fs = require('fs');
-const logPath = path.join(__dirname, 'carrito.log');
+const logPath = "./carrito_logs.txt"; // Ruta requerida por tu endpoint de carrito
 
 const alterTableRol = `
 ALTER TABLE usuarios 
@@ -612,9 +571,7 @@ app.post("/guardar-compra", (req, res) => {
     
         INSERT INTO ventas
         (usuario_id, total, estado)
-
         VALUES (?, ?, ?)
-
     `;
 
     conexion.query(
@@ -646,7 +603,6 @@ app.post("/guardar-compra", (req, res) => {
                 producto.cantidad;
 
                 const sqlDetalle = `
-
                     INSERT INTO detalle_ventas
                     (
                         venta_id,
@@ -655,9 +611,7 @@ app.post("/guardar-compra", (req, res) => {
                         cantidad,
                         subtotal
                     )
-
                     VALUES (?, ?, ?, ?, ?)
-
                 `;
 
                 conexion.query(
@@ -742,23 +696,15 @@ app.get("/mis-compras/:usuarioId", (req, res) => {
         v.total,
         v.estado,
         v.fecha,
-
         dv.producto_id,
         p.nombre AS nombre,
         dv.precio,
         dv.cantidad,
         dv.subtotal
-
     FROM ventas v
-
-    LEFT JOIN detalle_ventas dv
-    ON dv.venta_id = v.id
-
-    LEFT JOIN productos p
-    ON p.id = dv.producto_id
-
+    LEFT JOIN detalle_ventas dv ON dv.venta_id = v.id
+    LEFT JOIN productos p ON p.id = dv.producto_id
     WHERE v.usuario_id = ?
-
     ORDER BY v.id DESC, dv.id ASC
 `;
 
@@ -839,7 +785,7 @@ app.post("/google-login", (req, res) => {
 console.log("RUTA GOOGLE CARGADA");
 
 
-// OBTENER RESEÃ‘AS
+// OBTENER RESEÑAS
 app.get(
     "/obtener-resenas/:productoId",
     (req, res) => {
@@ -1144,9 +1090,9 @@ app.post("/carrito", (req, res) => {
             }
 
             const sqlInsert = `INSERT INTO carrito (usuario_id, producto_id, color, cantidad) VALUES (?, ?, ?, ?)`;
-                const insertInfo = `Insertando en carrito: ${JSON.stringify({ usuario_id, producto_id, color, cantidad })}`;
-                console.log(insertInfo);
-                try{ fs.appendFileSync(logPath, new Date().toISOString() + ' ' + insertInfo + '\n'); }catch(e){console.log('Log write error', e.message);}            
+            const insertInfo = `Insertando en carrito: ${JSON.stringify({ usuario_id, producto_id, color, cantidad })}`;
+            console.log(insertInfo);
+            try{ fs.appendFileSync(logPath, new Date().toISOString() + ' ' + insertInfo + '\n'); }catch(e){console.log('Log write error', e.message);}            
 
             conexion.query(sqlInsert, [usuario_id, producto_id, color, cantidad || 1], (error, resultado) => {
                 if (error) {
@@ -1223,8 +1169,11 @@ app.delete("/carrito/:id", (req,res)=>{
     );
 
 });
+
+const appCentral = require("./SRC/app"); 
+
+app.use(appCentral);
+
 app.listen(3000, () => {
-    console.log(
-        "Servidor corriendo en puerto 3000"
-    );
+    console.log("🚀 Servidor corriendo de forma integrada y segura en el puerto 3000");
 });

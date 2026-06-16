@@ -124,82 +124,62 @@ const productos = {
 };
 
 const params = new URLSearchParams(window.location.search);
-
-const productoId = params.get("producto");
-
-const producto = productos[productoId];
-
+const productoSlug = params.get("producto");
 const botonComprar = document.querySelector(".btn-comprar");
 
-if (!producto) {
+let producto = null;
 
-    document.getElementById("productoTitulo").textContent =
-        "Producto no encontrado";
+async function cargarProducto() {
+    try {
+        const respuesta = await fetch(`http://localhost:3000/producto/${productoSlug}`);
+        const data = await respuesta.json();
 
-    document.getElementById("productoDescripcion").textContent =
-        "No se encontró la información de este producto. Regresa a la colección y selecciona otro.";
+        if (!data.success) {
+            mostrarProductoNoEncontrado();
+            return;
+        }
 
-    document.getElementById("productoImagen").src =
-        "../img/bolso10.jpg";
+        producto = data.producto;
+        window.producto = producto;
 
-    document.getElementById("productoImagen").alt =
-        "Producto no encontrado";
+const rutaImagen = producto.imagen?.startsWith("../") 
+    ? producto.imagen 
+    : `../${producto.imagen}`;
+document.getElementById("productoImagen").src = rutaImagen || "../img/bolso10.jpg";        document.getElementById("productoImagen").alt = producto.nombre;
+        document.getElementById("productoTitulo").textContent = producto.nombre;
+        document.getElementById("productoDescripcion").textContent = producto.descripcion || "";
+        document.getElementById("productoPrecio").textContent = `$${Number(producto.precio).toLocaleString("es-CO")}`;
+        document.getElementById("productoExtra").textContent = producto.estado || "";
+        document.getElementById("productoEstado").textContent = producto.estado || "";
+        document.getElementById("productoStock").textContent =
+            producto.stock > 0 ? `Stock disponible (${producto.stock})` : "Agotado";
 
-    document.getElementById("productoStock").textContent =
-        "No disponible";
+        if (producto.stock <= 0 && botonComprar) {
+            botonComprar.disabled = true;
+            botonComprar.textContent = "Agotado";
+            botonComprar.style.opacity = "0.6";
+            botonComprar.style.cursor = "not-allowed";
+        }
 
-    document.getElementById("productoEstado").textContent =
-        "No encontrado";
+        cargarResenas();
 
-    document.getElementById("productoPrecio").textContent =
-        "-";
-
-    document.getElementById("productoExtra").textContent =
-        "";
-
-} else {
-
-    document.getElementById("productoImagen").src =
-        producto.image;
-
-    document.getElementById("productoImagen").alt =
-        producto.title;
-
-    document.getElementById("productoEstado").textContent =
-        producto.label;
-
-    document.getElementById("productoTitulo").textContent =
-        producto.title;
-
-    document.getElementById("productoDescripcion").textContent =
-        producto.description;
-
-    document.getElementById("productoPrecio").textContent =
-        producto.price;
-
-    document.getElementById("productoExtra").textContent =
-        producto.extra;
-
-    document.getElementById("productoStock").textContent =
-        producto.stock > 0
-            ? `Stock disponible (${producto.stock})`
-            : "Agotado";
-
-    if (producto.stock <= 0 && botonComprar) {
-
-        botonComprar.disabled = true;
-
-        botonComprar.textContent = "Agotado";
-
-        botonComprar.style.opacity = "0.6";
-
-        botonComprar.style.cursor = "not-allowed";
+    } catch (error) {
+        console.log(error);
+        mostrarProductoNoEncontrado();
     }
 }
 
-// ====================
-// SISTEMA DE RESEÑAS
-// ====================
+function mostrarProductoNoEncontrado() {
+    document.getElementById("productoTitulo").textContent = "Producto no encontrado";
+    document.getElementById("productoDescripcion").textContent = "Regresa a la colección y selecciona otro.";
+    document.getElementById("productoImagen").src = "../img/bolso10.jpg";
+    document.getElementById("productoStock").textContent = "No disponible";
+    document.getElementById("productoEstado").textContent = "No encontrado";
+    document.getElementById("productoPrecio").textContent = "-";
+    document.getElementById("productoExtra").textContent = "";
+}
+
+cargarProducto();
 
 let calificacionSeleccionada = 0;
 
@@ -263,7 +243,7 @@ window.agregarResena = async function(){
 
                 body:JSON.stringify({
 
-                    producto_id: productoId,
+                    producto_id: producto.id,
 
                     usuario_correo: usuario.correo,
 
@@ -313,7 +293,7 @@ async function cargarResenas(){
     try{
 
         const respuesta = await fetch(
-            `http://localhost:3000/obtener-resenas/${productoId}`
+            `http://localhost:3000/obtener-resenas/${producto.id}`
         );
 
         const data =
@@ -362,7 +342,6 @@ async function cargarResenas(){
 
 }
 
-cargarResenas();
 
 // Exponer variables al ámbito global para que scripts inline las puedan usar
 window.producto = producto;

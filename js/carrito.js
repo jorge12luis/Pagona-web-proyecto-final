@@ -1,43 +1,23 @@
-// ===============================
-// VARIABLES GLOBALES
-// ===============================
-
-// Contenedor donde aparecerán los productos del carrito
 const contenedorCarrito = document.querySelector(".carrito-items");
-
-// Elemento HTML donde se mostrará el subtotal
 const subtotalHTML = document.querySelector(".fila span");
-
-// Elemento HTML donde se mostrará el total
 const totalHTML = document.querySelector(".total h4");
 
-
-// ===============================
-// CARGAR DATOS (LOCALSTORAGE O SERVIDOR)
-// ===============================
-
-// Variable principal del carrito
 let carrito = [];
 
-// Si el usuario está logueado, preferir cargar el carrito desde el servidor
 const usuarioData = JSON.parse(localStorage.getItem("usuarioData"));
 
 if (usuarioData && usuarioData.id) {
-    // Cargar desde backend
     fetch(`http://localhost:3000/carrito/${usuarioData.id}`)
         .then(res => res.json())
         .then(data => {
             console.log('GET /carrito response:', data);
-            // data debería ser un arreglo de items con propiedades: nombre, precio, imagen, cantidad
             if (Array.isArray(data)) {
                 carrito = data.map(item => {
-                    // Resolver ruta de imagen usando nombre + color cuando sea posible
                     let imagenUrl = '../img/bolso1.jpg';
                     const nombre = item.nombre ? String(item.nombre).trim() : '';
                     const nombreNorm = nombre.toLowerCase();
                     const color = item.color ? String(item.color).trim() : '';
 
-                    // normalizar color para formar nombres de archivo
                     function normColor(c) {
                         if (!c) return '';
                         const m = c.toLowerCase();
@@ -58,17 +38,26 @@ if (usuarioData && usuarioData.id) {
                             imagenUrl = `../img/urban-${colorNorm}.jpg`;
                         } else if (nombreNorm.includes('noche') || nombreNorm.includes('cartera')) {
                             imagenUrl = `../img/noche-${colorNorm}.jpg`;
+                        } else if (nombreNorm.includes('noir')) {
+                            imagenUrl = `../img/noir-${colorNorm}.jpg`;
+                        } else if (nombreNorm.includes('aurora')) {
+                            imagenUrl = `../img/aurora-${colorNorm}.jpg`;
+                        } else if (nombreNorm.includes('elegance')) {
+                            imagenUrl = `../img/elegance-${colorNorm}.jpg`;
+                        } else if (nombreNorm.includes('soft') || nombreNorm.includes('beige')) {
+                            imagenUrl = `../img/softbeige-${colorNorm}.jpg`;
+                        } else if (nombreNorm.includes('golden')) {
+                            imagenUrl = `../img/golden-${colorNorm}.jpg`;
+                        } else if (nombreNorm.includes('black') || nombreNorm.includes('luxe')) {
+                            imagenUrl = `../img/blackluxe-${colorNorm}.jpg`;
+                        } else if (nombreNorm.includes('velvet')) {
+                            imagenUrl = `../img/velvet-${colorNorm}.jpg`;
+                        } else if (nombreNorm.includes('ivory')) {
+                            imagenUrl = `../img/ivory-${colorNorm}.jpg`;
                         } else {
-                            // si no coincide con reglas, intentar usar la ruta que viene en DB
                             if (item.imagen) {
                                 const img = String(item.imagen || '').trim();
-                                if (img.startsWith('http') || img.startsWith('/')) {
-                                    imagenUrl = img;
-                                } else if (img.includes('img/')) {
-                                    imagenUrl = '../' + img;
-                                } else {
-                                    imagenUrl = '../img/' + img;
-                                }
+                                imagenUrl = img.includes('img/') ? '../' + img : '../img/' + img;
                             }
                         }
                     } else if (item.imagen) {
@@ -95,262 +84,101 @@ if (usuarioData && usuarioData.id) {
                 carrito = [];
             }
 
-            // Marcar que el carrito en localStorage (si existe) corresponde a este usuario
-            try{ localStorage.setItem('carritoOwner', usuarioData.id); }catch(e){}
+            try { localStorage.setItem('carritoOwner', usuarioData.id); } catch(e) {}
             renderizarCarrito();
         })
         .catch(err => {
             console.log('Error cargando carrito desde servidor:', err);
-            // fallback a localStorage
             const carritoGuardado = localStorage.getItem("carrito");
             carrito = carritoGuardado ? JSON.parse(carritoGuardado) : [];
             renderizarCarrito();
         });
 
 } else {
-    // Si hay un carrito asociado a un usuario previo en localStorage, eliminarlo
     const carritoOwner = localStorage.getItem('carritoOwner');
     if (carritoOwner) {
-        // El carrito guardado pertenece a un usuario; no mostrarlo a un invitado
         localStorage.removeItem('carrito');
         localStorage.removeItem('carritoOwner');
     }
+    try {
+        localStorage.removeItem('carrito');
+        localStorage.removeItem('carritoOwner');
+    } catch(e) {}
 
-        // Usuario no logueado: asegurar que el carrito esté vacío para invitados
-        try {
-            localStorage.removeItem('carrito');
-            localStorage.removeItem('carritoOwner');
-        } catch (e) {
-            console.log('Error clearing localStorage for guest:', e);
-        }
-
-        carrito = [];
-
-        // Mostrar inmediatamente el carrito vacío
-        renderizarCarrito();
-
-
+    carrito = [];
+    renderizarCarrito();
 }
 
 
-// ===============================
-// FUNCIÓN GUARDAR CARRITO
-// ===============================
-
-// Esta función guarda el carrito en localStorage
 function guardarCarrito() {
-
-    // Convertir arreglo a texto JSON
-    let carritoTexto = JSON.stringify(carrito);
-
-    // Guardar información
-    localStorage.setItem("carrito", carritoTexto);
+    localStorage.setItem("carrito", JSON.stringify(carrito));
 }
 
-
-// ===============================
-// FUNCIÓN FORMATEAR PRECIO
-// ===============================
-
-// Esta función recibe un número
-// y devuelve el precio con formato
 function formatearPrecio(precio) {
-
-    let precioFormateado = "$" + precio.toLocaleString();
-
-    return precioFormateado;
+    return "$" + precio.toLocaleString();
 }
 
-
-// ===============================
-// FUNCIÓN MOSTRAR CARRITO
-// ===============================
-
-// Esta función pinta todos los productos
 function renderizarCarrito() {
-
-    // Limpiar contenido anterior
     contenedorCarrito.innerHTML = "";
 
-    // ===============================
-    // VALIDAR SI EL CARRITO ESTÁ VACÍO
-    // ===============================
-
     if (carrito.length == 0) {
-
-        // Mostrar mensaje
-        contenedorCarrito.innerHTML = `
-            <h2 class="carrito-vacio">
-                Tu carrito está vacío
-            </h2>
-        `;
-
-        // Mostrar valores en 0
+        contenedorCarrito.innerHTML = `<h2 class="carrito-vacio">Tu carrito está vacío</h2>`;
         subtotalHTML.textContent = "$0";
         totalHTML.textContent = "$0";
-
-        // Salir de la función
         return;
     }
 
-    // ===============================
-    // VARIABLE PARA EL SUBTOTAL
-    // ===============================
-
     let subtotal = 0;
 
-    // ===============================
-    // RECORRER PRODUCTOS
-    // ===============================
-
-    // Ciclo for tradicional
     for (let i = 0; i < carrito.length; i++) {
-
-        // Obtener producto actual
         let producto = carrito[i];
-
-        // Obtener precio total del producto
         let totalProducto = producto.precio * producto.cantidad;
-
-        // Sumar al subtotal general
         subtotal = subtotal + totalProducto;
 
-        // Crear HTML del producto
         let productoHTML = `
-        
             <div class="item">
-
-                <!-- Imagen -->
-                <img src="${producto.imagen}">
-
+                <img src="${producto.imagen}" onerror="this.src='../img/bolso10.jpg'">
                 <div class="info">
-
-                    <!-- Nombre -->
                     <h3>${producto.nombre}</h3>
-
-                    <!-- Precio -->
+                    ${producto.color ? `<p style="color:#888;font-size:0.9em;">Color: ${producto.color}</p>` : ''}
                     <p>${formatearPrecio(producto.precio)}</p>
-
-                    <!-- Cantidad -->
                     <div class="cantidad">
-
-                        <!-- Botón disminuir -->
-                        <button onclick="disminuirCantidad(${i})">
-                            -
-                        </button>
-
-                        <!-- Cantidad actual -->
+                        <button onclick="disminuirCantidad(${i})">-</button>
                         <span>${producto.cantidad}</span>
-
-                        <!-- Botón aumentar -->
-                        <button onclick="aumentarCantidad(${i})">
-                            +
-                        </button>
-
+                        <button onclick="aumentarCantidad(${i})">+</button>
                     </div>
-
-                    <!-- Eliminar producto -->
-                    <a href="#"
-                       class="eliminar"
-                       onclick="eliminarProducto(${i})">
-
-                       Eliminar
-
-                    </a>
-
+                    <a href="#" class="eliminar" onclick="eliminarProducto(${i})">Eliminar</a>
                 </div>
-
             </div>
-
         `;
 
-        // Agregar HTML al contenedor
-        contenedorCarrito.innerHTML =
-            contenedorCarrito.innerHTML + productoHTML;
+        contenedorCarrito.innerHTML += productoHTML;
     }
 
-    // ===============================
-    // MOSTRAR TOTALES
-    // ===============================
-
     subtotalHTML.textContent = formatearPrecio(subtotal);
-
     totalHTML.textContent = formatearPrecio(subtotal);
 }
 
-
-// ===============================
-// FUNCIÓN AUMENTAR CANTIDAD
-// ===============================
-
 function aumentarCantidad(indiceProducto) {
-
-    // Obtener cantidad actual
-    let cantidadActual = carrito[indiceProducto].cantidad;
-
-    // Sumar 1
-    cantidadActual = cantidadActual + 1;
-
-    // Actualizar cantidad
-    carrito[indiceProducto].cantidad = cantidadActual;
-
-    // Guardar cambios
+    carrito[indiceProducto].cantidad++;
     guardarCarrito();
-
-    // Actualizar pantalla
     renderizarCarrito();
 }
-
-
-// ===============================
-// FUNCIÓN DISMINUIR CANTIDAD
-// ===============================
 
 function disminuirCantidad(indiceProducto) {
-
-    // Obtener cantidad actual
-    let cantidadActual = carrito[indiceProducto].cantidad;
-
-    // Verificar si es mayor a 1
-    if (cantidadActual > 1) {
-
-        // Restar 1
-        cantidadActual = cantidadActual - 1;
-
-        // Actualizar cantidad
-        carrito[indiceProducto].cantidad = cantidadActual;
-
+    if (carrito[indiceProducto].cantidad > 1) {
+        carrito[indiceProducto].cantidad--;
     } else {
-
-        // Eliminar producto del arreglo
         carrito.splice(indiceProducto, 1);
     }
-
-    // Guardar cambios
     guardarCarrito();
-
-    // Actualizar pantalla
     renderizarCarrito();
 }
 
-
-// ===============================
-// FUNCIÓN ELIMINAR PRODUCTO
-// ===============================
-
-async function eliminarProducto(indiceProducto){
-
+async function eliminarProducto(indiceProducto) {
     const item = carrito[indiceProducto];
-
-    await fetch(
-        `http://localhost:3000/carrito/${item.id}`,
-        {
-            method:"DELETE"
-        }
-    );
-
-    carrito.splice(indiceProducto,1);
-
+    await fetch(`http://localhost:3000/carrito/${item.id}`, { method: "DELETE" });
+    carrito.splice(indiceProducto, 1);
     renderizarCarrito();
 }
 

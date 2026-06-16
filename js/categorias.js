@@ -1,42 +1,36 @@
-// Esta función recibe el id del producto
-function agregarFavorito(idProducto) {
+async function cargarProductos() {
+    try {
+        const respuesta = await fetch("http://localhost:3000/productos-catalogo");
+        const data = await respuesta.json();
 
-    let favoritos = [];
+        if (!data.success) return;
 
-    let favoritosGuardados = localStorage.getItem("favoritos");
+        const contenedor = document.querySelector(".contenedor-categorias");
+        contenedor.innerHTML = "";
 
-    if (favoritosGuardados != null) {
+        data.productos.forEach(producto => {
+            const imagen = producto.imagen?.startsWith("../")
+                ? producto.imagen
+                : `../${producto.imagen}`;
 
-        favoritos = JSON.parse(favoritosGuardados);
+            contenedor.innerHTML += `
+                <div class="categoria-card">
+                    <div class="favorito" onclick="agregarFavorito('${producto.slug}')">❤️</div>
+                    <img src="${imagen}" alt="${producto.nombre}" onerror="this.src='../img/bolso10.jpg'">
+                    <div class="categoria-info">
+                        <h2>${producto.nombre}</h2>
+                        <p>Stock: ${producto.stock}</p>
+                        <a href="../page/detalle_producto.html?producto=${producto.slug}">
+                            Ver detalle <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            `;
+        });
 
-    } else {
-
-        favoritos = [];
-    }
-
-    let productoExiste = false;
-
-    // Recorrer favoritos
-    for (let i = 0; i < favoritos.length; i++) {
-
-        if (favoritos[i] == idProducto) {
-
-            productoExiste = true;
-        }
-    }
-
-    if (productoExiste == false) {
-
-        favoritos.push(idProducto);
-
-        let favoritosTexto = JSON.stringify(favoritos);
-
-        localStorage.setItem("favoritos", favoritosTexto);
-
-        alert("Producto agregado ❤️");
-
-    } else {
-
-        alert("Ya está en favoritos");
+    } catch (error) {
+        console.log("Error cargando productos:", error);
     }
 }
+
+cargarProductos();

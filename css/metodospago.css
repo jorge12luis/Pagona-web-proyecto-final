@@ -1,0 +1,112 @@
+.pago-main-content {
+    flex: 1;
+    background-color: #f8fafc;
+    padding: 50px 60px;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.header-pago-seccion { margin-bottom: 35px; }
+.pago-titulo { font-size: 26px; font-weight: 700; color: #0f172a; }
+.pago-sub { font-size: 15px; color: #64748b; }
+.seccion-subtitulo { font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; font-weight: 700; margin-bottom: 20px;}
+
+/* BOTONERA DE PESTAÑAS (TABS) */
+.selector-metodos {
+    display: flex;
+    background: #e2e8f0;
+    padding: 6px;
+    border-radius: 12px;
+    gap: 4px;
+}
+
+.tab-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 12px 10px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
+    border-radius: 8px;
+    transition: all 0.25s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.tab-btn:hover {
+    background: rgba(255, 255, 255, 0.5);
+    color: #1e293b;
+}
+
+.tab-btn.active {
+    background: #ffffff;
+    color: #4f46e5;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Indicador Nequi color */
+.dot-nequi {
+    width: 8px; height: 8px; background: #ff007f; border-radius: 50%; display: inline-block;
+}
+
+/* CONTROL DE VISIBILIDAD DE LOS PANELES */
+.pane-contenido {
+    display: none;
+}
+.pane-contenido.active {
+    display: block;
+    animation: fadeInUp 0.4s ease forwards;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* TARJETA VIRTUAL INTERACTIVA */
+.tarjeta-virtual {
+    background: linear-gradient(135deg, #1e1b4b, #312e81);
+    color: #ffffff;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 15px 30px rgba(49, 46, 129, 0.25);
+    min-height: 190px;
+    transition: all 0.4s ease;
+}
+
+/* Contenedor Formularios */
+.form-pago-container {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    padding: 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.02);
+}
+
+.form-pago-container .form-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #475569; font-weight: 700; margin-bottom: 6px; }
+.form-pago-container .form-control, .form-pago-container .form-select { border: 1px solid #cbd5e1; padding: 12px; font-size: 14px; border-radius: 8px; }
+.form-pago-container .form-control:focus, .form-pago-container .form-select:focus { border-color: #4f46e5; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12); }
+
+/* Botones */
+.btn-guardar-pago {
+    background: linear-gradient(135deg, #4f46e5, #3b82f6);
+    color: #ffffff; border: none; padding: 14px; font-size: 15px; font-weight: 700;
+    border-radius: 8px; cursor: pointer; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2); transition: all 0.2s;
+}
+.btn-guardar-pago:hover { background: linear-gradient(135deg, #4338ca, #2563eb); transform: translateY(-1px); }
+
+/* Items de Métodos Guardados */
+.tarjeta-guardada-item {
+    background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 22px; transition: all 0.2s;
+}
+.tarjeta-guardada-item:hover { border-color: #cbd5e1; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+
+.btn-volver-atras {
+    border: 1px solid #cbd5e1; background: #ffffff; color: #475569;
+    padding: 8px 18px; font-weight: 600; border-radius: 10px; text-decoration: none;
+}
+.btn-volver-atras:hover { background-color: #f1f5f9; color: #0f172a; }
