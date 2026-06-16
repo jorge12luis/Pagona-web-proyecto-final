@@ -1,0 +1,246 @@
+/* ===================================
+   VARIABLES
+=================================== */
+:root{
+    --color-principal: #787f56;
+    --color-secundario: #e2d4b9;
+    --color-texto: #ffffff;
+    --color-card: rgba(255,255,255,0.08);
+    --color-borde: rgba(255,255,255,0.15);
+}
+
+/* ===================================
+   RESET
+=================================== */
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* ===================================
+   BODY
+=================================== */
+body{
+    background-color: var(--color-principal);
+    color: var(--color-texto);
+    min-height: 100vh;
+    padding: 40px;
+}
+
+/* ===================================
+   CONTENEDOR GENERAL
+=================================== */
+.empresa{
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* ===================================
+   ENCABEZADO
+=================================== */
+.titulo{
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.titulo h1{
+    color: var(--color-secundario);
+    font-size: 3rem;
+    font-weight: 300;
+    margin-bottom: 15px;
+}
+
+.titulo p{
+    font-size: 1.1rem;
+}
+
+/* ===================================
+   SECCIONES GENERALES
+=================================== */
+.historia,
+.fundadora,
+.valores,
+.porque,
+.frase,
+.contenedor-cards{
+    margin-top: 60px;
+}
+
+.historia h2,
+.fundadora h2,
+.valores h2,
+.porque h2{
+    color: var(--color-secundario);
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 2rem;
+}
+
+/* ===================================
+   HISTORIA
+=================================== */
+.historia p{
+    line-height: 1.8;
+    text-align: justify;
+    margin-bottom: 15px;
+}
+
+/* ===================================
+   FUNDADORA
+=================================== */
+.perfil{
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    background: var(--color-card);
+    border: 1px solid var(--color-borde);
+    border-radius: 20px;
+    padding: 30px;
+}
+
+.foto{
+    font-size: 5rem;
+}
+
+.info h3{
+    color: var(--color-secundario);
+    margin-bottom: 10px;
+}
+
+.info p{
+    line-height: 1.8;
+}
+
+/* ===================================
+   MISIÓN Y VISIÓN
+=================================== */
+.contenedor-cards{
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(320px,1fr));
+    gap: 30px;
+}
+
+.card{
+    background: var(--color-card);
+    border: 1px solid var(--color-borde);
+    border-radius: 20px;
+    padding: 35px;
+    transition: 0.3s;
+}
+
+.card:hover{
+    transform: translateY(-8px);
+}
+
+.icono{
+    display: block;
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.card h2{
+    color: var(--color-secundario);
+    margin-bottom: 20px;
+}
+
+.card p{
+    line-height: 1.8;
+    text-align: justify;
+}
+
+/* ===================================
+   VALORES
+=================================== */
+.valores-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+    gap: 20px;
+}
+
+.valor{
+    background: var(--color-card);
+    border: 1px solid var(--color-borde);
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+}
+
+.valor span{
+    font-size: 2rem;
+}
+
+.valor h3{
+    color: var(--color-secundario);
+    margin: 12px 0;
+}
+
+.valor p{
+    line-height: 1.6;
+}
+
+/* ===================================
+   ¿POR QUÉ ELEGIRNOS?
+=================================== */
+.porque-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    gap: 20px;
+}
+
+.item{
+    background: var(--color-card);
+    border: 1px solid var(--color-borde);
+    border-radius: 15px;
+    padding: 25px;
+}
+
+.item h3{
+    color: var(--color-secundario);
+    margin-bottom: 12px;
+}
+
+.item p{
+    line-height: 1.6;
+}
+
+/* ===================================
+   FRASE
+=================================== */
+.frase{
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.frase blockquote{
+    color: var(--color-secundario);
+    font-size: 1.5rem;
+    font-style: italic;
+    max-width: 800px;
+    margin: auto;
+    line-height: 1.8;
+}
+
+/* ===================================
+   RESPONSIVE
+=================================== */
+@media (max-width: 768px){
+
+    .titulo h1{
+        font-size: 2.2rem;
+    }
+
+    .perfil{
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .foto{
+        font-size: 4rem;
+    }
+
+    .frase blockquote{
+        font-size: 1.2rem;
+    }
+}
