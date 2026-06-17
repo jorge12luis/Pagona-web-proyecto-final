@@ -1,3 +1,4 @@
+console.log("BOTON PRESIONADO");
 const formulario = document.getElementById("formLogin");
 
 formulario.addEventListener("submit", async (e) => {
@@ -25,10 +26,11 @@ formulario.addEventListener("submit", async (e) => {
                 })
             }
         );
+        console.log(data);
 
         const data = await respuesta.json();
 
-localStorage.setItem("usuarioData", JSON.stringify(data.usuario));
+        localStorage.setItem("usuarioData", JSON.stringify(data.usuario));
 
         if(data.success){
 
