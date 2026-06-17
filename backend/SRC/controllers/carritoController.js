@@ -38,22 +38,30 @@ exports.agregarAlCarrito = (req, res) => {
     const { usuario_id, producto_id, color, cantidad } = req.body;
 
     if (!usuario_id || !producto_id || cantidad === undefined) {
-        return res.status(400).json({ success: false, message: "Faltan datos para agregar al carrito" });
+        return res.status(400).json({ success: false, message: "Faltan datos" });
     }
 
-    const sql = `
-        INSERT INTO carrito (usuario_id, producto_id, color, cantidad)
-        VALUES (?, ?, ?, ?)
-    `;
+    // Verificar si ya existe
+    conexion.query(
+        "SELECT id FROM carrito WHERE usuario_id = ? AND producto_id = ? AND color = ?",
+        [usuario_id, producto_id, color || null],
+        (error, resultado) => {
+            if (error) return res.status(500).json({ success: false });
 
-    conexion.query(sql, [usuario_id, producto_id, color || null, cantidad], (error, resultado) => {
-        if (error) {
-            console.log(error);
-            return res.status(500).json({ success: false, message: "Error agregando producto al carrito" });
+            if (resultado.length > 0) {
+                return res.json({ success: false, message: "El producto ya está en tu carrito" });
+            }
+
+            conexion.query(
+                "INSERT INTO carrito (usuario_id, producto_id, color, cantidad) VALUES (?, ?, ?, ?)",
+                [usuario_id, producto_id, color || null, cantidad],
+                (error, resultado) => {
+                    if (error) return res.status(500).json({ success: false });
+                    res.json({ success: true, message: "Producto agregado al carrito", id: resultado.insertId });
+                }
+            );
         }
-
-        res.json({ success: true, message: "Producto agregado al carrito", id: resultado.insertId });
-    });
+    );
 };
 
 exports.eliminarDelCarrito = (req, res) => {

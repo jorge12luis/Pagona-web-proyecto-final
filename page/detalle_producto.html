@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../css/Style.css">
     <link rel="stylesheet" href="../css/detalle_producto.css">
     <link rel="icon" href="/favicon_io (1)/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
     <nav class="navegacion-premium">
@@ -30,11 +31,16 @@
                     <span class="user-name"><i class="fa-solid fa-user"></i></span>
                     <div class="dropdown-content right">
                         <a href="../perfil.html">Mi Perfil</a>
+                        <a href="../page/favoritos.html">Favoritos</a>
+                        <a href="../page/micompra.html">Mis Compras</a>
+                        <a href="../page/carrito.html">Mi Carrito</a>
                     </div>
                 </div>
             </div>
         </div>
     </nav>
+
+    <br><br><br><br>
 
     <section class="producto-container">
         <div class="producto-img">
@@ -43,372 +49,254 @@
         <div class="producto-info">
             <span id="productoEstado" class="estado">Nuevo</span>
             <h1 id="productoTitulo" data-id="1">Bolso Elegante DUNAKA</h1>
-            <p id="productoDescripcion" class="descripcion">Diseño exclusivo, elaborado con materiales de alta calidad. Perfecto para mujeres auténticas que buscan elegancia.</p>
+            <p id="productoDescripcion" class="descripcion">Diseño exclusivo, elaborado con materiales de alta calidad.</p>
             <div class="precio">
                 <h2 id="productoPrecio">$150.000</h2>
                 <span id="productoExtra">o 3 cuotas sin interés</span>
             </div>
             <div id="productoStock" class="stock">Stock disponible</div>
-         <div class="selector-color">
 
-    <h4>Color:</h4>
+            <div class="selector-color">
+                <h4>Color:</h4>
+                <div class="colores">
+                    <span class="color activo" data-color="Negro" style="background:black;" onclick="seleccionarColor(this)"></span>
+                    <span class="color" data-color="Blanco" style="background:white;border:1px solid #ccc;" onclick="seleccionarColor(this)"></span>
+                    <span class="color" data-color="Beige" style="background:beige;" onclick="seleccionarColor(this)"></span>
+                    <span class="color" data-color="Marrón" style="background:brown;" onclick="seleccionarColor(this)"></span>
+                    <span class="color" data-color="Rosado" style="background:pink;" onclick="seleccionarColor(this)"></span>
+                    <span class="color" data-color="Dorado" style="background: linear-gradient(135deg, #f5d06a, #c9a84c); border:1px solid #b8962e;" onclick="seleccionarColor(this)"></span>
+                </div>
+                <button onclick="restablecerColor()" style="font-size:0.8em; background:none; border:1px solid #ccc; padding:4px 8px; cursor:pointer; margin-top:8px;">
+                    Restablecer color
+                </button>
+            </div>
 
-    <div class="colores">
-
-        <span class="color activo"
-              data-color="Negro"
-              style="background:black;"
-              onclick="seleccionarColor(this)">
-        </span>
-
-        <span class="color"
-              data-color="Blanco"
-              style="background:white;border:1px solid #ccc;"
-              onclick="seleccionarColor(this)">
-        </span>
-
-        <span class="color"
-              data-color="Beige"
-              style="background:beige;"
-              onclick="seleccionarColor(this)">
-        </span>
-
-        <span class="color"
-              data-color="Marrón"
-              style="background:brown;"
-              onclick="seleccionarColor(this)">
-        </span>
-
-        <span class="color"
-              data-color="Rosado"
-              style="background:pink;"
-              onclick="seleccionarColor(this)">
-        </span>
-
-    </div>
-
-</div>
             <div class="acciones">
+                <button class="btn-comprar" onclick="comprarAhora()">Comprar ahora</button>
+                <button class="btn-carrito" onclick="agregarCarrito()">Agregar al carrito</button>
+            </div>
 
-    <button class="btn-comprar" onclick="comprarAhora()">
-        Comprar ahora
-    </button>
-
-    <button class="btn-carrito" onclick="agregarCarrito()">
-        Agregar al carrito
-    </button>
-
-</div>
-
-<div id="mensajeCarrito" class="mensaje-carrito">
-    Producto agregado al carrito ✅
-</div>
-
-    </section>
-    <section class="resenas-container">
-
-    <h2>Reseñas del producto</h2>
-
-    <div class="form-resena">
-
-        <h3>Deja tu reseña</h3>
-
-        <div class="estrellas">
-
-            <span onclick="seleccionarEstrella(1)">⭐</span>
-            <span onclick="seleccionarEstrella(2)">⭐</span>
-            <span onclick="seleccionarEstrella(3)">⭐</span>
-            <span onclick="seleccionarEstrella(4)">⭐</span>
-            <span onclick="seleccionarEstrella(5)">⭐</span>
-
+            <div id="mensajeCarrito" class="mensaje-carrito" style="display:none;">
+                Producto agregado al carrito ✅
+            </div>
+            <div id="mensajeYaEnCarrito" class="mensaje-carrito" style="display:none; background:#ff9800;">
+                Este producto ya está en tu carrito 🛒
+            </div>
         </div>
+    </section>
 
-        <textarea
-            id="comentario"
-            placeholder="Escribe tu opinión del producto..."
-        ></textarea>
+    <section class="resenas-container">
+        <h2>Reseñas del producto</h2>
+        <div class="form-resena">
+            <h3>Deja tu reseña</h3>
+            <div class="estrellas">
+                <span onclick="seleccionarEstrella(1)">⭐</span>
+                <span onclick="seleccionarEstrella(2)">⭐</span>
+                <span onclick="seleccionarEstrella(3)">⭐</span>
+                <span onclick="seleccionarEstrella(4)">⭐</span>
+                <span onclick="seleccionarEstrella(5)">⭐</span>
+            </div>
+            <textarea id="comentario" placeholder="Escribe tu opinión del producto..."></textarea>
+            <button onclick="agregarResena()">Enviar reseña</button>
+        </div>
+        <div id="listaResenas"></div>
+    </section>
 
-        <button onclick="agregarResena()">
-            Enviar reseña
-        </button>
-
-    </div>
-
-    <div id="listaResenas">
-
-    </div>
-
-</section>
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-section">
                 <h3>Contáctanos</h3>
-                <p>Email:
-                    <a href="mailto:info@dunaka.com">info@dunaka.com</a>
-                </p>
+                <p>Email: <a href="mailto:info@dunaka.com">info@dunaka.com</a></p>
             </div>
         </div>
     </footer>
+
     <script src="../js/detalle_producto.js"></script>
     <script>
+        let colorSeleccionado = "Rosado";
 
-let colorSeleccionado = "Negro"; 
-const imagenesProductos = {
-
-    "Bolso Manhattan": {
-
-        Negro: "../img/manhattan-negro.jpg",
-        Blanco: "../img/manhattan-blanco.jpg",
-        Beige: "../img/manhattan-beige.jpg",
-        Marrón: "../img/manhattan-marron.jpg",
-        Rosado: "../img/manhattan-rosado.jpg"
-    },
-
-    "Mochila Urban": {
-
-        Negro: "../img/urban-negro.jpg",
-        Blanco: "../img/urban-blanco.jpg",
-        Beige: "../img/urban-beige.jpg",
-        Marrón: "../img/urban-marron.jpg",
-        Rosado: "../img/urban-rosado.jpg"
-    },
-
-    "Cartera Noche": {
-
-        Negro: "../img/noche-negro.jpg",
-        Blanco: "../img/noche-blanco.jpg",
-        Beige: "../img/noche-beige.jpg",
-        Marrón: "../img/noche-marron.jpg",
-        Rosado: "../img/noche-rosado.jpg"
-    },
-
-    "Bolso Noir": {
-    Negro: "../img/noir-negro.jpg",
-    Blanco: "../img/noir-blanco.jpg",
-    Beige: "../img/bolso11.jpg",
-    Marrón: "../img/noir-marron.jpg",
-    Rosado: "../img/noir-rosado.jpg"
-},
-"Bolso Aurora": {
-    Negro: "../img/aurora-negro.jpg",
-    Blanco: "../img/aurora-blanco.jpg",
-    Beige: "../img/aurora-beige.jpg",
-    Marrón: "../img/aurora-marron.jpg",
-    Rosado: "../img/aurora-rosado.jpg"
-},
-"Bolso Elegance": {
-    Negro: "../img/elegance-negro.jpg",
-    Blanco: "../img/elegance-blanco.jpg",
-    Beige: "../img/elegance-beige.jpg",
-    Marrón: "../img/elegance-marron.jpg",
-    Rosado: "../img/elegance-rosado.jpg"
-},
-"Bolso Soft Beige": {
-    Negro: "../img/softbeige-negro.jpg",
-    Blanco: "../img/softbeige-blanco.jpg",
-    Beige: "../img/softbeige-beige.jpg",
-    Marrón: "../img/softbeige-marron.jpg",
-    Rosado: "../img/softbeige-rosado.jpg"
-},
-"Golden Edition": {
-    Negro: "../img/golden-negro.jpg",
-    Blanco: "../img/golden-blanco.jpg",
-    Beige: "../img/golden-beige.jpg",
-    Marrón: "../img/golden-marron.jpg",
-    Rosado: "../img/golden-rosado.jpg"
-},
-"Black Luxe": {
-    Negro: "../img/blackluxe-negro.jpg",
+        const imagenesProductos = {
+            "Bolso Manhattan": {
+                Negro: "../img/manhattan-negro.jpg",
+                Blanco: "../img/manhattan-blanco.jpg",
+                Beige: "../img/manhattan-beige.jpg",
+                Marrón: "../img/manhattan-marron.jpg",
+                Rosado: "../img/manhattan-rosado.jpg"
+            },
+            "Mochila Urban": {
+                Negro: "../img/urban-negro.jpg",
+                Blanco: "../img/urban-blanco.jpg",
+                Beige: "../img/urban-beige.jpg",
+                Marrón: "../img/urban-marron.jpg",
+                Rosado: "../img/urban-rosado.jpg"
+            },
+            "Cartera Noche": {
+                Negro: "../img/noche-negro.jpg",
+                Blanco: "../img/noche-blanco.jpg",
+                Beige: "../img/noche-beige.jpg",
+                Marrón: "../img/noche-marron.jpg",
+                Rosado: "../img/noche-rosado.jpg"
+            },
+            "Bolso Noir": {
+                Negro: "../img/noir-negro.jpg",
+                Blanco: "../img/noir-blanco.jpg",
+                Beige: "../img/bolso11.jpg",
+                Marrón: "../img/noir-marron.jpg",
+                Rosado: "../img/noir-rosado.jpg"
+            },
+            "Bolso Aurora": {
+                Negro: "../img/aurora-negro.jpg",
+                Blanco: "../img/aurora-blanco.jpg",
+                Beige: "../img/aurora-beige.jpg",
+                Marrón: "../img/aurora-marron.jpg",
+                Rosado: "../img/aurora-rosado.jpg",
+                Dorado: "../img/aurora-dorado.jpg"
+            },
+            "Bolso Elegance": {
+                Negro: "../img/elegance-negro.jpg",
+                Blanco: "../img/elegance-blanco.jpg",
+                Beige: "../img/elegance-beige.jpg",
+                Marrón: "../img/elegance-marron.jpg",
+                Rosado: "../img/elegance-rosado.jpg"
+            },
+            "Bolso Soft Beige": {
+                Negro: "../img/softbeige-negro.jpg",
+                Blanco: "../img/softbeige-blanco.jpg",
+                Beige: "../img/softbeige-beige.jpg",
+                Marrón: "../img/softbeige-marron.jpg",
+                Rosado: "../img/softbeige-rosado.jpg"
+            },
+            "Golden Edition": {
+                Negro: "../img/bolso15.jpg",
+                Blanco: "../img/golden-blanco.jpg",
+                Beige: "../img/golden-beige.jpg",
+                Marrón: "../img/golden-marron.jpg",
+                Rosado: "../img/golden-rosado.jpg"
+            },
+            "Black Luxe": {
+    Negro: "../img/bolso16.jpg",
     Blanco: "../img/blackluxe-blanco.jpg",
     Beige: "../img/blackluxe-beige.jpg",
     Marrón: "../img/blackluxe-marron.jpg",
     Rosado: "../img/blackluxe-rosado.jpg"
 },
 "Velvet Night": {
-    Negro: "../img/velvet-negro.jpg",
+    Negro: "../img/bolso17.jpg",
     Blanco: "../img/velvet-blanco.jpg",
     Beige: "../img/velvet-beige.jpg",
     Marrón: "../img/velvet-marron.jpg",
     Rosado: "../img/velvet-rosado.jpg"
 },
 "Ivory Luxe": {
-    Negro: "../img/ivory-negro.jpg",
+    Negro: "../img/bolso18.jpg",
     Blanco: "../img/ivory-blanco.jpg",
     Beige: "../img/ivory-beige.jpg",
     Marrón: "../img/ivory-marron.jpg",
     Rosado: "../img/ivory-rosado.jpg"
-}
+},
+        };
 
-};
+        window.imagenesProductos = imagenesProductos;
 
+        function seleccionarColor(elemento) {
+            document.querySelectorAll(".color").forEach(color => color.classList.remove("activo"));
+            elemento.classList.add("activo");
+            colorSeleccionado = elemento.dataset.color;
 
-function seleccionarColor(elemento){
+            const nombreProducto = document.getElementById("productoTitulo").textContent.trim();
+            const imagen = document.getElementById("productoImagen");
 
-    document
-    .querySelectorAll(".color")
-    .forEach(color => {
-        color.classList.remove("activo");
-    });
-
-    elemento.classList.add("activo");
-
-    colorSeleccionado =
-    elemento.dataset.color;
-
-    const nombreProducto =
-    document.getElementById("productoTitulo")
-    .textContent
-    .trim();
-     console.log("Nombre leído:", nombreProducto); // 👈
-    console.log("Existe en imagenesProductos:", !!imagenesProductos[nombreProducto]); // 👈
-
-    const imagen =
-    document.getElementById("productoImagen");
-
-    if(
-        imagenesProductos[nombreProducto] &&
-        imagenesProductos[nombreProducto][colorSeleccionado]
-    ){
-
-        imagen.src =
-        imagenesProductos[nombreProducto][colorSeleccionado];
-
-    }
-
-}
-function comprarAhora() {
-
-    console.log("Botón comprar funcionando");
-
-    // verificar login
-    const usuario = localStorage.getItem("usuarioData");
-
-    if (!usuario) {
-
-        alert("Debes iniciar sesión");
-
-        window.location.href = "../login.html";
-
-        return;
-    }
-
-    // obtener producto actual
-   const producto = {
-
-    nombre: document.getElementById("productoTitulo").textContent,
-
-    precio: document.getElementById("productoPrecio")
-        .textContent
-        .replace("$", "")
-        .replace(/\./g, ""),
-
-    imagen: document.getElementById("productoImagen").src,
-
-    color: colorSeleccionado
-};
-
-    // guardar producto temporal
-    localStorage.setItem(
-        "productoComprar",
-        JSON.stringify(producto)
-    );
-
-    // redirigir
-    window.location.href = "../informacionCliente.html";
-}
-
-</script>
-<script>
-
-async function agregarCarrito() {
-
-    if (!producto) {
-        alert("Espera a que el producto cargue");
-        return;
-    }
-
-    const usuario = JSON.parse(localStorage.getItem("usuarioData"));
-
-    if (!usuario) {
-        alert("Debes iniciar sesión");
-        return;
-    }
-
-    try {
-        const respuesta = await fetch(
-            "http://localhost:3000/carrito",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    usuario_id: usuario.id,
-                    producto_id: producto.id,
-                    color: colorSeleccionado,
-                    cantidad: 1
-                })
+            if (imagenesProductos[nombreProducto] && imagenesProductos[nombreProducto][colorSeleccionado]) {
+                imagen.src = imagenesProductos[nombreProducto][colorSeleccionado];
             }
-        );
-
-        console.log("Status:", respuesta.status);
-
-        const data = await respuesta.json();
-
-        if (data.success) {
-            const mensaje = document.getElementById("mensajeCarrito");
-            mensaje.style.display = "block";
-            setTimeout(() => {
-                mensaje.style.display = "none";
-            }, 3000);
-        } else {
-            alert(data.message);
         }
 
-    } catch (error) {
-        console.error("Error completo:", error);
-        alert(error.message);
-    }
-}
-</script>
-<script>
+        function restablecerColor() {
+            document.querySelectorAll(".color").forEach(c => c.classList.remove("activo"));
+            document.querySelector(".color[data-color='Negro']").classList.add("activo");
+            colorSeleccionado = "Negro";
 
-const formRegistro = document.getElementById("formRegistro");
+            const rutaImagen = producto.imagen?.startsWith("../")
+                ? producto.imagen
+                : `../${producto.imagen}`;
+            document.getElementById("productoImagen").src = rutaImagen;
+        }
 
-if (formRegistro) {
-    formRegistro.addEventListener("submit", function(e){    
+        function comprarAhora() {
+            const usuario = localStorage.getItem("usuarioData");
+            if (!usuario) {
+                alert("Debes iniciar sesión");
+                window.location.href = "../login.html";
+                return;
+            }
+            const productoComprar = {
+                nombre: document.getElementById("productoTitulo").textContent,
+                precio: document.getElementById("productoPrecio").textContent.replace("$", "").replace(/\./g, ""),
+                imagen: document.getElementById("productoImagen").src,
+                color: colorSeleccionado
+            };
+            localStorage.setItem("productoComprar", JSON.stringify(productoComprar));
+            window.location.href = "../informacionCliente.html";
+        }
+    </script>
 
-    e.preventDefault();
+    <script>
+        async function agregarCarrito() {
+            if (!producto) {
+                alert("Espera a que el producto cargue");
+                return;
+            }
 
-    // Obtener carrito
-    let carrito = JSON.parse(
-        localStorage.getItem("carrito")
-    ) || [];
+            const usuario = JSON.parse(localStorage.getItem("usuarioData"));
+            if (!usuario) {
+                alert("Debes iniciar sesión");
+                return;
+            }
 
-    let total = 0;
+            try {
+                const respuesta = await fetch("http://localhost:3000/carrito", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        usuario_id: usuario.id,
+                        producto_id: producto.id,
+                        color: colorSeleccionado,
+                        cantidad: 1
+                    })
+                });
 
-    carrito.forEach(producto => {
+                const data = await respuesta.json();
 
-        total += producto.precio * producto.cantidad;
+                if (data.success) {
+                    const mensaje = document.getElementById("mensajeCarrito");
+                    mensaje.style.display = "block";
+                    setTimeout(() => { mensaje.style.display = "none"; }, 3000);
+                } else {
+                    const mensajeYa = document.getElementById("mensajeYaEnCarrito");
+                    mensajeYa.style.display = "block";
+                    setTimeout(() => { mensajeYa.style.display = "none"; }, 3000);
+                }
 
-    });
+            } catch (error) {
+                console.error("Error completo:", error);
+                alert(error.message);
+            }
+        }
+    </script>
 
-    // Si no hay productos
-    if(total <= 0){
+    <script>
+        const formRegistro = document.getElementById("formRegistro");
+        if (formRegistro) {
+            formRegistro.addEventListener("submit", function(e) {
+                e.preventDefault();
+                let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+                let total = 0;
+                carrito.forEach(producto => { total += producto.precio * producto.cantidad; });
+                if (total <= 0) { alert("No hay productos en el carrito"); return; }
+                window.location.href = `https://checkout.wompi.co/p/?public-key=pub_test_TMtzLyFRKH2u1wbO8kRGX9ajyXvQ0pAG&currency=COP&amount-in-cents=${total * 100}&reference=DUNAKA${Date.now()}`;
+            });
+        }
+    </script>
 
-        alert("No hay productos en el carrito");
-
-        return;
-    }
-
-    // REDIRECCIÓN WOMPI
-    window.location.href =
-    `https://checkout.wompi.co/p/?public-key=pub_test_TMtzLyFRKH2u1wbO8kRGX9ajyXvQ0pAG&currency=COP&amount-in-cents=${total * 100}&reference=DUNAKA${Date.now()}`;
-
-    });
-}
-
-</script>
- 
 </body>
 </html>

@@ -29,7 +29,11 @@
     font-size:16px;
 }
 
-
+.filtros-categorias button.activo {
+  background-color: #000; /* o el color oscuro de tu marca */
+  color: #fff;
+  border-color: #000;
+}
 .filtros-categorias{
 
     display:flex;
