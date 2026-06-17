@@ -56,6 +56,24 @@ async function cargarProducto() {
                 span.style.display = coloresDisponibles.includes(span.dataset.color) ? "inline-block" : "none";
             });
         }
+        // Cargar imágenes por color desde la BD
+const respImagenes = await fetch(`http://localhost:3000/producto/${productoSlug}/imagenes`);
+const dataImagenes = await respImagenes.json();
+
+if (dataImagenes.success && dataImagenes.imagenes.length > 0) {
+    // Construir objeto de imágenes por color dinámicamente
+    const imagenesDesdeDB = {};
+    dataImagenes.imagenes.forEach(img => {
+        if (img.color) {
+            imagenesDesdeDB[img.color] = img.imagen.startsWith('../') ? img.imagen : `../${img.imagen}`;
+        }
+    });
+
+    // Sobrescribir el objeto hardcodeado con los datos de la BD
+    if (Object.keys(imagenesDesdeDB).length > 0) {
+        window.imagenesProductos[producto.nombre] = imagenesDesdeDB;
+    }
+}
 
         cargarResenas();
 
