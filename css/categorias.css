@@ -1,4 +1,6 @@
-
+body{
+    background-color: #e2d4b9;
+}
 
 .header-categorias{
 
@@ -7,6 +9,8 @@
     text-align:center;
 
     padding:80px 20px 40px;
+
+    color: #787f56;
 }
 
 .header-categorias h1{
@@ -26,7 +30,7 @@
 
     color:#777;
 
-    font-size:16px;
+    font-size:25px;
 }
 
 .filtros-categorias button.activo {
@@ -46,31 +50,6 @@
 
     margin-bottom:60px;
 }
-
-.filtros-categorias button{
-
-    border:1px solid #ddd;
-
-    background:white;
-
-    padding:12px 25px;
-
-    cursor:pointer;
-
-    border-radius:30px;
-
-    font-size:14px;
-
-    transition:.3s;
-}
-
-.filtros-categorias button:hover{
-
-    background:black;
-
-    color:white;
-}
-
 
 .contenedor-categorias{
 
