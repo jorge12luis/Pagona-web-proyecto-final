@@ -138,9 +138,9 @@ app.post("/login", (req, res) => {
 
 });
 app.post("/registro", (req, res) => {
-    const { nombre, apellido, correo, contrasena, telefono, fechaNacimiento } = req.body;
+    const { nombre, apellido,tipo_documento, numero_documento, correo, clave, telefono, date, direccion } = req.body;
 
-    if (!nombre || !correo || !contrasena) {
+    if (!nombre || !correo || !clave) {
         return res.status(400).json({ success: false, message: "Faltan datos" });
     }
 
@@ -157,13 +157,13 @@ app.post("/registro", (req, res) => {
         }
 
         const sqlInsert = `
-            INSERT INTO usuarios (nombre, apellido, correo, contrasena, numero_telefono, fecha_nacimiento)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO usuarios (nombre, apellido, tipo_documento, numero_documento, correo, contrasena, rol, numero_telefono, fecha_nacimiento, direccion)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ? ,  ?, ?)
         `;
 
         conexion.query(
             sqlInsert,
-            [nombre, apellido || null, correo, contrasena, telefono || null, fechaNacimiento || null],
+            [nombre, apellido || null, tipo_documento || null, numero_documento || null, correo, clave, "usuario", telefono || null, date || null, direccion || null],
             (err2) => {
                 if (err2) {
                     console.log(err2);
@@ -844,9 +844,9 @@ app.get("/obtener-productos", (req, res) => {
 
 // AGREGAR PRODUCTO
 app.post("/agregar-producto", (req, res) => {
-    const { nombre, precio, stock } = req.body;
+    const { nombre, precio, stock, descripcion, categoria_id } = req.body;
 
-    if (!nombre || !precio || stock === undefined) {
+    if (!nombre || !precio || stock === undefined || !categoria_id) {
         return res.status(400).json({
             success: false,
             message: "Faltan datos"
@@ -854,11 +854,11 @@ app.post("/agregar-producto", (req, res) => {
     }
 
     const sql = `
-        INSERT INTO productos (nombre, precio, stock)
-        VALUES (?, ?, ?)
+        INSERT INTO productos (nombre, precio, stock, descripcion, categoria_id)
+        VALUES (?, ?, ?, ?, ?)
     `;
 
-    conexion.query(sql, [nombre, precio, stock], (error, resultado) => {
+    conexion.query(sql, [nombre, precio, stock, descripcion, categoria_id], (error, resultado) => {
         if (error) {
             console.log(error);
             return res.status(500).json({
@@ -878,9 +878,9 @@ app.post("/agregar-producto", (req, res) => {
 // ACTUALIZAR PRODUCTO
 app.put("/actualizar-producto/:id", (req, res) => {
     const { id } = req.params;
-    const { nombre, precio, stock } = req.body;
+    const { nombre, precio, stock, descripcion, categoria_id } = req.body;
 
-    if (!nombre || !precio || stock === undefined) {
+    if (!nombre || !precio || stock === undefined || !categoria_id) {
         return res.status(400).json({
             success: false,
             message: "Faltan datos"
@@ -889,11 +889,11 @@ app.put("/actualizar-producto/:id", (req, res) => {
 
     const sql = `
         UPDATE productos 
-        SET nombre = ?, precio = ?, stock = ?
+        SET nombre = ?, precio = ?, stock = ?, descripcion = ?, categoria_id = ?
         WHERE id = ?
     `;
 
-    conexion.query(sql, [nombre, precio, stock, id], (error) => {
+    conexion.query(sql, [nombre, precio, stock, descripcion, categoria_id, id], (error) => {
         if (error) {
             console.log(error);
             return res.status(500).json({

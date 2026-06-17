@@ -1,0 +1,37 @@
+2026-06-16T12:51:35.871Z Insertando en carrito: {"usuario_id":3,"producto_id":2,"color":"Marrón","cantidad":1}
+2026-06-16T12:51:35.877Z Carrito insertado id: 60
+2026-06-16T12:51:38.889Z Insertando en carrito: {"usuario_id":3,"producto_id":2,"color":"Negro","cantidad":1}
+2026-06-16T12:51:38.894Z Carrito insertado id: 61
+2026-06-16T12:59:49.737Z Insertando en carrito: {"usuario_id":3,"producto_id":5,"color":"Blanco","cantidad":1}
+2026-06-16T12:59:49.750Z Carrito insertado id: 62
+2026-06-16T12:59:54.887Z Insertando en carrito: {"usuario_id":3,"producto_id":5,"color":"Blanco","cantidad":1}
+2026-06-16T12:59:54.910Z Error insert carrito: Duplicate entry '3-5-Blanco' for key 'unique_carrito'
+{"code":"ER_DUP_ENTRY","errno":1062,"sqlState":"23000","sqlMessage":"Duplicate entry '3-5-Blanco' for key 'unique_carrito'","sql":"INSERT INTO carrito (usuario_id, producto_id, color, cantidad) VALUES (3, 5, 'Blanco', 1)"}
+2026-06-16T13:02:09.124Z Insertando en carrito: {"usuario_id":3,"producto_id":5,"color":"Blanco","cantidad":1}
+2026-06-16T13:02:09.138Z Error insert carrito: Duplicate entry '3-5-Blanco' for key 'unique_carrito'
+{"code":"ER_DUP_ENTRY","errno":1062,"sqlState":"23000","sqlMessage":"Duplicate entry '3-5-Blanco' for key 'unique_carrito'","sql":"INSERT INTO carrito (usuario_id, producto_id, color, cantidad) VALUES (3, 5, 'Blanco', 1)"}
+2026-06-16T13:12:13.083Z Insertando en carrito: {"usuario_id":3,"producto_id":7,"color":"Negro","cantidad":1}
+2026-06-16T13:12:13.098Z Carrito insertado id: 65
+2026-06-16T13:28:49.593Z Insertando en carrito: {"usuario_id":3,"producto_id":7,"color":"Rosado","cantidad":1}
+2026-06-16T13:28:49.608Z Carrito insertado id: 66
+2026-06-16T13:31:30.037Z Insertando en carrito: {"usuario_id":3,"producto_id":4,"color":"Negro","cantidad":1}
+2026-06-16T13:31:30.049Z Carrito insertado id: 67
+2026-06-16T13:34:02.744Z Insertando en carrito: {"usuario_id":3,"producto_id":9,"color":"Rosado","cantidad":1}
+2026-06-16T13:34:02.756Z Carrito insertado id: 68
+2026-06-16T14:11:16.148Z Insertando en carrito: {"usuario_id":3,"producto_id":2,"color":"Blanco","cantidad":1}
+2026-06-16T14:11:16.157Z Carrito insertado id: 69
+2026-06-16T14:24:22.762Z Insertando en carrito: {"usuario_id":3,"producto_id":3,"color":"Rosado","cantidad":1}
+2026-06-16T14:24:22.768Z Carrito insertado id: 70
+2026-06-16T14:34:23.012Z Insertando en carrito: {"usuario_id":3,"producto_id":2,"color":"Beige","cantidad":1}
+2026-06-16T14:34:23.019Z Carrito insertado id: 71
+2026-06-16T14:34:26.860Z Insertando en carrito: {"usuario_id":3,"producto_id":2,"color":"Rosado","cantidad":1}
+2026-06-16T14:34:26.872Z Carrito insertado id: 72
+2026-06-16T15:50:35.825Z Insertando en carrito: {"usuario_id":3,"producto_id":2,"color":"Rosado","cantidad":1}
+2026-06-16T15:50:35.839Z Error insert carrito: Duplicate entry '3-2-Rosado' for key 'unique_carrito'
+{"code":"ER_DUP_ENTRY","errno":1062,"sqlState":"23000","sqlMessage":"Duplicate entry '3-2-Rosado' for key 'unique_carrito'","sql":"INSERT INTO carrito (usuario_id, producto_id, color, cantidad) VALUES (3, 2, 'Rosado', 1)"}
+2026-06-17T19:21:40.749Z Insertando en carrito: {"usuario_id":4,"producto_id":15,"color":"Rosado","cantidad":1}
+2026-06-17T19:21:40.767Z Carrito insertado id: 74
+2026-06-17T19:44:39.510Z Insertando en carrito: {"usuario_id":4,"producto_id":15,"color":"Rosado","cantidad":1}
+2026-06-17T19:44:39.514Z Carrito insertado id: 75
+2026-06-17T19:45:50.387Z Insertando en carrito: {"usuario_id":4,"producto_id":15,"color":"Rosado","cantidad":1}
+2026-06-17T19:45:50.394Z Carrito insertado id: 76

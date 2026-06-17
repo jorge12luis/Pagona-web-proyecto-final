@@ -7,8 +7,8 @@ const authController = require(
 
 router.post("/login", authController.login);
 
-////router.post("/registro",authController.registro);
+router.post("/registro",authController.registro);
 
-///router.post("/google-login", authController.googleLogin);
+router.post("/google-login", authController.googleLogin);
 
 module.exports = router;

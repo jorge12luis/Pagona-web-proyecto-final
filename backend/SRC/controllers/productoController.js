@@ -34,14 +34,17 @@ exports.productos = (req, res) => {
     });
 };
 
-// =========================================================================
-// CORREGIDO: AGREGAR PRODUCTO CON SOPORTE PARA IMÁGENES Y TODAS LAS COLUMNAS
-// =========================================================================
 exports.agregarproductos = (req, res) => {
-    // Los campos de texto vienen en req.body
     const { nombre, precio, stock, descripcion, categoria_id, estado } = req.body;
 
-    // Validación básica original respetada
+    const slug = nombre
+    .toLowerCase()
+    .trim()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]+/g, "");
+
     if (!nombre || !precio || stock === undefined) {
         return res.status(400).json({
             success: false,
@@ -49,27 +52,25 @@ exports.agregarproductos = (req, res) => {
         });
     }
 
-    // Capturamos el archivo procesado por Multer desde req.file
     let imagenPath = null;
     if (req.file) {
-        // Guarda la ruta pública relativa de la imagen para que el frontend la lea
         imagenPath = `/uploads/productos/${req.file.filename}`;
     }
 
-    // SQL completo con todas las columnas presentes en tu base de datos
     const sql = `
-        INSERT INTO productos (nombre, precio, stock, imagen, descripcion, categoria_id, estado)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO productos (nombre, precio, stock, imagen, descripcion, categoria_id, estado, slug)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const valores = [
-        nombre, 
-        precio, 
-        stock, 
-        imagenPath, 
-        descripcion || '', 
-        categoria_id || null, 
-        estado || 'activo'
+        nombre,
+        precio,
+        stock,
+        imagenPath,
+        descripcion || '',
+        categoria_id || null,
+        estado || 'activo',
+        slug
     ];
 
     conexion.query(sql, valores, (error, resultado) => {
@@ -89,9 +90,6 @@ exports.agregarproductos = (req, res) => {
     });
 };
 
-// =========================================================================
-// CORREGIDO: ACTUALIZAR PRODUCTOS CON SOPORTE PARA NUEVAS IMÁGENES
-// =========================================================================
 exports.agregarproductos_id = (req, res) => {
     const { id } = req.params;
     const { nombre, precio, stock, descripcion, categoria_id, estado } = req.body;
@@ -103,7 +101,6 @@ exports.agregarproductos_id = (req, res) => {
         });
     }
 
-    // Construimos la actualización dinámica para respetar si suben o no una nueva foto
     let sql = `
         UPDATE productos 
         SET nombre = ?, precio = ?, stock = ?, descripcion = ?, categoria_id = ?, estado = ?
@@ -211,11 +208,84 @@ exports.obtenerProductoPorSlug = (req, res) => {
 };
 
 exports.obtenerProductosConSlug = (req, res) => {
+    const sql = `
+        SELECT 
+            p.id,
+            p.nombre,
+            p.precio,
+            p.imagen,
+            p.descripcion,
+            p.stock,
+            p.slug,
+            p.estado,
+            p.categoria_id,
+            c.nombre AS categoria_nombre
+        FROM productos p
+        LEFT JOIN categorias c ON p.categoria_id = c.id
+    `;
+
+    conexion.query(sql, (error, resultado) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({ success: false });
+        }
+        res.json({ success: true, productos: resultado });
+    });
+};
+exports.obtenerImagenesProducto = (req, res) => {
+    const { slug } = req.params;
+
+    const sql = `
+        SELECT ip.imagen, ip.color
+        FROM imagenes_productos ip
+        JOIN productos p ON p.id = ip.producto_id
+        WHERE p.slug = ?
+    `;
+
+    conexion.query(sql, [slug], (error, resultado) => {
+        if (error) return res.status(500).json({ success: false });
+        res.json({ success: true, imagenes: resultado });
+    });
+};
+
+exports.obtenerImagenesPorId = (req, res) => {
+    const { id } = req.params;
     conexion.query(
-        "SELECT id, nombre, precio, imagen, descripcion, stock, slug, estado FROM productos",
+        "SELECT * FROM imagenes_productos WHERE producto_id = ?",
+        [id],
         (error, resultado) => {
             if (error) return res.status(500).json({ success: false });
-            res.json({ success: true, productos: resultado });
+            res.json({ success: true, imagenes: resultado });
+        }
+    );
+};
+
+exports.agregarImagenProducto = (req, res) => {
+    const { producto_id, color } = req.body;
+    const imagen = req.file ? `uploads/${req.file.filename}` : null;
+
+    if (!imagen || !producto_id) {
+        return res.status(400).json({ success: false, message: "Faltan datos" });
+    }
+
+    conexion.query(
+        "INSERT INTO imagenes_productos (producto_id, imagen, color) VALUES (?, ?, ?)",
+        [producto_id, imagen, color || null],
+        (error, resultado) => {
+            if (error) return res.status(500).json({ success: false });
+            res.json({ success: true, message: "Imagen agregada", id: resultado.insertId });
+        }
+    );
+};
+
+exports.eliminarImagenProducto = (req, res) => {
+    const { id } = req.params;
+    conexion.query(
+        "DELETE FROM imagenes_productos WHERE id = ?",
+        [id],
+        (error) => {
+            if (error) return res.status(500).json({ success: false });
+            res.json({ success: true, message: "Imagen eliminada" });
         }
     );
 };

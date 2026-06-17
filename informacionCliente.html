@@ -193,87 +193,48 @@
 <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.2.0/crypto-js.min.js"></script>
 
 <script>
-
-document.getElementById("formRegistro").addEventListener("submit", async function(e){
-
+document.getElementById("formRegistro").addEventListener("submit", async function(e) {
     e.preventDefault();
 
-    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    const total = Number(localStorage.getItem("totalCarrito")) || 0;
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-    let total = 0;
+    if (total <= 0) {
+        alert("No hay productos en el carrito");
+        window.location.href = "./page/carrito.html";
+        return;
+    }
 
-    carrito.forEach(producto => {
-
-        total += Number(producto.precio) * Number(producto.cantidad);
-
-    });
-
-    // CENTAVOS
     const amountInCents = String(total * 100);
-
     const currency = "COP";
-
     const reference = "DUNAKA-" + Date.now();
-
     const publicKey = "pub_test_TMtzLyFRKH2ulwbO8kRGX9ajyXvQOpAG";
-
     const integritySecret = "test_integrity_SI1ltUwxeAkxE6lOToI0JOXXqDKVToVY";
 
-    // TOKEN NUEVO
-    const respuesta = await fetch(
-        `https://sandbox.wompi.co/v1/merchants/${publicKey}`
-    );
-
+    const respuesta = await fetch(`https://sandbox.wompi.co/v1/merchants/${publicKey}`);
     const data = await respuesta.json();
+    const acceptanceToken = data.data.presigned_acceptance.acceptance_token;
 
-    const acceptanceToken =
-        data.data.presigned_acceptance.acceptance_token;
-
-    // FIRMA EXACTA WOMPI
     const signature = CryptoJS.SHA256(
-        reference +
-        amountInCents +
-        currency +
-        integritySecret
+        reference + amountInCents + currency + integritySecret
     ).toString();
 
-    console.log(signature);
+    const usuario = JSON.parse(localStorage.getItem("usuarioData")) || JSON.parse(localStorage.getItem("usuario"));
 
-    // URL WOMPI
-    const url =
-    `https://checkout.wompi.co/p/?public-key=${publicKey}&currency=${currency}&amount-in-cents=${amountInCents}&reference=${reference}&signature:integrity=${signature}&acceptance-token=${acceptanceToken}`;
-    
-    // USUARIO LOGUEADO
-const usuario =
-JSON.parse(localStorage.getItem("usuarioData"))
-||
-JSON.parse(localStorage.getItem("usuario"));
+    await fetch("http://localhost:3000/guardar-compra", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            usuarioId: usuario.id,
+            carrito: carrito,
+            total: total
+        })
+    });
 
-// GUARDAR COMPRA
-await fetch("http://localhost:3000/guardar-compra", {
-
-    method: "POST",
-
-    headers: {
-        "Content-Type": "application/json"
-    },
-
-    body: JSON.stringify({
-
-        usuarioId: usuario.id, // USUARIO GOOGLE
-
-        carrito: carrito,
-
-        total: total
-
-    })
-
-});
+    const url = `https://checkout.wompi.co/p/?public-key=${publicKey}&currency=${currency}&amount-in-cents=${amountInCents}&reference=${reference}&signature:integrity=${signature}&acceptance-token=${acceptanceToken}`;
 
     window.location.href = url;
-
 });
-
 </script>
 </body>
 </html>
