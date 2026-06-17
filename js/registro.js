@@ -46,14 +46,15 @@ formulario.addEventListener("submit", async (e) => {
             tipo_documento,
             numero_documento,
             correo,
-            contrasena: clave,
-            numero_telefono: telefono,
-            fecha_nacimiento: date,
+            clave,
+            telefono,
+            date,
             direccion
         })
     });
 
     const data = await respuesta.json();
+    alert(data.message);
 
     if (respuesta.ok && data.success) {
         alert("Registro exitoso. Bienvenido a Dunaka!");

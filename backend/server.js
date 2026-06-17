@@ -138,9 +138,9 @@ app.post("/login", (req, res) => {
 
 });
 app.post("/registro", (req, res) => {
-    const { nombre, apellido, correo, contrasena, telefono, fechaNacimiento } = req.body;
+    const { nombre, apellido,tipo_documento, numero_documento, correo, clave, telefono, date, direccion } = req.body;
 
-    if (!nombre || !correo || !contrasena) {
+    if (!nombre || !correo || !clave) {
         return res.status(400).json({ success: false, message: "Faltan datos" });
     }
 
@@ -157,13 +157,13 @@ app.post("/registro", (req, res) => {
         }
 
         const sqlInsert = `
-            INSERT INTO usuarios (nombre, apellido, correo, contrasena, numero_telefono, fecha_nacimiento)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO usuarios (nombre, apellido, tipo_documento, numero_documento, correo, contrasena, rol, numero_telefono, fecha_nacimiento, direccion)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ? ,  ?, ?)
         `;
 
         conexion.query(
             sqlInsert,
-            [nombre, apellido || null, correo, contrasena, telefono || null, fechaNacimiento || null],
+            [nombre, apellido || null, tipo_documento || null, numero_documento || null, correo, clave, "usuario", telefono || null, date || null, direccion || null],
             (err2) => {
                 if (err2) {
                     console.log(err2);
