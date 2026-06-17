@@ -19,19 +19,38 @@
 
         <form id="formRegistro">
             <div class="row">
-                <div class="col-md-6">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="nombre" placeholder="Nombre" required>
-                        <label for="nombre"><i class="fas fa-user"></i> Nombre</label>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="apellido" placeholder="Apellido" required>
-                        <label for="apellido"><i class="fas fa-user"></i> Apellido</label>
-                    </div>
-                </div>
-            </div>
+    <div class="col-md-6">
+        <div class="form-floating">
+            <input type="text" class="form-control" id="nombre" placeholder="Nombre" required>
+            <label for="nombre"><i class="fas fa-user"></i> Nombre</label>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-floating">
+            <input type="text" class="form-control" id="apellido" placeholder="Apellido" required>
+            <label for="apellido"><i class="fas fa-user"></i> Apellido</label>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-5">
+        <div class="form-floating">
+            <select class="form-control" id="tipoDocumento" required>
+                <option value="">Selecciona...</option>
+                <option value="cedula">Cédula de ciudadanía</option>
+                <option value="tarjeta_identidad">Tarjeta de identidad</option>
+            </select>
+            <label for="tipoDocumento"><i class="fas fa-id-card"></i> Tipo de documento</label>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="form-floating">
+            <input type="text" class="form-control" id="numeroDocumento" placeholder="Número de documento" maxlength="10" required>
+            <label for="numeroDocumento"><i class="fas fa-id-card"></i> Número de documento</label>
+        </div>
+    </div>
+</div>
 
             <div class="form-floating">
                 <input type="email" class="form-control" id="correo" placeholder="Correo electrónico" required>

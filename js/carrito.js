@@ -10,10 +10,9 @@ if (usuarioData && usuarioData.id) {
     fetch(`http://localhost:3000/carrito/${usuarioData.id}`)
         .then(res => res.json())
         .then(data => {
-            console.log('GET /carrito response:', data);
             if (Array.isArray(data)) {
                 carrito = data.map(item => {
-                    let imagenUrl = '../img/bolso1.jpg';
+                    let imagenUrl = '../img/bolso10.jpg';
                     const nombre = item.nombre ? String(item.nombre).trim() : '';
                     const nombreNorm = nombre.toLowerCase();
                     const color = item.color ? String(item.color).trim() : '';
@@ -44,11 +43,11 @@ if (usuarioData && usuarioData.id) {
                             imagenUrl = `../img/aurora-${colorNorm}.jpg`;
                         } else if (nombreNorm.includes('elegance')) {
                             imagenUrl = `../img/elegance-${colorNorm}.jpg`;
-                        } else if (nombreNorm.includes('soft') || nombreNorm.includes('beige')) {
+                        } else if (nombreNorm.includes('soft')) {
                             imagenUrl = `../img/softbeige-${colorNorm}.jpg`;
                         } else if (nombreNorm.includes('golden')) {
                             imagenUrl = `../img/golden-${colorNorm}.jpg`;
-                        } else if (nombreNorm.includes('black') || nombreNorm.includes('luxe')) {
+                        } else if (nombreNorm.includes('black')) {
                             imagenUrl = `../img/blackluxe-${colorNorm}.jpg`;
                         } else if (nombreNorm.includes('velvet')) {
                             imagenUrl = `../img/velvet-${colorNorm}.jpg`;
@@ -89,26 +88,17 @@ if (usuarioData && usuarioData.id) {
         })
         .catch(err => {
             console.log('Error cargando carrito desde servidor:', err);
-            const carritoGuardado = localStorage.getItem("carrito");
-            carrito = carritoGuardado ? JSON.parse(carritoGuardado) : [];
+            carrito = [];
             renderizarCarrito();
         });
 
 } else {
-    const carritoOwner = localStorage.getItem('carritoOwner');
-    if (carritoOwner) {
-        localStorage.removeItem('carrito');
-        localStorage.removeItem('carritoOwner');
-    }
-    try {
-        localStorage.removeItem('carrito');
-        localStorage.removeItem('carritoOwner');
-    } catch(e) {}
-
+    localStorage.removeItem('carrito');
+    localStorage.removeItem('carritoOwner');
+    localStorage.removeItem('totalCarrito');
     carrito = [];
     renderizarCarrito();
 }
-
 
 function guardarCarrito() {
     localStorage.setItem("carrito", JSON.stringify(carrito));
@@ -125,6 +115,7 @@ function renderizarCarrito() {
         contenedorCarrito.innerHTML = `<h2 class="carrito-vacio">Tu carrito está vacío</h2>`;
         subtotalHTML.textContent = "$0";
         totalHTML.textContent = "$0";
+        localStorage.setItem("totalCarrito", "0");
         return;
     }
 
@@ -157,6 +148,10 @@ function renderizarCarrito() {
 
     subtotalHTML.textContent = formatearPrecio(subtotal);
     totalHTML.textContent = formatearPrecio(subtotal);
+
+    // Guardar total y carrito en localStorage para la pasarela de pago
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+    localStorage.setItem("totalCarrito", subtotal);
 }
 
 function aumentarCantidad(indiceProducto) {
@@ -181,40 +176,3 @@ async function eliminarProducto(indiceProducto) {
     carrito.splice(indiceProducto, 1);
     renderizarCarrito();
 }
-
-function agregarCarrito(){
-
-    const producto = {
-
-        nombre: document.getElementById("productoTitulo").textContent,
-
-        precio: parseInt(
-            document.getElementById("productoPrecio")
-            .textContent
-            .replace("$","")
-            .replace(/\./g,"")
-        ),
-
-        imagen: document.getElementById("productoImagen").src,
-
-        cantidad: 1
-    };
-
-    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-
-    const existe = carrito.find(item => item.nombre === producto.nombre);
-
-    if(existe){
-
-        existe.cantidad++;
-
-    }else{
-
-        carrito.push(producto);
-    }
-
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-
-    alert("Producto agregado al carrito");
-}
-
