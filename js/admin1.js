@@ -85,7 +85,7 @@ async function guardarProducto(event) {
     formData.append("precio", document.getElementById("prodPrecio").value);
     formData.append("stock", document.getElementById("prodStock").value);
     formData.append("descripcion", document.getElementById("prodDescripcion").value);
-
+    
     const inputImagen = document.getElementById("prodImagen");
     if (inputImagen.files.length > 0) {
         formData.append("imagen", inputImagen.files[0]);
@@ -123,6 +123,7 @@ function editarProducto(index) {
     document.getElementById("prodPrecio").value = producto.precio;
     document.getElementById("prodStock").value = producto.stock;
     document.getElementById("prodDescripcion").value = producto.descripcion || "";
+
     document.getElementById("modalTitulo").innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Editar Producto';
     document.getElementById("btnGuardarTexto").textContent = "Actualizar Cambios";
     document.getElementById("modalProducto").style.display = "flex";

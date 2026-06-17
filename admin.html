@@ -83,79 +83,49 @@
         </div>
     </div>
 
-    <!-- MODAL PRODUCTO -->
-    <div id="modalProducto" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modalTitulo"><i class="fa-solid fa-box-open"></i> Agregar Nuevo Producto</h3>
-                <button class="close-btn" onclick="cerrarModal()">&times;</button>
-            </div>
-            <form id="formProducto" onsubmit="guardarProducto(event)">
-                <input type="hidden" id="productoIndex" value="">
-                <div class="form-group">
-                    <label>Nombre del Producto</label>
-                    <input type="text" id="prodNombre" class="form-input" placeholder="Ej. Bolso Manhattan" required>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Precio ($)</label>
-                        <input type="number" id="prodPrecio" class="form-input" value="0" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Stock Inicial</label>
-                        <input type="number" id="prodStock" class="form-input" value="0" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Descripción / Material</label>
-                    <textarea id="prodDescripcion" class="form-input" rows="3" placeholder="Detalles del material, tamaño, etc."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Imagen principal del Producto</label>
-                    <input type="file" id="prodImagen" class="form-input" accept="image/*">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
-                    <button type="submit" class="btn-guardar" id="btnGuardarTexto">Guardar Producto</button>
-                </div>
-            </form>
+<div id="modalProducto" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitulo"><i class="fa-solid fa-box-open"></i> Agregar Nuevo Producto</h3>
+            <button class="close-btn" onclick="cerrarModal()">&times;</button>
         </div>
-    </div>
+        
+        <form id="formProducto" onsubmit="guardarProducto(event)">
+            <input type="hidden" id="productoIndex" value="">
 
-    <!-- MODAL IMÁGENES -->
-    <div id="modalImagenes" class="modal-overlay">
-        <div class="modal-content" style="max-width:600px;">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-images"></i> Imágenes del Producto</h3>
-                <button class="close-btn" onclick="cerrarModalImagenes()">&times;</button>
-            </div>
-            <div id="listaImagenes" style="margin-bottom:20px;max-height:300px;overflow-y:auto;"></div>
-            <hr>
-            <h5>Agregar imagen por color</h5>
             <div class="form-group">
-                <label>Color (opcional)</label>
-                <select id="imgColor" class="form-input">
-                    <option value="">Sin color (imagen principal)</option>
-                    <option value="Negro">Negro</option>
-                    <option value="Blanco">Blanco</option>
-                    <option value="Beige">Beige</option>
-                    <option value="Marrón">Marrón</option>
-                    <option value="Rosado">Rosado</option>
-                    <option value="Dorado">Dorado</option>
-                </select>
+                <label>Nombre del Producto</label>
+                <input type="text" id="prodNombre" class="form-input" placeholder="Ej. Bolso Manhattan" required>
             </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Precio ($)</label>
+                    <input type="number" id="prodPrecio" class="form-input" value="0" required>
+                </div>
+                <div class="form-group">
+                    <label>Stock Inicial</label>
+                    <input type="number" id="prodStock" class="form-input" value="0" required>
+                </div>
+            </div>
+
             <div class="form-group">
-                <label>Archivo de imagen</label>
-                <input type="file" id="imgArchivo" class="form-input" accept="image/*">
+                <label>Descripción / Material</label>
+                <textarea id="prodDescripcion" class="form-input" rows="3" placeholder="Detalles del material, tamaño, etc."></textarea>
             </div>
+
+            <div class="form-group">
+                <label>Imagen del Producto</label>
+                <input type="file" id="prodImagen" class="form-input" accept="image/*">
+            </div>
+
             <div class="modal-footer">
-                <button type="button" class="btn-cancelar" onclick="cerrarModalImagenes()">Cerrar</button>
-                <button type="button" class="btn-guardar" onclick="subirImagenProducto()">
-                    <i class="fa-solid fa-upload"></i> Subir imagen
-                </button>
+                <button type="button" class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+                <button type="submit" class="btn-guardar" id="btnGuardarTexto">Guardar Producto</button>
             </div>
-        </div>
+        </form>
     </div>
+</div>
 
     <script src="js/admin1.js"></script>
 </body>

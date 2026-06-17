@@ -37,6 +37,14 @@ exports.productos = (req, res) => {
 exports.agregarproductos = (req, res) => {
     const { nombre, precio, stock, descripcion, categoria_id, estado } = req.body;
 
+    const slug = nombre
+    .toLowerCase()
+    .trim()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]+/g, "");
+
     if (!nombre || !precio || stock === undefined) {
         return res.status(400).json({
             success: false,
@@ -50,8 +58,8 @@ exports.agregarproductos = (req, res) => {
     }
 
     const sql = `
-        INSERT INTO productos (nombre, precio, stock, imagen, descripcion, categoria_id, estado)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO productos (nombre, precio, stock, imagen, descripcion, categoria_id, estado, slug)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const valores = [
@@ -61,7 +69,8 @@ exports.agregarproductos = (req, res) => {
         imagenPath,
         descripcion || '',
         categoria_id || null,
-        estado || 'activo'
+        estado || 'activo',
+        slug
     ];
 
     conexion.query(sql, valores, (error, resultado) => {

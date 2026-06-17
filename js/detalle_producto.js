@@ -17,10 +17,17 @@ async function cargarProducto() {
         producto = data.producto;
         window.producto = producto;
 
-        const rutaImagen = producto.imagen?.startsWith("../")
-            ? producto.imagen
-            : `../${producto.imagen}`;
+       let rutaImagen = "../img/bolso10.jpg";
 
+        if (producto.imagen) {
+
+            if (producto.imagen.startsWith("/uploads")) {
+                rutaImagen = `http://localhost:3000${producto.imagen}`;
+            } else {
+                rutaImagen = `../${producto.imagen}`;
+            }
+
+        }
         document.getElementById("productoImagen").src = rutaImagen || "../img/bolso10.jpg";
         document.getElementById("productoImagen").alt = producto.nombre;
         document.getElementById("productoTitulo").textContent = producto.nombre;
