@@ -1,13 +1,4 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Servidor: 127.0.0.1
--- Tiempo de generación: 19-05-2026 a las 16:59:25
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
-
-CREATE DATABASE tienda_bolso;
+CREATE DATABASE IF NOT EXISTS tienda_bolso;
 
 USE tienda_bolso;
 
@@ -15,127 +6,124 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
+CREATE TABLE IF NOT EXISTS categorias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) DEFAULT NULL,
+    descripcion TEXT DEFAULT NULL,
+    imagenes VARCHAR(250) DEFAULT NULL
+);
+CREATE TABLE IF NOT EXISTS usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) DEFAULT NULL,
+    apellido VARCHAR(50) DEFAULT NULL,
+    tipo_documento VARCHAR(50) DEFAULT "Sin Expecificacion",
+    numero_documento VARCHAR(30) DEFAULT "Nro De Documento",
+    correo VARCHAR(100) DEFAULT NULL,
+    contrasena VARCHAR(100) DEFAULT NULL,
+    rol ENUM('admin','usuario') DEFAULT 'usuario',
+    numero_telefono CHAR(10) DEFAULT NULL,
+    fecha_nacimiento DATE NULL,
+    direccion VARCHAR(100) DEFAULT NULL,
+    imagen VARCHAR(255) 
+);
+CREATE TABLE IF NOT EXISTS metodos_pago (
+  id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  correo_usuario varchar(255) NOT NULL,
+  tipo enum('Tarjeta','Nequi','Daviplata','Transfiya') NOT NULL,
+  numero varchar(50) NOT NULL,
+  titular varchar(150) DEFAULT NULL,
+  expiracion varchar(10) DEFAULT NULL,
+  cvv varchar(10) DEFAULT NULL,
+  fecha_registro timestamp NOT NULL DEFAULT current_timestamp()
+);
+CREATE TABLE IF NOT EXISTS productos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) DEFAULT NULL,
+    precio DECIMAL(10,2) DEFAULT NULL,
+    imagen VARCHAR(255) DEFAULT NULL,
+    descripcion TEXT DEFAULT NULL,
+    stock INT DEFAULT 0,
+    categoria_id INT DEFAULT NULL,
+    estado VARCHAR(200) DEFAULT NULL,
+    FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+);
+CREATE TABLE IF NOT EXISTS pedidos (
+  id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  usuario_id INT DEFAULT NULL,
+  total decimal(10,2) DEFAULT NULL,
+  estado varchar(50) DEFAULT NULL,
+  fecha timestamp NOT NULL DEFAULT current_timestamp(),
+  FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
+CREATE TABLE IF NOT EXISTS detalle_pedidos (
+  id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  pedido_id int(11) DEFAULT NULL,
+  producto_id int(11) DEFAULT NULL,
+  cantidad int(11) DEFAULT NULL,
+  subtotal decimal(10,2) DEFAULT NULL,
+  precio decimal(10,2) DEFAULT NULL,
+  FOREIGN KEY (pedido_id) REFERENCES pedidos(id),
+  FOREIGN KEY (producto_id) REFERENCES productos(id)
+);
+CREATE TABLE IF NOT EXISTS ventas (
+    id int AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    total DECIMAL(10,2) DEFAULT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
+CREATE TABLE IF NOT EXISTS detalle_ventas (
+  id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  venta_id int DEFAULT NULL,
+  producto_id int(11) DEFAULT NULL,
+  cantidad int(11) DEFAULT NULL,
+  precio decimal(10,2) DEFAULT NULL,
+  subtotal decimal(10,2) DEFAULT NULL,
+  FOREIGN KEY (venta_id) REFERENCES ventas (id),
+  FOREIGN KEY (producto_id) REFERENCES productos(id)
+);
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+CREATE TABLE IF NOT EXISTS imagenes_productos (
+  id int(11) AUTO_INCREMENT PRIMARY KEY NOT NULL,
+  producto_id int(11) NOT NULL,
+  imagen varchar(255) NOT NULL,
+  FOREIGN KEY (producto_id) REFERENCES productos(id)
+);
 
---
--- Base de datos: `tienda_bolso`
---
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `carrito`
---
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `categorias`
---
-
-CREATE TABLE `categorias` (
-  `id` int(11) NOT NULL,
-  `nombre` varchar(100) DEFAULT NULL,
-  `descripcion` text DEFAULT NULL,
-  `imagenes` varchar(250) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `detalle_pedidos`
---
-
-CREATE TABLE `detalle_pedidos` (
-  `id` int(11) NOT NULL,
-  `pedido_id` int(11) DEFAULT NULL,
-  `producto_id` int(11) DEFAULT NULL,
-  `cantidad` int(11) DEFAULT NULL,
-  `subtotal` decimal(10,2) DEFAULT NULL,
-  `precio` decimal(10,2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `detalle_ventas`
---
-
-CREATE TABLE `detalle_ventas` (
-  `id` int(11) NOT NULL,
-  `venta_id` int(11) DEFAULT NULL,
-  `producto_id` int(11) DEFAULT NULL,
-  `cantidad` int(11) DEFAULT NULL,
-  `precio` decimal(10,2) DEFAULT NULL,
-  `subtotal` decimal(10,2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `imagenes_productos`
---
-
-CREATE TABLE `imagenes_productos` (
-  `id` int(11) NOT NULL,
-  `producto_id` int(11) NOT NULL,
-  `imagen` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `pagos`
---
-
-CREATE TABLE `pagos` (
-  `id` int(11) NOT NULL,
-  `pedido_id` int(11) DEFAULT NULL,
-  `metodo_pago` varchar(50) DEFAULT NULL,
-  `estado_pago` varchar(50) DEFAULT NULL,
-  `fecha` timestamp NOT NULL DEFAULT current_timestamp(),
-  `valor` decimal(10,2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `pedidos`
---
-
-CREATE TABLE `pedidos` (
-  `id` int(11) NOT NULL,
-  `usuario_id` int(11) DEFAULT NULL,
-  `total` decimal(10,2) DEFAULT NULL,
-  `estado` varchar(50) DEFAULT NULL,
-  `fecha` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `productos`
---
-
-CREATE TABLE `productos` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-  `nombre` varchar(50) DEFAULT NULL,
-  `precio` decimal(10,2) DEFAULT NULL,
-  `imagen` varchar(255) DEFAULT NULL,
-  `descripcion` text DEFAULT NULL,
-  `stock` int(11) DEFAULT 0,
-  `categoria_id` int(11) DEFAULT NULL,
-  `estado` varchar(200) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `productos`
---
-
+CREATE TABLE IF NOT EXISTS pagos (
+  id int(11) NOT NULL AUTO_INCREMENT Primary KEY,
+  pedido_id int(11) DEFAULT NULL,
+  metodo_pago varchar(50) DEFAULT NULL,
+  estado_pago varchar(50) DEFAULT NULL,
+  fecha timestamp NOT NULL DEFAULT current_timestamp(),
+  valor decimal(10,2) DEFAULT NULL,
+  FOREIGN KEY (pedido_id) REFERENCES pedidos(id)
+);
+CREATE TABLE IF NOT EXISTS recuperacion_codes (
+  correo varchar(255) NOT NULL Primary KEY,
+  codigo varchar(10) DEFAULT NULL,
+  expiracion datetime DEFAULT NULL
+);
+CREATE TABLE IF NOT EXISTS carrito (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    producto_id INT NOT NULL,
+    color VARCHAR(50) NOT NULL,
+    cantidad INT DEFAULT 1,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
+);
+CREATE TABLE resenas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  producto_id int NOT NULL,
+  usuario_id int NOT NULL,
+  comentario TEXT NOT NULL,
+  calificacion INT NOT NULL,
+  fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (producto_id) REFERENCES productos(id),
+  FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
 INSERT INTO `productos` (`id`, `nombre`, `precio`, `imagen`, `descripcion`, `stock`, `categoria_id`, `estado`) VALUES
 (3, 'Mochila urbana', 150000.00, 'img/mochila.jpg', 'Mochila moderna y resistente, perfecta para uso diario y viajes.', 15, NULL, NULL),
 (4, 'Bolso Manhattan', 120000.00, '../img/bolso1.webp', 'Bolso elegante premium', 10, NULL, NULL);
@@ -380,11 +368,6 @@ ADD COLUMN imagen VARCHAR(255);
 ALTER TABLE usuarios
 ADD COLUMN tipo_documento VARCHAR(50) AFTER apellido,
 ADD COLUMN numero_documento VARCHAR(30) AFTER tipo_documento;
-
-INSERT INTO categorias (nombre)
-VALUES
-('Nuevas Colecciones'),
-('Edición Limitada');
 
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
