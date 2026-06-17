@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="/favicon_io (1)/favicon.ico">
     <title>Panel de Administración - DUNAKA</title>
-    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/Style.css">
@@ -15,124 +14,148 @@
 
     <script>
         const rol = localStorage.getItem("rolUsuario");
-        if(rol !== "admin"){
+        if (rol !== "admin") {
             alert("No tienes permisos");
             window.location.href = "index.html";
         }
     </script>
 
-<div class="admin-container">
-
-    <div class="sidebar">
-        <h2>
-            <i class="fa-solid fa-user-shield"></i>
-            Admin
-        </h2>
-        <a href="#"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
-        <a href="#"><i class="fa-solid fa-box"></i> Productos</a>
-        <a href="#"><i class="fa-solid fa-users"></i> Usuarios</a>
-        <a href="#"><i class="fa-solid fa-cart-shopping"></i> Ventas</a>
-        <a href="#"><i class="fa-solid fa-chart-pie"></i> Estadísticas</a>
-        <a href="javascript:void(0)" onclick="cerrarSesion()">
-            <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
-        </a>
-    </div>
-
-    <div class="main-content">
-        <h1>Panel de Administración</h1>
-        <p>Bienvenido administrador de DUNAKA</p>
-
-        <div class="cards">
-            <div class="card-admin">
-                <i class="fa-solid fa-box"></i>
-                <h3 id="totalProductos">0</h3>
-                <p>Productos</p>
-            </div>
-            <div class="card-admin">
-                <i class="fa-solid fa-users"></i>
-                <h3 id="totalUsuarios">3</h3>
-                <p>Usuarios</p>
-            </div>
-            <div class="card-admin">
-                <i class="fa-solid fa-cart-shopping"></i>
-                <h3 id="totalVentas">0</h3>
-                <p>Ventas</p>
-            </div>
-            <div class="card-admin">
-                <i class="fa-solid fa-dollar-sign"></i>
-                <h3 id="ganancias">$0</h3>
-                <p>Ganancias</p>
-            </div>
+    <div class="admin-container">
+        <div class="sidebar">
+            <h2><i class="fa-solid fa-user-shield"></i> Admin</h2>
+            <a href="#"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+            <a href="#"><i class="fa-solid fa-box"></i> Productos</a>
+            <a href="#"><i class="fa-solid fa-users"></i> Usuarios</a>
+            <a href="#"><i class="fa-solid fa-cart-shopping"></i> Ventas</a>
+            <a href="#"><i class="fa-solid fa-chart-pie"></i> Estadísticas</a>
+            <a href="javascript:void(0)" onclick="cerrarSesion()">
+                <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
+            </a>
         </div>
 
-        <div class="tabla">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h3>CRUD Productos</h3>
-                <button class="btn-admin" onclick="abrirModal()">
-                    <i class="fa-solid fa-plus"></i> Agregar producto
+        <div class="main-content">
+            <h1>Panel de Administración</h1>
+            <p>Bienvenido administrador de DUNAKA</p>
+
+            <div class="cards">
+                <div class="card-admin">
+                    <i class="fa-solid fa-box"></i>
+                    <h3 id="totalProductos">0</h3>
+                    <p>Productos</p>
+                </div>
+                <div class="card-admin">
+                    <i class="fa-solid fa-users"></i>
+                    <h3 id="totalUsuarios">3</h3>
+                    <p>Usuarios</p>
+                </div>
+                <div class="card-admin">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <h3 id="totalVentas">0</h3>
+                    <p>Ventas</p>
+                </div>
+                <div class="card-admin">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                    <h3 id="ganancias">$0</h3>
+                    <p>Ganancias</p>
+                </div>
+            </div>
+
+            <div class="tabla">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3>CRUD Productos</h3>
+                    <button class="btn-admin" onclick="abrirModal()">
+                        <i class="fa-solid fa-plus"></i> Agregar producto
+                    </button>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaProductos"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PRODUCTO -->
+    <div id="modalProducto" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitulo"><i class="fa-solid fa-box-open"></i> Agregar Nuevo Producto</h3>
+                <button class="close-btn" onclick="cerrarModal()">&times;</button>
+            </div>
+            <form id="formProducto" onsubmit="guardarProducto(event)">
+                <input type="hidden" id="productoIndex" value="">
+                <div class="form-group">
+                    <label>Nombre del Producto</label>
+                    <input type="text" id="prodNombre" class="form-input" placeholder="Ej. Bolso Manhattan" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Precio ($)</label>
+                        <input type="number" id="prodPrecio" class="form-input" value="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Stock Inicial</label>
+                        <input type="number" id="prodStock" class="form-input" value="0" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Descripción / Material</label>
+                    <textarea id="prodDescripcion" class="form-input" rows="3" placeholder="Detalles del material, tamaño, etc."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Imagen principal del Producto</label>
+                    <input type="file" id="prodImagen" class="form-input" accept="image/*">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+                    <button type="submit" class="btn-guardar" id="btnGuardarTexto">Guardar Producto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL IMÁGENES -->
+    <div id="modalImagenes" class="modal-overlay">
+        <div class="modal-content" style="max-width:600px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-images"></i> Imágenes del Producto</h3>
+                <button class="close-btn" onclick="cerrarModalImagenes()">&times;</button>
+            </div>
+            <div id="listaImagenes" style="margin-bottom:20px;max-height:300px;overflow-y:auto;"></div>
+            <hr>
+            <h5>Agregar imagen por color</h5>
+            <div class="form-group">
+                <label>Color (opcional)</label>
+                <select id="imgColor" class="form-input">
+                    <option value="">Sin color (imagen principal)</option>
+                    <option value="Negro">Negro</option>
+                    <option value="Blanco">Blanco</option>
+                    <option value="Beige">Beige</option>
+                    <option value="Marrón">Marrón</option>
+                    <option value="Rosado">Rosado</option>
+                    <option value="Dorado">Dorado</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Archivo de imagen</label>
+                <input type="file" id="imgArchivo" class="form-input" accept="image/*">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" onclick="cerrarModalImagenes()">Cerrar</button>
+                <button type="button" class="btn-guardar" onclick="subirImagenProducto()">
+                    <i class="fa-solid fa-upload"></i> Subir imagen
                 </button>
             </div>
-
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Producto</th>
-                        <th>Precio</th>
-                        <th>Stock</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="tablaProductos">
-                    </tbody>
-            </table>
         </div>
     </div>
-</div>
-
-<div id="modalProducto" class="modal-overlay">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 id="modalTitulo"><i class="fa-solid fa-box-open"></i> Agregar Nuevo Producto</h3>
-            <button class="close-btn" onclick="cerrarModal()">&times;</button>
-        </div>
-        
-        <form id="formProducto" onsubmit="guardarProducto(event)">
-            <input type="hidden" id="productoIndex" value="">
-
-            <div class="form-group">
-                <label>Nombre del Producto</label>
-                <input type="text" id="prodNombre" class="form-input" placeholder="Ej. Bolso Manhattan" required>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Precio ($)</label>
-                    <input type="number" id="prodPrecio" class="form-input" value="0" required>
-                </div>
-                <div class="form-group">
-                    <label>Stock Inicial</label>
-                    <input type="number" id="prodStock" class="form-input" value="0" required>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Descripción / Material</label>
-                <textarea id="prodDescripcion" class="form-input" rows="3" placeholder="Detalles del material, tamaño, etc."></textarea>
-            </div>
-
-            <div class="form-group">
-                <label>Imagen del Producto</label>
-                <input type="file" id="prodImagen" class="form-input" accept="image/*">
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
-                <button type="submit" class="btn-guardar" id="btnGuardarTexto">Guardar Producto</button>
-            </div>
-        </form>
-    </div>
-</div>
 
     <script src="js/admin1.js"></script>
 </body>
