@@ -223,3 +223,60 @@ exports.obtenerProductosConSlug = (req, res) => {
         res.json({ success: true, productos: resultado });
     });
 };
+exports.obtenerImagenesProducto = (req, res) => {
+    const { slug } = req.params;
+
+    const sql = `
+        SELECT ip.imagen, ip.color
+        FROM imagenes_productos ip
+        JOIN productos p ON p.id = ip.producto_id
+        WHERE p.slug = ?
+    `;
+
+    conexion.query(sql, [slug], (error, resultado) => {
+        if (error) return res.status(500).json({ success: false });
+        res.json({ success: true, imagenes: resultado });
+    });
+};
+
+exports.obtenerImagenesPorId = (req, res) => {
+    const { id } = req.params;
+    conexion.query(
+        "SELECT * FROM imagenes_productos WHERE producto_id = ?",
+        [id],
+        (error, resultado) => {
+            if (error) return res.status(500).json({ success: false });
+            res.json({ success: true, imagenes: resultado });
+        }
+    );
+};
+
+exports.agregarImagenProducto = (req, res) => {
+    const { producto_id, color } = req.body;
+    const imagen = req.file ? `uploads/${req.file.filename}` : null;
+
+    if (!imagen || !producto_id) {
+        return res.status(400).json({ success: false, message: "Faltan datos" });
+    }
+
+    conexion.query(
+        "INSERT INTO imagenes_productos (producto_id, imagen, color) VALUES (?, ?, ?)",
+        [producto_id, imagen, color || null],
+        (error, resultado) => {
+            if (error) return res.status(500).json({ success: false });
+            res.json({ success: true, message: "Imagen agregada", id: resultado.insertId });
+        }
+    );
+};
+
+exports.eliminarImagenProducto = (req, res) => {
+    const { id } = req.params;
+    conexion.query(
+        "DELETE FROM imagenes_productos WHERE id = ?",
+        [id],
+        (error) => {
+            if (error) return res.status(500).json({ success: false });
+            res.json({ success: true, message: "Imagen eliminada" });
+        }
+    );
+};
