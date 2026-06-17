@@ -16,13 +16,9 @@ const app = express();
 app.use(cors({ origin: true, methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], credentials: true }));
 app.use(express.json());
 
-app.use(
-    express.static(
-        path.join(__dirname, "..")
-    )
-);
+app.use(express.static(path.join(__dirname, "..")));
 
-console.log("RUTA ABSOLUTA QUE EXPRESA ESTÁ BUSCANDO:", path.join(__dirname, "config","uploads"));
+// Servir imágenes subidas
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use(authRoutes);
