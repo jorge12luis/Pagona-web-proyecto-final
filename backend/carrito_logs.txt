@@ -29,3 +29,9 @@
 2026-06-16T15:50:35.825Z Insertando en carrito: {"usuario_id":3,"producto_id":2,"color":"Rosado","cantidad":1}
 2026-06-16T15:50:35.839Z Error insert carrito: Duplicate entry '3-2-Rosado' for key 'unique_carrito'
 {"code":"ER_DUP_ENTRY","errno":1062,"sqlState":"23000","sqlMessage":"Duplicate entry '3-2-Rosado' for key 'unique_carrito'","sql":"INSERT INTO carrito (usuario_id, producto_id, color, cantidad) VALUES (3, 2, 'Rosado', 1)"}
+2026-06-17T19:21:40.749Z Insertando en carrito: {"usuario_id":4,"producto_id":15,"color":"Rosado","cantidad":1}
+2026-06-17T19:21:40.767Z Carrito insertado id: 74
+2026-06-17T19:44:39.510Z Insertando en carrito: {"usuario_id":4,"producto_id":15,"color":"Rosado","cantidad":1}
+2026-06-17T19:44:39.514Z Carrito insertado id: 75
+2026-06-17T19:45:50.387Z Insertando en carrito: {"usuario_id":4,"producto_id":15,"color":"Rosado","cantidad":1}
+2026-06-17T19:45:50.394Z Carrito insertado id: 76

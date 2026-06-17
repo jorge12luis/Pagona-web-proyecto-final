@@ -9,9 +9,18 @@ async function cargarProductos() {
         contenedor.innerHTML = "";
 
         data.productos.forEach(producto => {
-            const imagen = producto.imagen?.startsWith("../")
-                ? producto.imagen
-                : `../${producto.imagen}`;
+
+        let imagen = "../img/bolso10.jpg";
+
+        if (producto.imagen) {
+
+        if (producto.imagen.startsWith("/uploads")) {
+            imagen = `http://localhost:3000${producto.imagen}`;
+        } else {
+            imagen = `../${producto.imagen}`;
+        }
+
+        }
 
             // Convierte el nombre de categoría a slug para el data-categoria
             const categoriaSlug = producto.categoria_nombre

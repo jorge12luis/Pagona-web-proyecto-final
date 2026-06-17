@@ -381,6 +381,11 @@ ALTER TABLE usuarios
 ADD COLUMN tipo_documento VARCHAR(50) AFTER apellido,
 ADD COLUMN numero_documento VARCHAR(30) AFTER tipo_documento;
 
+INSERT INTO categorias (nombre)
+VALUES
+('Nuevas Colecciones'),
+('Edición Limitada');
+
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

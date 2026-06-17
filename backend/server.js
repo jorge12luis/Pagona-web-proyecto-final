@@ -844,9 +844,9 @@ app.get("/obtener-productos", (req, res) => {
 
 // AGREGAR PRODUCTO
 app.post("/agregar-producto", (req, res) => {
-    const { nombre, precio, stock } = req.body;
+    const { nombre, precio, stock, descripcion, categoria_id } = req.body;
 
-    if (!nombre || !precio || stock === undefined) {
+    if (!nombre || !precio || stock === undefined || !categoria_id) {
         return res.status(400).json({
             success: false,
             message: "Faltan datos"
@@ -854,11 +854,11 @@ app.post("/agregar-producto", (req, res) => {
     }
 
     const sql = `
-        INSERT INTO productos (nombre, precio, stock)
-        VALUES (?, ?, ?)
+        INSERT INTO productos (nombre, precio, stock, descripcion, categoria_id)
+        VALUES (?, ?, ?, ?, ?)
     `;
 
-    conexion.query(sql, [nombre, precio, stock], (error, resultado) => {
+    conexion.query(sql, [nombre, precio, stock, descripcion, categoria_id], (error, resultado) => {
         if (error) {
             console.log(error);
             return res.status(500).json({
@@ -878,9 +878,9 @@ app.post("/agregar-producto", (req, res) => {
 // ACTUALIZAR PRODUCTO
 app.put("/actualizar-producto/:id", (req, res) => {
     const { id } = req.params;
-    const { nombre, precio, stock } = req.body;
+    const { nombre, precio, stock, descripcion, categoria_id } = req.body;
 
-    if (!nombre || !precio || stock === undefined) {
+    if (!nombre || !precio || stock === undefined || !categoria_id) {
         return res.status(400).json({
             success: false,
             message: "Faltan datos"
@@ -889,11 +889,11 @@ app.put("/actualizar-producto/:id", (req, res) => {
 
     const sql = `
         UPDATE productos 
-        SET nombre = ?, precio = ?, stock = ?
+        SET nombre = ?, precio = ?, stock = ?, descripcion = ?, categoria_id = ?
         WHERE id = ?
     `;
 
-    conexion.query(sql, [nombre, precio, stock, id], (error) => {
+    conexion.query(sql, [nombre, precio, stock, descripcion, categoria_id, id], (error) => {
         if (error) {
             console.log(error);
             return res.status(500).json({

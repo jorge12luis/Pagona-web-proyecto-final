@@ -61,15 +61,16 @@ if (usuarioData && usuarioData.id) {
                         }
                     } else if (item.imagen) {
                         const img = String(item.imagen || '').trim();
-                        if (img.startsWith('http') || img.startsWith('/')) {
-                            imagenUrl = img;
-                        } else if (img.includes('img/')) {
-                            imagenUrl = '../' + img;
-                        } else {
-                            imagenUrl = '../img/' + img;
-                        }
-                    }
-
+                       if (img.startsWith('/uploads/')) {
+                    imagenUrl = `http://localhost:3000${img}`;
+                } else if (img.startsWith('http')) {
+                    imagenUrl = img;
+                } else if (img.includes('img/')) {
+                    imagenUrl = '../' + img;
+                } else {
+                    imagenUrl = '../img/' + img;
+                }
+                }
                     return {
                         id: item.id,
                         nombre: item.nombre,
